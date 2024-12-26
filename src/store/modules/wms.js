@@ -1,7 +1,7 @@
-import { listWarehouseNoPage } from '@/api/wms/warehouse';
-import { listMerchantNoPage } from "@/api/wms/merchant";
-import { listItemCategory, treeSelectItemCategory } from "@/api/wms/itemCategory";
-import { listItemBrand } from "@/api/wms/itemBrand";
+import { listWarehouseNoPage } from '@/api/basic/warehouse';
+import { listMerchantNoPage } from "@/api/basic/merchant";
+import { listItemCategory, treeSelectItemCategory } from "@/api/basic/itemCategory";
+import { listItemBrand } from "@/api/basic/itemBrand";
 import {defineStore} from "pinia";
 import {ref} from "vue";
 

@@ -58,7 +58,7 @@ import {
   addWarehouse,
   updateWarehouse,
   listWarehouseNoPage
-} from '@/api/wms/warehouse';
+} from '@/api/basic/warehouse';
 import {getCurrentInstance, nextTick, onMounted, reactive, ref, toRefs} from 'vue';
 import {ElForm, ElMessageBox, ElTree} from 'element-plus';
 import useUserStore from "@/store/modules/user";
@@ -202,7 +202,7 @@ const handleDelete = async (data) => {
 
 /** 导出按钮操作 */
 const handleExport = () => {
-  proxy?.download('wms/warehouse/export', {
+  proxy?.download('basic/warehouse/export', {
     ...queryParams.value
   }, `warehouse_${new Date().getTime()}.xlsx`)
 }

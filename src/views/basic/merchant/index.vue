@@ -139,7 +139,7 @@
 </template>
 
 <script setup name="Merchant">
-import { listMerchant, getMerchant, delMerchant, addMerchant, updateMerchant } from "@/api/wms/merchant";
+import { listMerchant, getMerchant, delMerchant, addMerchant, updateMerchant } from "@/api/basic/merchant";
 import {ElMessageBox} from "element-plus";
 
 const { proxy } = getCurrentInstance();

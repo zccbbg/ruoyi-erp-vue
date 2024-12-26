@@ -101,7 +101,7 @@
 <script setup lang="ts" name="SkuSelect">
 import {computed, getCurrentInstance, onMounted, reactive, ref} from 'vue';
 import {ElForm} from "element-plus";
-import {listItemSkuPage} from "@/api/wms/itemSku";
+import {listItemSkuPage} from "@/api/basic/itemSku";
 import {useRouter} from "vue-router";
 import {useWmsStore} from '@/store/modules/wms'
 

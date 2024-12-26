@@ -8,7 +8,7 @@ import request from '@/utils/request'
 
 export function listWarehouse(query) {
   return request({
-    url: '/wms/warehouse/list',
+    url: '/basic/warehouse/list',
     method: 'get',
     params: query
   });
@@ -22,7 +22,7 @@ export function listWarehouse(query) {
 
 export function listWarehouseNoPage(query) {
   return request({
-    url: '/wms/warehouse/listNoPage',
+    url: '/basic/warehouse/listNoPage',
     method: 'get',
     params: query
   });
@@ -34,7 +34,7 @@ export function listWarehouseNoPage(query) {
  */
 export function getWarehouse(id) {
   return request({
-    url: '/wms/warehouse/' + id,
+    url: '/basic/warehouse/' + id,
     method: 'get'
   });
 };
@@ -45,7 +45,7 @@ export function getWarehouse(id) {
  */
 export function addWarehouse(data) {
   return request({
-    url: '/wms/warehouse',
+    url: '/basic/warehouse',
     method: 'post',
     data: data
   });
@@ -57,7 +57,7 @@ export function addWarehouse(data) {
  */
 export function updateWarehouse(data) {
   return request({
-    url: '/wms/warehouse',
+    url: '/basic/warehouse',
     method: 'put',
     data: data
   });
@@ -69,14 +69,14 @@ export function updateWarehouse(data) {
  */
 export function delWarehouse(id) {
   return request({
-    url: '/wms/warehouse/' + id,
+    url: '/basic/warehouse/' + id,
     method: 'delete'
   });
 };
 
 export function updateOrderNum (data) {
   return request({
-    url: '/wms/warehouse/update/orderNum',
+    url: '/basic/warehouse/update/orderNum',
     method: 'post',
     data: data
   });
