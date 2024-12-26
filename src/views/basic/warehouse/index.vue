@@ -10,7 +10,7 @@
             plain
             icon="Plus"
             @click="handleAdd"
-            v-hasPermi="['wms:itemBrand:add']"
+            v-hasPermi="['basic:warehouse:add']"
           >新增</el-button>
         </el-col>
       </el-row>
@@ -21,24 +21,21 @@
         <el-table-column label="创建时间" prop="createTime" width="180"/>
         <el-table-column label="操作" align="right" class-name="small-padding fixed-width" width="180">
           <template #default="scope">
-            <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['wms:itemBrand:edit']">修改</el-button>
-            <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['wms:itemBrand:remove']">删除</el-button>
+            <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['basic:warehouse:edit']">修改</el-button>
+            <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['basic:warehouse:remove']">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
 
     </el-card>
     <!-- 添加或修改仓库对话框 -->
-    <el-dialog :title="dialog.title" v-model="dialog.visible" width="500px" append-to-body :close-on-click-modal="false">
+    <el-drawer :title="dialog.title" v-model="dialog.visible" size="50%" append-to-body>
       <el-form ref="warehouseFormRef" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="名称" prop="warehouseName">
           <el-input v-model="form.warehouseName" placeholder="请输入名称" />
         </el-form-item>
         <el-form-item label="编号" prop="warehouseNo">
           <el-input v-model="form.warehouseNo" placeholder="请输入编号" />
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" placeholder="请输入备注" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -47,7 +44,7 @@
           <el-button @click="cancel">取 消</el-button>
         </div>
       </template>
-    </el-dialog>
+    </el-drawer>
   </div>
 </template>
 
@@ -89,11 +86,10 @@ const dialog = reactive({
 const initFormData = {
   id: undefined,
   warehouseNo: undefined,
-  warehouseName: undefined,
-  remark: undefined,
+  warehouseName: undefined
 }
 const data = reactive({
-  form: {...initFormData},
+  form: {},
   queryParams: {
     warehouseNo: undefined,
     warehouseName: undefined,
@@ -133,7 +129,7 @@ const cancel = () => {
 /** 表单重置 */
 const reset = () => {
   form.value = {...initFormData};
-  warehouseFormRef.value.resetFields();
+  proxy.resetForm("warehouseFormRef");
 }
 
 /** 搜索按钮操作 */
@@ -162,13 +158,13 @@ const handleAdd = async () => {
 
 /** 修改按钮操作 */
 const handleUpdate = (data) => {
-  dialog.visible = true;
-  dialog.title = "修改仓库";
-  nextTick(async () => {
-    reset();
-    const _id = data.id
-    const res = await getWarehouse(_id);
-    Object.assign(form.value, res.data);
+
+  reset();
+  const _id = data.id
+  getWarehouse(_id).then(response => {
+    Object.assign(form.value, response.data);
+    dialog.visible = true;
+    dialog.title = "修改仓库";
   });
 }
 
