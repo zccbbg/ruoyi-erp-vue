@@ -322,7 +322,7 @@
 </template>
 
 <script setup name="Item">
-import {getItem, delItem, addItem, updateItem} from '@/api/basic/item';
+import {getItem, delItem, addItem, updateItem} from '@/api/basic/goods';
 import {computed, getCurrentInstance, nextTick, onMounted, reactive, ref, toRefs} from 'vue';
 import {ElForm, ElTree, ElTreeSelect} from 'element-plus';
 import {
@@ -330,9 +330,9 @@ import {
   addItemCategory,
   delItemCategory,
   updateOrderNum
-} from "@/api/basic/itemCategory";
+} from "@/api/basic/category";
 import {getRowspanMethod} from "@/utils/getRowSpanMethod";
-import {listItemSkuPage, delItemSku, listItemSku} from "@/api/basic/itemSku";
+import {listItemSkuPage, delItemSku, listItemSku} from "@/api/basic/sku";
 import {useRoute} from "vue-router";
 import Qrcode from 'qrcode'
 import JSBarcode from 'jsbarcode'

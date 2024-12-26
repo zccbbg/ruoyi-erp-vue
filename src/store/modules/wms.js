@@ -1,7 +1,7 @@
 import { listWarehouseNoPage } from '@/api/basic/warehouse';
 import { listMerchantNoPage } from "@/api/basic/merchant";
-import { listItemCategory, treeSelectItemCategory } from "@/api/basic/itemCategory";
-import { listItemBrand } from "@/api/basic/itemBrand";
+import { listItemCategory, treeSelectItemCategory } from "@/api/basic/category";
+import { listItemBrand } from "@/api/basic/brand";
 import {defineStore} from "pinia";
 import {ref} from "vue";
 

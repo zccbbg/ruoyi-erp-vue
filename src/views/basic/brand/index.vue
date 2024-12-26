@@ -62,7 +62,7 @@
 </template>
 
 <script setup name="ItemBrand">
-import { listItemBrand, getItemBrand, delItemBrand, addItemBrand, updateItemBrand, listItemBrandPage } from "@/api/basic/itemBrand";
+import { listItemBrand, getItemBrand, delItemBrand, addItemBrand, updateItemBrand, listItemBrandPage } from "@/api/basic/brand";
 import {ElMessageBox} from "element-plus";
 import {useWmsStore} from '@/store/modules/wms'
 
