@@ -48,7 +48,7 @@
           <div style="display: flex;align-items: center">
             <div class="first" style="font-size:20px;line-height: 50px;background: linear-gradient(to right, red, blue);-webkit-background-clip: text;color: transparent;">
               参与开发基于jdk17和vue3的ruoyi-mall、ruoyi-erp-进销存。<br>
-              要求：对若依框架和ruoyi-wms、ruoyi-mall 有一定的认知。并且有一定的空余时间。<br>
+              要求：对若依框架和ruoyi-erp、ruoyi-mall 有一定的认知。并且有一定的空余时间。<br>
               全职、兼职、实习都可。我们在苏州，远程或现场参与开发都可。<br>
               有兴趣的可以在公众号内回复：应聘。<br>
             </div>
