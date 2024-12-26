@@ -8,7 +8,7 @@ import request from '@/utils/request';
 
 export function listItemPage(query) {
   return request({
-    url: '/wms/item/list',
+    url: '/basic/goods/list',
     method: 'get',
     params: query
   });
@@ -16,7 +16,7 @@ export function listItemPage(query) {
 
 export function listItem(query) {
   return request({
-    url: '/wms/item/listNoPage',
+    url: '/basic/goods/listNoPage',
     method: 'get',
     params: query
   });
@@ -30,7 +30,7 @@ export function listItem(query) {
 
 export function listItemGroupBySku(query) {
   return request({
-    url: '/wms/itemSku/selectList',
+    url: '/basic/goodsSku/selectList',
     method: 'get',
     params: query
   });
@@ -42,7 +42,7 @@ export function listItemGroupBySku(query) {
  */
 export function getItem(id) {
   return request({
-    url: '/wms/item/' + id,
+    url: '/basic/goods/' + id,
     method: 'get'
   });
 };
@@ -53,7 +53,7 @@ export function getItem(id) {
  */
 export function addItem(data) {
   return request({
-    url: '/wms/item',
+    url: '/basic/goods',
     method: 'post',
     data: data
   });
@@ -65,7 +65,7 @@ export function addItem(data) {
  */
 export function updateItem(data) {
   return request({
-    url: '/wms/item',
+    url: '/basic/goods',
     method: 'put',
     data: data
   });
@@ -77,7 +77,7 @@ export function updateItem(data) {
  */
 export function delItem(id) {
   return request({
-    url: '/wms/item/' + id,
+    url: '/basic/goods/' + id,
     method: 'delete'
   });
 };

@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 查询往来单位列表
 export function listMerchant(query) {
   return request({
-    url: '/wms/merchant/list',
+    url: '/basic/merchant/list',
     method: 'get',
     params: query
   })
@@ -12,7 +12,7 @@ export function listMerchant(query) {
 // 查询往来单位列表
 export function listMerchantNoPage(query) {
   return request({
-    url: '/wms/merchant/listNoPage',
+    url: '/basic/merchant/listNoPage',
     method: 'get',
     params: query
   })
@@ -21,7 +21,7 @@ export function listMerchantNoPage(query) {
 // 查询往来单位详细
 export function getMerchant(id) {
   return request({
-    url: '/wms/merchant/' + id,
+    url: '/basic/merchant/' + id,
     method: 'get'
   })
 }
@@ -29,7 +29,7 @@ export function getMerchant(id) {
 // 新增往来单位
 export function addMerchant(data) {
   return request({
-    url: '/wms/merchant',
+    url: '/basic/merchant',
     method: 'post',
     data: data
   })
@@ -38,7 +38,7 @@ export function addMerchant(data) {
 // 修改往来单位
 export function updateMerchant(data) {
   return request({
-    url: '/wms/merchant',
+    url: '/basic/merchant',
     method: 'put',
     data: data
   })
@@ -47,7 +47,7 @@ export function updateMerchant(data) {
 // 删除往来单位
 export function delMerchant(id) {
   return request({
-    url: '/wms/merchant/' + id,
+    url: '/basic/merchant/' + id,
     method: 'delete'
   })
 }

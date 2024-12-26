@@ -8,7 +8,7 @@ import request from '@/utils/request';
 
 export function listItemSkuPage(query) {
   return request({
-    url: '/wms/itemSku/list',
+    url: '/basic/sku/list',
     method: 'get',
     params: query
   });
@@ -16,7 +16,7 @@ export function listItemSkuPage(query) {
 
 export function listItemSku(query) {
   return request({
-    url: '/wms/itemSku/listNoPage',
+    url: '/basic/sku/listNoPage',
     method: 'get',
     params: query
   });
@@ -28,7 +28,7 @@ export function listItemSku(query) {
  */
 export function getItemSku(id) {
   return request({
-    url: '/wms/itemSku/' + id,
+    url: '/basic/sku/' + id,
     method: 'get'
   });
 };
@@ -39,7 +39,7 @@ export function getItemSku(id) {
  */
 export function addItemSku(data) {
   return request({
-    url: '/wms/itemSku',
+    url: '/basic/sku',
     method: 'post',
     data: data
   });
@@ -51,7 +51,7 @@ export function addItemSku(data) {
  */
 export function updateItemSku(data) {
   return request({
-    url: '/wms/itemSku',
+    url: '/basic/sku',
     method: 'put',
     data: data
   });
@@ -63,7 +63,7 @@ export function updateItemSku(data) {
  */
 export function delItemSku(id) {
   return request({
-    url: '/wms/itemSku/' + id,
+    url: '/basic/sku/' + id,
     method: 'delete'
   });
 };

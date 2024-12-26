@@ -8,7 +8,7 @@ import request from '@/utils/request';
 
 export function listItemCategoryPage(query) {
   return request({
-    url: '/wms/itemCategory/list',
+    url: '/basic/category/list',
     method: 'get',
     params: query
   });
@@ -22,7 +22,7 @@ export function listItemCategoryPage(query) {
 
 export function listItemCategory(query) {
   return request({
-    url: '/wms/itemCategory/listNoPage',
+    url: '/basic/category/listNoPage',
     method: 'get',
     params: query
   });
@@ -36,7 +36,7 @@ export function listItemCategory(query) {
 
 export function treeSelectItemCategory(query) {
   return request({
-    url: '/wms/itemCategory/treeselect',
+    url: '/basic/category/treeselect',
     method: 'get',
     params: query
   });
@@ -48,7 +48,7 @@ export function treeSelectItemCategory(query) {
  */
 export function getItemCategory(id) {
   return request({
-    url: '/wms/itemCategory/' + id,
+    url: '/basic/category/' + id,
     method: 'get'
   });
 };
@@ -59,7 +59,7 @@ export function getItemCategory(id) {
  */
 export function addItemCategory(data) {
   return request({
-    url: '/wms/itemCategory',
+    url: '/basic/category',
     method: 'post',
     data: data
   });
@@ -71,7 +71,7 @@ export function addItemCategory(data) {
  */
 export function updateItemCategory(data) {
   return request({
-    url: '/wms/itemCategory',
+    url: '/basic/category',
     method: 'put',
     data: data
   });
@@ -83,7 +83,7 @@ export function updateItemCategory(data) {
  */
 export function delItemCategory(id) {
   return request({
-    url: '/wms/itemCategory/' + id,
+    url: '/basic/category/' + id,
     method: 'delete'
   });
 };
@@ -94,7 +94,7 @@ export function delItemCategory(id) {
  */
 export function updateOrderNum(data) {
   return request({
-    url: '/wms/itemCategory/update/orderNum',
+    url: '/basic/category/update/orderNum',
     method: 'post',
     data: data
   });

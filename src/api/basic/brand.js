@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 查询商品品牌列表
 export function listItemBrandPage(query) {
   return request({
-    url: '/wms/itemBrand/list',
+    url: '/basic/brand/list',
     method: 'get',
     params: query
   })
@@ -12,7 +12,7 @@ export function listItemBrandPage(query) {
 // 查询商品品牌列表
 export function listItemBrand(query) {
   return request({
-    url: '/wms/itemBrand/listNoPage',
+    url: '/basic/brand/listNoPage',
     method: 'get',
     params: query
   })
@@ -21,7 +21,7 @@ export function listItemBrand(query) {
 // 查询商品品牌详细
 export function getItemBrand(id) {
   return request({
-    url: '/wms/itemBrand/' + id,
+    url: '/basic/brand/' + id,
     method: 'get'
   })
 }
@@ -29,7 +29,7 @@ export function getItemBrand(id) {
 // 新增商品品牌
 export function addItemBrand(data) {
   return request({
-    url: '/wms/itemBrand',
+    url: '/basic/brand',
     method: 'post',
     data: data
   })
@@ -38,7 +38,7 @@ export function addItemBrand(data) {
 // 修改商品品牌
 export function updateItemBrand(data) {
   return request({
-    url: '/wms/itemBrand',
+    url: '/basic/brand',
     method: 'put',
     data: data
   })
@@ -47,7 +47,7 @@ export function updateItemBrand(data) {
 // 删除商品品牌
 export function delItemBrand(id) {
   return request({
-    url: '/wms/itemBrand/' + id,
+    url: '/basic/brand/' + id,
     method: 'delete'
   })
 }
