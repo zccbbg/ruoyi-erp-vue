@@ -17,7 +17,7 @@
 
       <el-table v-loading="loading" :data="warehouseList" border class="mt20" empty-text="暂无品牌">
         <el-table-column label="仓库名称" prop="warehouseName" />
-        <el-table-column label="仓库编号" prop="warehouseCode" />
+        <el-table-column label="仓库编号" prop="warehouseNo" />
         <el-table-column label="创建时间" prop="createTime" width="180"/>
         <el-table-column label="操作" align="right" class-name="small-padding fixed-width" width="180">
           <template #default="scope">
@@ -34,8 +34,8 @@
         <el-form-item label="名称" prop="warehouseName">
           <el-input v-model="form.warehouseName" placeholder="请输入名称" />
         </el-form-item>
-        <el-form-item label="编号" prop="warehouseCode">
-          <el-input v-model="form.warehouseCode" placeholder="请输入编号" />
+        <el-form-item label="编号" prop="warehouseNo">
+          <el-input v-model="form.warehouseNo" placeholder="请输入编号" />
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" placeholder="请输入备注" />
@@ -67,8 +67,8 @@ const wmsStore = useWmsStore();
 const { proxy } = getCurrentInstance();
 
 const customNodeClass = (data, node) => {
-  if (data.warehouseCode) {
-    return 'warehouseCode';
+  if (data.warehouseNo) {
+    return 'warehouseNo';
   }
   return null
 }
@@ -88,14 +88,14 @@ const dialog = reactive({
 });
 const initFormData = {
   id: undefined,
-  warehouseCode: undefined,
+  warehouseNo: undefined,
   warehouseName: undefined,
   remark: undefined,
 }
 const data = reactive({
   form: {...initFormData},
   queryParams: {
-    warehouseCode: undefined,
+    warehouseNo: undefined,
     warehouseName: undefined,
   },
   rules: {
