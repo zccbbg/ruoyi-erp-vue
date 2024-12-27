@@ -326,9 +326,9 @@ import {getItem, delItem, addItem, updateItem} from '@/api/basic/goods';
 import {computed, getCurrentInstance, nextTick, onMounted, reactive, ref, toRefs} from 'vue';
 import {ElForm, ElTree, ElTreeSelect} from 'element-plus';
 import {
-  updateItemCategory,
-  addItemCategory,
-  delItemCategory,
+  updateCategory,
+  addCategory,
+  delCategory,
   updateOrderNum
 } from "@/api/basic/category";
 import {getRowspanMethod} from "@/utils/getRowSpanMethod";
@@ -376,7 +376,7 @@ const append = (data) => {
 const remove = async (node, data) => {
   const ids = data.id
   await proxy?.$modal.confirm('确认删除分类【' + data.label + '】吗？');
-  await delItemCategory(ids);
+  await delCategory(ids);
   proxy?.$modal.msgSuccess("删除成功");
   useWmsStore().getItemCategoryList();
   useWmsStore().getItemCategoryTreeList();
@@ -673,9 +673,9 @@ const submitCategoryForm = () => {
     if (valid) {
       buttonLoading.value = true;
       if (categoryForm.value.id) {
-        await updateItemCategory(categoryForm.value).finally(() => buttonLoading.value = false);
+        await updateCategory(categoryForm.value).finally(() => buttonLoading.value = false);
       } else {
-        await addItemCategory(categoryForm.value).finally(() => buttonLoading.value = false);
+        await addCategory(categoryForm.value).finally(() => buttonLoading.value = false);
       }
       proxy?.$modal.msgSuccess(categoryForm.value.id ? '修改成功' : '新增成功');
       categoryDialog.visible = false;

@@ -1,6 +1,6 @@
 import { listWarehouseNoPage } from '@/api/basic/warehouse';
 import { listMerchantNoPage } from "@/api/basic/merchant";
-import { listItemCategory, treeSelectItemCategory } from "@/api/basic/category";
+import { listCategory, treeSelectCategory } from "@/api/basic/category";
 import { listItemBrand } from "@/api/basic/brand";
 import {defineStore} from "pinia";
 import {ref} from "vue";
@@ -44,7 +44,7 @@ export const useWmsStore = defineStore('wms', () => {
 
   const getItemCategoryList = () => {
     return new Promise((resolve, reject) => {
-      listItemCategory({}).then(res => {
+      listCategory({}).then(res => {
         itemCategoryList.value = res.data;
         const map = new Map()
         itemCategoryList.value.forEach(supplier => {
@@ -58,7 +58,7 @@ export const useWmsStore = defineStore('wms', () => {
 
   const getItemCategoryTreeList = async () => {
     return new Promise((resolve, reject) => {
-      treeSelectItemCategory().then(res => {
+      treeSelectCategory().then(res => {
         itemCategoryTreeList.value = res.data
         resolve(res.data)
       }).catch(() => reject())

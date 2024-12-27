@@ -6,7 +6,7 @@ import request from '@/utils/request';
  * @returns {*}
  */
 
-export function listItemCategoryPage(query) {
+export function listCategoryPage(query) {
   return request({
     url: '/basic/category/list',
     method: 'get',
@@ -20,7 +20,7 @@ export function listItemCategoryPage(query) {
  * @returns {*}
  */
 
-export function listItemCategory(query) {
+export function listCategory(query) {
   return request({
     url: '/basic/category/listNoPage',
     method: 'get',
@@ -34,7 +34,7 @@ export function listItemCategory(query) {
  * @returns {*}
  */
 
-export function treeSelectItemCategory(query) {
+export function treeSelectCategory(query) {
   return request({
     url: '/basic/category/treeselect',
     method: 'get',
@@ -46,7 +46,7 @@ export function treeSelectItemCategory(query) {
  * 查询物料类型详细
  * @param id
  */
-export function getItemCategory(id) {
+export function getCategory(id) {
   return request({
     url: '/basic/category/' + id,
     method: 'get'
@@ -57,7 +57,7 @@ export function getItemCategory(id) {
  * 新增物料类型
  * @param data
  */
-export function addItemCategory(data) {
+export function addCategory(data) {
   return request({
     url: '/basic/category',
     method: 'post',
@@ -69,7 +69,7 @@ export function addItemCategory(data) {
  * 修改物料类型
  * @param data
  */
-export function updateItemCategory(data) {
+export function updateCategory(data) {
   return request({
     url: '/basic/category',
     method: 'put',
@@ -81,7 +81,7 @@ export function updateItemCategory(data) {
  * 删除物料类型
  * @param id
  */
-export function delItemCategory(id) {
+export function delCategory(id) {
   return request({
     url: '/basic/category/' + id,
     method: 'delete'
