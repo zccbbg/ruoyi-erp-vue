@@ -11,7 +11,7 @@
         <el-form-item class="col4" label="仓库" prop="warehouseId">
           <el-select style="width: 100%" v-model="queryParams.warehouseId" placeholder="请选择仓库"
                      filterable clearable>
-            <el-option v-for="item in useWmsStore().warehouseList" :key="item.id" :label="item.warehouseName"
+            <el-option v-for="item in useBasicStore().warehouseList" :key="item.id" :label="item.warehouseName"
                        :value="item.id"/>
           </el-select>
         </el-form-item>
@@ -43,7 +43,7 @@
         <template v-if="queryType == 'warehouse'">
           <el-table-column label="仓库" prop="warehouseId">
             <template #default="{ row }">
-              <div>{{ useWmsStore().warehouseMap.get(row.warehouseId)?.warehouseName }}</div>
+              <div>{{ useBasicStore().warehouseMap.get(row.warehouseId)?.warehouseName }}</div>
             </template>
           </el-table-column>
           <el-table-column label="商品信息" prop="warehouseIdAndItemId">
@@ -74,7 +74,7 @@
           </el-table-column>
           <el-table-column label="仓库" prop="skuIdAndWarehouseId">
             <template #default="{row}">
-              <div>{{ useWmsStore().warehouseMap.get(row.warehouseId)?.warehouseName }}</div>
+              <div>{{ useBasicStore().warehouseMap.get(row.warehouseId)?.warehouseName }}</div>
             </template>
           </el-table-column>
         </template>
@@ -100,7 +100,7 @@ import {
 import {computed, getCurrentInstance, onMounted, ref} from 'vue';
 import {ElForm} from 'element-plus';
 import {getRowspanMethod} from "@/utils/getRowSpanMethod";
-import {useWmsStore} from '@/store/modules/wms'
+import {useBasicStore} from '@/store/modules/basic'
 
 const {proxy} = getCurrentInstance();
 const spanMethod = computed(() => getRowspanMethod(inventoryList.value, rowSpanArray.value))

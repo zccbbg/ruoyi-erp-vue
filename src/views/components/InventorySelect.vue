@@ -25,7 +25,7 @@
         <template #default="{ row }">
           <div>{{ row.item.itemName }}</div>
           <div v-if="row.item.itemCode">编号：{{ row.item.itemCode }}</div>
-          <div v-if="row.item.itemBrand">品牌：{{ useWmsStore().itemBrandMap.get(row.item.itemBrand).brandName }}</div>
+          <div v-if="row.item.itemBrand">品牌：{{ useBasicStore().itemBrandMap.get(row.item.itemBrand).brandName }}</div>
         </template>
       </el-table-column>
       <el-table-column label="规格信息">
@@ -69,7 +69,7 @@ import {computed, getCurrentInstance, nextTick, onMounted, reactive, ref, watch}
 import {ElForm} from "element-plus";
 import {getRowspanMethod} from "@/utils/getRowSpanMethod";
 import {useRouter} from "vue-router";
-import {useWmsStore} from '@/store/modules/wms'
+import {useBasicStore} from '@/store/modules/basic'
 import {listInventory} from "@/api/wms/inventory";
 import {getWarehouseAndSkuKey} from "@/utils/wmsUtil";
 
@@ -126,7 +126,7 @@ const getList = () => {
     list.value = content.map((item) => (
       {
         ...item,
-        warehouseName: useWmsStore().warehouseMap.get(item.warehouseId)?.warehouseName
+        warehouseName: useBasicStore().warehouseMap.get(item.warehouseId)?.warehouseName
       }
     ));
     total.value = res.total;

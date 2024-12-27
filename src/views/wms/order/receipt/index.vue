@@ -119,7 +119,7 @@
         </el-table-column>
         <el-table-column label="仓库" align="left">
           <template #default="{ row }">
-            <div>{{ useWmsStore().warehouseMap.get(row.warehouseId)?.warehouseName }}</div>
+            <div>{{ useBasicStore().warehouseMap.get(row.warehouseId)?.warehouseName }}</div>
           </template>
         </el-table-column>
         <el-table-column label="总数量/总金额(元)" align="left" min-width="100">
@@ -146,7 +146,7 @@
         </el-table-column>
         <el-table-column label="供应商" align="left" prop="merchantId">
           <template #default="{ row }">
-            <div>{{ useWmsStore().merchantMap.get(row.merchantId)?.merchantName }}</div>
+            <div>{{ useBasicStore().merchantMap.get(row.merchantId)?.merchantName }}</div>
           </template>
         </el-table-column>
 
@@ -217,7 +217,7 @@
 <script setup name="ReceiptOrder">
 import {delReceiptOrder, getReceiptOrder, listReceiptOrder} from "@/api/wms/receiptOrder";
 import {getCurrentInstance, reactive, ref, toRefs} from "vue";
-import {useWmsStore} from "../../../../store/modules/wms";
+import {useBasicStore} from "../../../../store/modules/basic";
 import {listByReceiptOrderId} from "@/api/wms/receiptOrderDetail";
 import {ElMessageBox} from "element-plus";
 import receiptPanel from "@/components/PrintTemplate/receipt-panel";
@@ -337,9 +337,9 @@ async function handlePrint(row) {
     orderNo: receiptOrder.orderNo,
     optType: proxy.selectDictLabel(wms_receipt_type.value, receiptOrder.optType),
     orderStatus: proxy.selectDictLabel(wms_receipt_status.value, receiptOrder.orderStatus),
-    merchantName: useWmsStore().merchantMap.get(receiptOrder.merchantId)?.merchantName,
+    merchantName: useBasicStore().merchantMap.get(receiptOrder.merchantId)?.merchantName,
     bizOrderNo: receiptOrder.bizOrderNo,
-    warehouseName: useWmsStore().warehouseMap.get(receiptOrder.warehouseId)?.warehouseName,
+    warehouseName: useBasicStore().warehouseMap.get(receiptOrder.warehouseId)?.warehouseName,
     totalQuantity: Number(receiptOrder.totalQuantity).toFixed(0),
     totalAmount: ((receiptOrder.totalAmount || receiptOrder.totalAmount === 0) ? (receiptOrder.totalAmount + '元') : ''),
     createBy: receiptOrder.createBy,
@@ -374,7 +374,7 @@ function loadReceiptOrderDetail(row) {
       const details = res.data.map(it => {
         return {
           ...it,
-          warehouseName: useWmsStore().warehouseMap.get(it.warehouseId)?.warehouseName,
+          warehouseName: useBasicStore().warehouseMap.get(it.warehouseId)?.warehouseName,
         }
       })
       receiptOrderList.value[index].details = details

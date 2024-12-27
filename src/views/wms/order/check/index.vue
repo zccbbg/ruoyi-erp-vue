@@ -57,7 +57,7 @@
         <el-table-column label="单号" align="left" prop="orderNo" />
         <el-table-column label="仓库" align="left" width="200">
           <template #default="{ row }">
-            <div>{{ useWmsStore().warehouseMap.get(row.warehouseId)?.warehouseName }}</div>
+            <div>{{ useBasicStore().warehouseMap.get(row.warehouseId)?.warehouseName }}</div>
           </template>
         </el-table-column>
         <el-table-column label="盘库状态" align="center" prop="orderStatus" width="120">
@@ -143,7 +143,7 @@
 import {listCheckOrder, delCheckOrder, getCheckOrder} from "@/api/wms/checkOrder";
 import {listByCheckOrderId} from "@/api/wms/checkOrderDetail";
 import {getCurrentInstance, reactive, ref, toRefs} from "vue";
-import {useWmsStore} from "../../../../store/modules/wms";
+import {useBasicStore} from "../../../../store/modules/basic";
 import {ElMessageBox} from "element-plus";
 import checkPanel from "@/components/PrintTemplate/check-panel";
 import CheckOrderDetail from "@/views/wms/order/check/CheckOrderDetail.vue";
@@ -246,7 +246,7 @@ async function handlePrint(row) {
   const printData = {
     orderNo: checkOrder.orderNo,
     orderStatus: proxy.selectDictLabel(wms_check_status.value, checkOrder.orderStatus),
-    warehouseName: useWmsStore().warehouseMap.get(checkOrder.warehouseId)?.warehouseName,
+    warehouseName: useBasicStore().warehouseMap.get(checkOrder.warehouseId)?.warehouseName,
     totalQuantity: Number(checkOrder.totalQuantity).toFixed(0),
     createBy: checkOrder.createBy,
     createTime: proxy.parseTime(checkOrder.createTime, '{mm}-{dd} {hh}:{ii}'),

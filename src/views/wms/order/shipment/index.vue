@@ -118,7 +118,7 @@
         </el-table-column>
         <el-table-column label="仓库" align="left">
           <template #default="{ row }">
-            <div>{{ useWmsStore().warehouseMap.get(row.warehouseId)?.warehouseName }}</div>
+            <div>{{ useBasicStore().warehouseMap.get(row.warehouseId)?.warehouseName }}</div>
           </template>
         </el-table-column>
         <el-table-column label="总数量/总金额(元)" align="left" min-width="100">
@@ -145,7 +145,7 @@
         </el-table-column>
         <el-table-column label="客户" align="left" prop="merchantId">
           <template #default="{ row }">
-            <div>{{ useWmsStore().merchantMap.get(row.merchantId)?.merchantName }}</div>
+            <div>{{ useBasicStore().merchantMap.get(row.merchantId)?.merchantName }}</div>
           </template>
         </el-table-column>
         <el-table-column label="操作时间" align="left" width="150">
@@ -214,7 +214,7 @@
 import {listShipmentOrder, delShipmentOrder, getShipmentOrder} from "@/api/wms/shipmentOrder";
 import {listByShipmentOrderId} from "@/api/wms/shipmentOrderDetail";
 import {getCurrentInstance, reactive, ref, toRefs} from "vue";
-import {useWmsStore} from "../../../../store/modules/wms";
+import {useBasicStore} from "../../../../store/modules/basic";
 import shipmentPanel from "@/components/PrintTemplate/shipment-panel";
 
 const { proxy } = getCurrentInstance();
@@ -332,9 +332,9 @@ async function handlePrint(row) {
     orderNo: shipmentOrder.orderNo,
     optType: proxy.selectDictLabel(wms_shipment_type.value, shipmentOrder.optType),
     orderStatus: proxy.selectDictLabel(wms_shipment_status.value, shipmentOrder.orderStatus),
-    merchantName: useWmsStore().merchantMap.get(shipmentOrder.merchantId)?.merchantName,
+    merchantName: useBasicStore().merchantMap.get(shipmentOrder.merchantId)?.merchantName,
     bizOrderNo: shipmentOrder.bizOrderNo,
-    warehouseName: useWmsStore().warehouseMap.get(shipmentOrder.warehouseId)?.warehouseName,
+    warehouseName: useBasicStore().warehouseMap.get(shipmentOrder.warehouseId)?.warehouseName,
     totalQuantity: Number(shipmentOrder.totalQuantity).toFixed(0),
     totalAmount: ((shipmentOrder.totalAmount || shipmentOrder.totalAmount === 0) ? (shipmentOrder.totalAmount + '元') : ''),
     createBy: shipmentOrder.createBy,
@@ -369,7 +369,7 @@ function loadShipmentOrderDetail(row) {
       const details = res.data.map(it => {
         return {
           ...it,
-          warehouseName: useWmsStore().warehouseMap.get(it.warehouseId)?.warehouseName
+          warehouseName: useBasicStore().warehouseMap.get(it.warehouseId)?.warehouseName
         }
       })
       shipmentOrderList.value[index].details = details

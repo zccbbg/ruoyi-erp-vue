@@ -64,7 +64,7 @@
 <script setup name="ItemBrand">
 import { listBrand, getBrand, delBrand, addBrand, updateBrand, listBrandPage } from "@/api/basic/brand";
 import {ElMessageBox} from "element-plus";
-import {useWmsStore} from '@/store/modules/wms'
+import {useBasicStore} from '@/store/modules/basic'
 
 const { proxy } = getCurrentInstance();
 
@@ -98,8 +98,8 @@ const { queryParams, form, rules } = toRefs(data);
 /** 查询商品品牌列表 */
 async function getList() {
   loading.value = true;
-  await useWmsStore().getBrandList ()
-  let list = [...useWmsStore().itemBrandList]
+  await useBasicStore().getBrandList ()
+  let list = [...useBasicStore().itemBrandList]
   if (queryParams.value.brandName) {
     list = list.filter(it => it.brandName === queryParams.value.brandName)
   }

@@ -8,7 +8,7 @@ import { isRelogin } from '@/utils/request'
 import useUserStore from '@/store/modules/user'
 import useSettingsStore from '@/store/modules/settings'
 import usePermissionStore from '@/store/modules/permission'
-import {useWmsStore} from '@/store/modules/wms';
+import {useBasicStore} from '@/store/modules/basic';
 
 NProgress.configure({ showSpinner: false });
 
@@ -61,11 +61,11 @@ router.beforeEach((to, from, next) => {
 })
 
 async function initData() {
-  await useWmsStore().getWarehouseList()
-  await useWmsStore().getMerchantList()
-  await useWmsStore().getCategoryList ()
-  await useWmsStore().getCategoryTreeList ()
-  await useWmsStore().getBrandList ()
+  await useBasicStore().getWarehouseList()
+  await useBasicStore().getMerchantList()
+  await useBasicStore().getCategoryList ()
+  await useBasicStore().getCategoryTreeList ()
+  await useBasicStore().getBrandList ()
 }
 
 router.afterEach(() => {

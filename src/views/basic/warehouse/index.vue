@@ -59,8 +59,8 @@ import {
 import {getCurrentInstance, nextTick, onMounted, reactive, ref, toRefs} from 'vue';
 import {ElForm, ElMessageBox, ElTree} from 'element-plus';
 import useUserStore from "@/store/modules/user";
-import {useWmsStore} from "@/store/modules/wms";
-const wmsStore = useWmsStore();
+import {useBasicStore} from "@/store/modules/basic";
+const wmsStore = useBasicStore();
 const { proxy } = getCurrentInstance();
 
 const customNodeClass = (data, node) => {

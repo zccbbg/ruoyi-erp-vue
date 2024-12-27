@@ -5,7 +5,7 @@
         <el-form-item label="仓库" prop="warehouseId">
           <el-select v-model="form.warehouseId" placeholder="请选择仓库" :disabled="checking"
                      filterable>
-            <el-option v-for="item in useWmsStore().warehouseList" :key="item.id" :label="item.warehouseName"
+            <el-option v-for="item in useBasicStore().warehouseList" :key="item.id" :label="item.warehouseName"
                        :value="item.id"/>
           </el-select>
         </el-form-item>
@@ -30,7 +30,7 @@
               <el-form-item label="仓库" prop="warehouseId">
                 <el-select v-model="form.warehouseId" placeholder="请选择仓库" :disabled="checking"
                            filterable>
-                  <el-option v-for="item in useWmsStore().warehouseList" :key="item.id" :label="item.warehouseName"
+                  <el-option v-for="item in useBasicStore().warehouseList" :key="item.id" :label="item.warehouseName"
                              :value="item.id"/>
                 </el-select>
               </el-form-item>
@@ -86,7 +86,7 @@
                     }}
                   </div>
                   <div v-if="scope.row.item.itemBrand">
-                    品牌：{{ useWmsStore().itemBrandMap.get(scope.row.item.itemBrand).brandName }}
+                    品牌：{{ useBasicStore().itemBrandMap.get(scope.row.item.itemBrand).brandName }}
                   </div>
                 </template>
             </el-table-column>
@@ -165,7 +165,7 @@ import {delCheckOrderDetail} from "@/api/wms/checkOrderDetail";
 import {listInventoryNoPage} from "@/api/wms/inventory";
 import {ElMessage, ElMessageBox} from "element-plus";
 import {useRoute} from "vue-router";
-import {useWmsStore} from '@/store/modules/wms'
+import {useBasicStore} from '@/store/modules/basic'
 import {numSub, generateNo} from '@/utils/ruoyi'
 import SkuSelect from "@/views/components/SkuSelect.vue";
 

@@ -14,7 +14,7 @@
               <el-form-item label="仓库" prop="warehouseId">
                 <el-select v-model="form.warehouseId" placeholder="请选择仓库" @change="handleChangeWarehouse"
                            filterable>
-                  <el-option v-for="item in useWmsStore().warehouseList" :key="item.id" :label="item.warehouseName"
+                  <el-option v-for="item in useBasicStore().warehouseList" :key="item.id" :label="item.warehouseName"
                              :value="item.id"/>
                 </el-select>
               </el-form-item>
@@ -43,7 +43,7 @@
             <el-col :span="6">
               <el-form-item label="客户" prop="merchantId">
                 <el-select v-model="form.merchantId" placeholder="请选择客户" clearable filterable>
-                  <el-option v-for="item in useWmsStore().merchantList" :key="item.id" :label="item.merchantName"
+                  <el-option v-for="item in useBasicStore().merchantList" :key="item.id" :label="item.merchantName"
                              :value="item.id"/>
                 </el-select>
               </el-form-item>
@@ -118,7 +118,7 @@
                   }}
                 </div>
                 <div v-if="row.item.itemBrand">
-                  品牌：{{ useWmsStore().itemBrandMap.get(row.item.itemBrand).brandName }}
+                  品牌：{{ useBasicStore().itemBrandMap.get(row.item.itemBrand).brandName }}
                 </div>
               </template>
             </el-table-column>
@@ -192,7 +192,7 @@ import {addShipmentOrder, getShipmentOrder, updateShipmentOrder, shipment} from 
 import {delShipmentOrderDetail} from "@/api/wms/shipmentOrderDetail";
 import {ElMessage, ElMessageBox} from "element-plus";
 import {useRoute} from "vue-router";
-import {useWmsStore} from '@/store/modules/wms'
+import {useBasicStore} from '@/store/modules/basic'
 import {numSub, generateNo} from '@/utils/ruoyi'
 import InventorySelect from "@/views/components/InventorySelect.vue";
 import {getWarehouseAndSkuKey} from "@/utils/wmsUtil"

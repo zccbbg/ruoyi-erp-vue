@@ -11,7 +11,7 @@
         <el-form-item label="商品品牌" prop="brand">
           <el-select v-model="queryParams.brand" clearable filterable>
             <el-option
-              v-for="item in useWmsStore().brandList"
+              v-for="item in useBasicStore().brandList"
               :key="item.id"
               :label="item.brandName"
               :value="item.id"
@@ -74,8 +74,8 @@
             <el-table-column label="商品信息" prop="goodsId">
               <template #default="{ row }">
                 <div>{{ row.goods.goodsName + (row.goods.goodsNo ? ('(' +  row.goods.goodsNo + ')') : '') }}</div>
-                <div v-if="row.goods.brand">{{ row.goods.brand ? ('品牌：' + useWmsStore().brandMap.get(row.goods.brand)?.brandName) : '' }}</div>
-                <div v-if="row.goods.category">{{ row.goods.category ? ('分类：' + useWmsStore().categoryMap.get(row.goods.category)?.categoryName) : '' }}</div>
+                <div v-if="row.goods.brand">{{ row.goods.brand ? ('品牌：' + useBasicStore().brandMap.get(row.goods.brand)?.brandName) : '' }}</div>
+                <div v-if="row.goods.category">{{ row.goods.category ? ('分类：' + useBasicStore().categoryMap.get(row.goods.category)?.categoryName) : '' }}</div>
               </template>
             </el-table-column>
             <el-table-column label="规格信息" prop="skuName" align="left">
@@ -178,7 +178,7 @@
                 <el-form-item label="商品品牌" prop="brand">
                   <el-select v-model="form.brand" clearable filterable style="width: 100%!important;">
                     <el-option
-                      v-for="item in useWmsStore().brandList"
+                      v-for="item in useBasicStore().brandList"
                       :key="item.id"
                       :label="item.brandName"
                       :value="item.id"
@@ -336,13 +336,13 @@ import {listSkuPage, delSku, listSku} from "@/api/basic/sku";
 import {useRoute} from "vue-router";
 import Qrcode from 'qrcode'
 import JSBarcode from 'jsbarcode'
-import {useWmsStore} from '@/store/modules/wms'
+import {useBasicStore} from '@/store/modules/basic'
 
 const barcode = ref(null)
 const route = useRoute()
 const {proxy} = getCurrentInstance();
 const goodsList = ref([]);
-const categoryTreeSelectList = computed(() => useWmsStore().categoryTreeList);
+const categoryTreeSelectList = computed(() => useBasicStore().categoryTreeList);
 const categoryTreeOptionsList = computed(() => {
   let data = [...categoryTreeSelectList.value];
   data.unshift({
@@ -378,8 +378,8 @@ const remove = async (node, data) => {
   await proxy?.$modal.confirm('确认删除分类【' + data.label + '】吗？');
   await delCategory(ids);
   proxy?.$modal.msgSuccess("删除成功");
-  useWmsStore().getCategoryList();
-  useWmsStore().getCategoryTreeList();
+  useBasicStore().getCategoryList();
+  useBasicStore().getCategoryTreeList();
 }
 const edit = (node, data) => {
   if (node.level > 1) {
@@ -679,8 +679,8 @@ const submitCategoryForm = () => {
       }
       proxy?.$modal.msgSuccess(categoryForm.value.id ? '修改成功' : '新增成功');
       categoryDialog.visible = false;
-      useWmsStore().getCategoryList();
-      useWmsStore().getCategoryTreeList();
+      useBasicStore().getCategoryList();
+      useBasicStore().getCategoryTreeList();
     }
   });
 }

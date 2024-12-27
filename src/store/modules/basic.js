@@ -5,7 +5,7 @@ import { listBrand } from "@/api/basic/brand";
 import {defineStore} from "pinia";
 import {ref} from "vue";
 
-export const useWmsStore = defineStore('wms', () => {
+export const useBasicStore = defineStore('wms', () => {
 
   // 仓库管理
   const warehouseList = ref([]);

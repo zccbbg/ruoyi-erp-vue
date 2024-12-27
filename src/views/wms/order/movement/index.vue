@@ -89,12 +89,12 @@
         <el-table-column label="单号" align="left" prop="orderNo" min-width="100"/>
         <el-table-column label="源仓库" align="left">
           <template #default="{ row }">
-            <div>{{ useWmsStore().warehouseMap.get(row.sourceWarehouseId)?.warehouseName }}</div>
+            <div>{{ useBasicStore().warehouseMap.get(row.sourceWarehouseId)?.warehouseName }}</div>
           </template>
         </el-table-column>
         <el-table-column label="目标仓库" align="left">
           <template #default="{ row }">
-            <div>{{ useWmsStore().warehouseMap.get(row.targetWarehouseId)?.warehouseName }}</div>
+            <div>{{ useBasicStore().warehouseMap.get(row.targetWarehouseId)?.warehouseName }}</div>
           </template>
         </el-table-column>
         <el-table-column label="移库状态" align="center" prop="orderStatus" width="80">
@@ -180,7 +180,7 @@
 import {listMovementOrder, delMovementOrder, getMovementOrder} from "@/api/wms/movementOrder";
 import {listByMovementOrderId} from "@/api/wms/movementOrderDetail";
 import {getCurrentInstance, reactive, ref, toRefs} from "vue";
-import {useWmsStore} from "../../../../store/modules/wms";
+import {useBasicStore} from "../../../../store/modules/basic";
 import {ElMessageBox} from "element-plus";
 import movementPanel from "@/components/PrintTemplate/movement-panel";
 
@@ -296,8 +296,8 @@ async function handlePrint(row) {
   const printData = {
     orderNo: movementOrder.orderNo,
     orderStatus: proxy.selectDictLabel(wms_movement_status.value, movementOrder.orderStatus),
-    sourceWarehouseName: useWmsStore().warehouseMap.get(movementOrder.sourceWarehouseId)?.warehouseName,
-    targetWarehouseName: useWmsStore().warehouseMap.get(movementOrder.targetWarehouseId)?.warehouseName,
+    sourceWarehouseName: useBasicStore().warehouseMap.get(movementOrder.sourceWarehouseId)?.warehouseName,
+    targetWarehouseName: useBasicStore().warehouseMap.get(movementOrder.targetWarehouseId)?.warehouseName,
     totalQuantity: Number(movementOrder.totalQuantity).toFixed(0),
     createBy: movementOrder.createBy,
     createTime: proxy.parseTime(movementOrder.createTime, '{mm}-{dd} {hh}:{ii}'),
@@ -333,8 +333,8 @@ function loadMovementOrderDetail(row) {
       const details = res.data.map(it => {
         return {
           ...it,
-          sourceWarehouseName: useWmsStore().warehouseMap.get(it.sourceWarehouseId)?.warehouseName,
-          targetWarehouseName: useWmsStore().warehouseMap.get(it.targetWarehouseId)?.warehouseName,
+          sourceWarehouseName: useBasicStore().warehouseMap.get(it.sourceWarehouseId)?.warehouseName,
+          targetWarehouseName: useBasicStore().warehouseMap.get(it.targetWarehouseId)?.warehouseName,
         }
       })
       movementOrderList.value[index].details = details

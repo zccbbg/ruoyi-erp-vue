@@ -12,7 +12,7 @@
             <el-col :span="6">
               <el-form-item label="仓库" prop="warehouseId">
                 <el-select v-model="form.warehouseId" placeholder="请选择仓库" filterable>
-                  <el-option v-for="item in useWmsStore().warehouseList" :key="item.id" :label="item.warehouseName" :value="item.id"/>
+                  <el-option v-for="item in useBasicStore().warehouseList" :key="item.id" :label="item.warehouseName" :value="item.id"/>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -38,7 +38,7 @@
             <el-col :span="6">
               <el-form-item label="供应商" prop="merchantId">
                 <el-select v-model="form.merchantId" placeholder="请选择供应商" clearable filterable>
-                  <el-option v-for="item in useWmsStore().merchantList" :key="item.id" :label="item.merchantName" :value="item.id"/>
+                  <el-option v-for="item in useBasicStore().merchantList" :key="item.id" :label="item.merchantName" :value="item.id"/>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -106,7 +106,7 @@
             <el-table-column label="商品信息" prop="itemSku.itemName">
               <template #default="{ row }">
                 <div>{{ row.item.itemName + (row.item.itemCode ? ('(' + row.item.itemCode + ')') : '') }}</div>
-                <div v-if="row.item.itemBrand">品牌：{{ useWmsStore().itemBrandMap.get(row.item.itemBrand).brandName }}</div>
+                <div v-if="row.item.itemBrand">品牌：{{ useBasicStore().itemBrandMap.get(row.item.itemBrand).brandName }}</div>
               </template>
             </el-table-column>
             <el-table-column label="规格信息">
@@ -175,7 +175,7 @@ import {addReceiptOrder, getReceiptOrder, updateReceiptOrder, warehousing} from 
 import {ElMessage, ElMessageBox} from "element-plus";
 import SkuSelect from "../../../components/SkuSelect.vue";
 import {useRoute} from "vue-router";
-import {useWmsStore} from '@/store/modules/wms'
+import {useBasicStore} from '@/store/modules/basic'
 import { numSub, generateNo } from '@/utils/ruoyi'
 import { delReceiptOrderDetail } from '@/api/wms/receiptOrderDetail'
 import {getWarehouseAndSkuKey} from "@/utils/wmsUtil";

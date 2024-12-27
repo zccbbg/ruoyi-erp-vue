@@ -22,7 +22,7 @@
         <el-form-item label="仓库" prop="warehouseId">
           <el-select style="width: 100%" v-model="queryParams.warehouseId" placeholder="请选择仓库"
                      filterable clearable>
-            <el-option v-for="item in useWmsStore().warehouseList" :key="item.id" :label="item.warehouseName"
+            <el-option v-for="item in useBasicStore().warehouseList" :key="item.id" :label="item.warehouseName"
                        :value="item.id"/>
           </el-select>
         </el-form-item>
@@ -86,7 +86,7 @@
         </el-table-column>
         <el-table-column label="仓库">
           <template #default="{ row }">
-            <div>{{ useWmsStore().warehouseMap.get(row.warehouseId)?.warehouseName }}</div>
+            <div>{{ useBasicStore().warehouseMap.get(row.warehouseId)?.warehouseName }}</div>
           </template>
         </el-table-column>
         <el-table-column label="操作前" align="right">
@@ -137,7 +137,7 @@
 <script setup name="InventoryHistory">
 import {listInventoryHistory} from "@/api/wms/inventoryHistory";
 import {getCurrentInstance, reactive, ref} from "vue";
-import {useWmsStore} from '@/store/modules/wms'
+import {useBasicStore} from '@/store/modules/basic'
 const defaultTime = reactive([new Date(0,0,0,0,0,0), new Date(0,0,0,23,59,59)])
 const {proxy} = getCurrentInstance();
 const {wms_inventory_history_type} = proxy.useDict('wms_inventory_history_type');

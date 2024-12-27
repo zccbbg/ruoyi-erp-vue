@@ -14,7 +14,7 @@
               <el-form-item label="源仓库" prop="sourceWarehouseId">
                 <el-select v-model="form.sourceWarehouseId" placeholder="请选择源仓库" @change="handleChangeSourceWarehouse"
                            filterable>
-                  <el-option v-for="item in useWmsStore().warehouseList" :key="item.id" :label="item.warehouseName"
+                  <el-option v-for="item in useBasicStore().warehouseList" :key="item.id" :label="item.warehouseName"
                              :value="item.id"/>
                 </el-select>
               </el-form-item>
@@ -23,7 +23,7 @@
               <el-form-item label="目标仓库" prop="targetWarehouseId">
                 <el-select v-model="form.targetWarehouseId" placeholder="请选择目标仓库" @change="handleChangeTargetWarehouse"
                            filterable style="width: 100%">
-                  <el-option v-for="item in useWmsStore().warehouseList" :key="item.id" :label="item.warehouseName"
+                  <el-option v-for="item in useBasicStore().warehouseList" :key="item.id" :label="item.warehouseName"
                              :value="item.id"/>
                 </el-select>
               </el-form-item>
@@ -101,7 +101,7 @@
                   }}
                 </div>
                 <div v-if="row.item.itemBrand">
-                  品牌：{{ useWmsStore().itemBrandMap.get(row.item.itemBrand).brandName }}
+                  品牌：{{ useBasicStore().itemBrandMap.get(row.item.itemBrand).brandName }}
                 </div>
               </template>
             </el-table-column>
@@ -175,7 +175,7 @@ import {addMovementOrder, getMovementOrder, updateMovementOrder, movement} from 
 import {delMovementOrderDetail} from "@/api/wms/movementOrderDetail";
 import {ElMessage, ElMessageBox} from "element-plus";
 import {useRoute} from "vue-router";
-import {useWmsStore} from '@/store/modules/wms'
+import {useBasicStore} from '@/store/modules/basic'
 import {numSub, generateNo} from '@/utils/ruoyi'
 import InventorySelect from "@/views/components/InventorySelect.vue";
 import {getSourceWarehouseAndSkuKey, getWarehouseAndSkuKey} from "@/utils/wmsUtil";
