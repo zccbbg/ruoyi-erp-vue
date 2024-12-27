@@ -1,7 +1,7 @@
 import { listWarehouseNoPage } from '@/api/basic/warehouse';
 import { listMerchantNoPage } from "@/api/basic/merchant";
 import { listCategory, treeSelectCategory } from "@/api/basic/category";
-import { listItemBrand } from "@/api/basic/brand";
+import { listBrand } from "@/api/basic/brand";
 import {defineStore} from "pinia";
 import {ref} from "vue";
 
@@ -38,46 +38,46 @@ export const useWmsStore = defineStore('wms', () => {
   }
 
   // 商品分类管理
-  const itemCategoryList = ref([])
-  const itemCategoryTreeList = ref([])
-  const itemCategoryMap = ref(new Map())
+  const categoryList = ref([])
+  const categoryTreeList = ref([])
+  const categoryMap = ref(new Map())
 
-  const getItemCategoryList = () => {
+  const getCategoryList = () => {
     return new Promise((resolve, reject) => {
       listCategory({}).then(res => {
-        itemCategoryList.value = res.data;
+        categoryList.value = res.data;
         const map = new Map()
-        itemCategoryList.value.forEach(supplier => {
+        categoryList.value.forEach(supplier => {
           map.set(supplier.id, supplier)
         })
-        itemCategoryMap.value = map
+        categoryMap.value = map
         resolve()
       }).catch(() => reject())
     })
   }
 
-  const getItemCategoryTreeList = async () => {
+  const getCategoryTreeList = async () => {
     return new Promise((resolve, reject) => {
       treeSelectCategory().then(res => {
-        itemCategoryTreeList.value = res.data
+        categoryTreeList.value = res.data
         resolve(res.data)
       }).catch(() => reject())
     })
   }
 
   // 商品品牌管理
-  const itemBrandList = ref([])
-  const itemBrandMap = ref(new Map())
+  const brandList = ref([])
+  const brandMap = ref(new Map())
 
-  const getItemBrandList =  () => {
+  const getBrandList =  () => {
     return new Promise((resolve, reject) => {
-      listItemBrand({}).then(res => {
-        itemBrandList.value = res.data
+      listBrand({}).then(res => {
+        brandList.value = res.data
         const map = new Map()
-        itemBrandList.value.forEach(supplier => {
+        brandList.value.forEach(supplier => {
           map.set(supplier.id, {...supplier})
         })
-        itemBrandMap.value = map
+        brandMap.value = map
         resolve()
       }).catch(() => reject())
     })
@@ -93,14 +93,14 @@ export const useWmsStore = defineStore('wms', () => {
     merchantMap,
     getMerchantList,
     // 商品分类管理
-    itemCategoryList,
-    itemCategoryTreeList,
-    itemCategoryMap,
-    getItemCategoryList,
-    getItemCategoryTreeList,
+    categoryList,
+    categoryTreeList,
+    categoryMap,
+    getCategoryList,
+    getCategoryTreeList,
     // 商品品牌管理
-    itemBrandList,
-    itemBrandMap,
-    getItemBrandList
+    brandList,
+    brandMap,
+    getBrandList
   };
 });

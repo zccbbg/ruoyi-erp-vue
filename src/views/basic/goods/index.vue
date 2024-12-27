@@ -2,16 +2,16 @@
   <div class="app-container">
     <el-card>
       <el-form :model="queryParams" ref="queryFormRef" :inline="true" label-width="68px">
-        <el-form-item label="商品编号" prop="itemCode">
-          <el-input v-model="queryParams.itemCode" placeholder="请输入商品编号" clearable @keyup.enter="handleQuery"/>
+        <el-form-item label="商品编号" prop="goodsNo">
+          <el-input v-model="queryParams.goodsNo" placeholder="请输入商品编号" clearable @keyup.enter="handleQuery"/>
         </el-form-item>
-        <el-form-item label="商品名称" prop="itemName">
-          <el-input v-model="queryParams.itemName" placeholder="请输入商品名称" clearable @keyup.enter="handleQuery"/>
+        <el-form-item label="商品名称" prop="goodsName">
+          <el-input v-model="queryParams.goodsName" placeholder="请输入商品名称" clearable @keyup.enter="handleQuery"/>
         </el-form-item>
-        <el-form-item label="商品品牌" prop="itemBrand">
-          <el-select v-model="queryParams.itemBrand" clearable filterable>
+        <el-form-item label="商品品牌" prop="brand">
+          <el-select v-model="queryParams.brand" clearable filterable>
             <el-option
-              v-for="item in useWmsStore().itemBrandList"
+              v-for="item in useWmsStore().brandList"
               :key="item.id"
               :label="item.brandName"
               :value="item.id"
@@ -35,7 +35,7 @@
             </el-button>
           </div>
           <el-tree
-            :data="itemCategoryTreeOptionsList"
+            :data="categoryTreeOptionsList"
             :props="{ value: 'id', label: 'label', children: 'children' }"
             value-key="id"
             style="width: 400px;"
@@ -73,9 +73,9 @@
           <el-table :data="itemList" @selection-change="handleSelectionChange" :span-method="spanMethod" border empty-text="暂无商品" v-loading="loading" cell-class-name="my-cell">
             <el-table-column label="商品信息" prop="itemId">
               <template #default="{ row }">
-                <div>{{ row.item.itemName + (row.item.itemCode ? ('(' +  row.item.itemCode + ')') : '') }}</div>
-                <div v-if="row.item.itemBrand">{{ row.item.itemBrand ? ('品牌：' + useWmsStore().itemBrandMap.get(row.item.itemBrand)?.brandName) : '' }}</div>
-                <div v-if="row.item.itemCategory">{{ row.item.itemCategory ? ('分类：' + useWmsStore().itemCategoryMap.get(row.item.itemCategory)?.categoryName) : '' }}</div>
+                <div>{{ row.item.goodsName + (row.item.goodsNo ? ('(' +  row.item.goodsNo + ')') : '') }}</div>
+                <div v-if="row.item.brand">{{ row.item.brand ? ('品牌：' + useWmsStore().brandMap.get(row.item.brand)?.brandName) : '' }}</div>
+                <div v-if="row.item.category">{{ row.item.category ? ('分类：' + useWmsStore().categoryMap.get(row.item.category)?.categoryName) : '' }}</div>
               </template>
             </el-table-column>
             <el-table-column label="规格信息" prop="skuName" align="left">
@@ -137,16 +137,16 @@
           <el-form ref="itemFormRef" :model="form" :rules="rules" label-width="108px">
             <el-row :gutter="24">
               <el-col :span="12">
-                <el-form-item label="商品名称" prop="itemName">
-                  <el-input v-model="form.itemName" placeholder="请输入名称"/>
+                <el-form-item label="商品名称" prop="goodsName">
+                  <el-input v-model="form.goodsName" placeholder="请输入名称"/>
                 </el-form-item>
               </el-col>
               <el-col :span="10">
-                <el-form-item label="商品分类" prop="itemCategory">
+                <el-form-item label="商品分类" prop="category">
                   <el-tree-select
                     ref="treeRef"
-                    v-model="form.itemCategory"
-                    :data="itemCategoryTreeSelectList"
+                    v-model="form.category"
+                    :data="categoryTreeSelectList"
                     :props="{ value: 'id', label: 'label', children: 'children' }"
                     value-key="id"
                     placeholder="请选择分类"
@@ -163,8 +163,8 @@
             </el-row>
             <el-row :gutter="24">
               <el-col :span="12">
-                <el-form-item label="商品编号" prop="itemCode">
-                  <el-input v-model="form.itemCode" placeholder="请输入编号"/>
+                <el-form-item label="商品编号" prop="goodsNo">
+                  <el-input v-model="form.goodsNo" placeholder="请输入编号"/>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -175,10 +175,10 @@
             </el-row>
             <el-row :gutter="24">
               <el-col :span="12">
-                <el-form-item label="商品品牌" prop="itemBrand">
-                  <el-select v-model="form.itemBrand" clearable filterable style="width: 100%!important;">
+                <el-form-item label="商品品牌" prop="brand">
+                  <el-select v-model="form.brand" clearable filterable style="width: 100%!important;">
                     <el-option
-                      v-for="item in useWmsStore().itemBrandList"
+                      v-for="item in useWmsStore().brandList"
                       :key="item.id"
                       :label="item.brandName"
                       :value="item.id"
@@ -289,11 +289,11 @@
     <!-- 添加或修改物料类型对话框 -->
     <el-dialog :title="categoryDialog.title" v-model="categoryDialog.visible" width="500px" append-to-body
                :close-on-click-modal="false">
-      <el-form ref="itemCategoryFormRef" :model="categoryForm" :rules="typeRules" label-width="128px" @submit.native.prevent>
+      <el-form ref="categoryFormRef" :model="categoryForm" :rules="typeRules" label-width="128px" @submit.native.prevent>
         <el-form-item label="上级分类" prop="parentId">
           <el-tree-select
             v-model="categoryForm.parentId"
-            :data="itemCategoryTreeSelectList"
+            :data="categoryTreeSelectList"
             :props="{ value: 'id', label: 'label', children: 'children' }"
             value-key="id"
             placeholder="上级分类"
@@ -322,7 +322,7 @@
 </template>
 
 <script setup name="Item">
-import {getItem, delItem, addItem, updateItem} from '@/api/basic/goods';
+import {getGoods, delGoods, addGoods, updateGoods} from '@/api/basic/goods';
 import {computed, getCurrentInstance, nextTick, onMounted, reactive, ref, toRefs} from 'vue';
 import {ElForm, ElTree, ElTreeSelect} from 'element-plus';
 import {
@@ -342,9 +342,9 @@ const barcode = ref(null)
 const route = useRoute()
 const {proxy} = getCurrentInstance();
 const itemList = ref([]);
-const itemCategoryTreeSelectList = computed(() => useWmsStore().itemCategoryTreeList);
-const itemCategoryTreeOptionsList = computed(() => {
-  let data = [...itemCategoryTreeSelectList.value];
+const categoryTreeSelectList = computed(() => useWmsStore().categoryTreeList);
+const categoryTreeOptionsList = computed(() => {
+  let data = [...categoryTreeSelectList.value];
   data.unshift({
     id: -1,
     label: '全部',
@@ -362,7 +362,7 @@ const total = ref(0);
 const skuLoading = ref(false)
 const queryFormRef = ref(ElForm);
 const itemFormRef = ref(ElForm);
-const itemCategoryFormRef = ref(ElForm);
+const categoryFormRef = ref(ElForm);
 const spanMethod = computed(() => getRowspanMethod(itemList.value, rowSpanArray.value))
 const rowSpanArray = ref(['itemId'])
 const qrcode = ref(null)
@@ -378,8 +378,8 @@ const remove = async (node, data) => {
   await proxy?.$modal.confirm('确认删除分类【' + data.label + '】吗？');
   await delCategory(ids);
   proxy?.$modal.msgSuccess("删除成功");
-  useWmsStore().getItemCategoryList();
-  useWmsStore().getItemCategoryTreeList();
+  useWmsStore().getCategoryList();
+  useWmsStore().getCategoryTreeList();
 }
 const edit = (node, data) => {
   if (node.level > 1) {
@@ -402,11 +402,11 @@ const categoryDialog = reactive({
 const showParent = ref(false)
 const initFormData = {
   id: undefined,
-  itemCode: undefined,
-  itemName: undefined,
-  itemCategory: undefined,
+  goodsNo: undefined,
+  goodsName: undefined,
+  category: undefined,
   unit: undefined,
-  itemBrand: undefined,
+  brand: undefined,
   remark: undefined,
 }
 const initCategoryFormData = {
@@ -422,18 +422,18 @@ const data = reactive({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
-    itemCode: undefined,
-    itemName: undefined,
+    goodsNo: undefined,
+    goodsName: undefined,
     itemType: undefined
   },
   rules: {
     id: [
       {required: true, message: "不能为空", trigger: "blur"}
     ],
-    itemName: [
+    goodsName: [
       {required: true, message: "名称不能为空", trigger: "blur"}
     ],
-    itemCategory: [
+    category: [
       {required: true, message: "分类不能为空", trigger: "blur"}
     ],
     warehouseId: [
@@ -540,7 +540,7 @@ const handleDeleteItemSku = async (row, index) => {
   loading.value = true;
   await delItemSku(row.id).finally(()=> loading.value = false);
   proxy?.$modal.msgSuccess("删除成功");
-  const res = await getItem(row.itemId);
+  const res = await getGoods(row.itemId);
   skuForm.itemSkuList = res.data.sku
   form.value = res.data
 }
@@ -582,7 +582,7 @@ const reset = () => {
 /** 表单重置 */
 const resetType = () => {
   categoryForm.value = {...initCategoryFormData};
-  itemCategoryFormRef.value.resetFields();
+  categoryFormRef.value.resetFields();
 }
 /** 搜索按钮操作 */
 const handleQuery = () => {
@@ -630,11 +630,11 @@ const handleUpdate = (row) => {
 const handleQueryType = (node, data) => {
   queryParams.value.pageNum = 1
   if (data.data.label === '全部') {
-    queryParams.value.itemCategory = '';
+    queryParams.value.category = '';
     currentType.value = '';
     getList();
   } else {
-    queryParams.value.itemCategory = data.data.id;
+    queryParams.value.category = data.data.id;
     currentType.value = data.data.id;
     getList();
   }
@@ -657,9 +657,9 @@ const submitForm = () => {
       if (flag) {
         buttonLoading.value = true;
         if (form.value.id) {
-          await updateItem(form.value).finally(() => buttonLoading.value = false);
+          await updateGoods(form.value).finally(() => buttonLoading.value = false);
         } else {
-          await addItem(form.value).finally(() => buttonLoading.value = false);
+          await addGoods(form.value).finally(() => buttonLoading.value = false);
         }
         proxy?.$modal.msgSuccess("修改成功");
         dialog.visible = false;
@@ -669,7 +669,7 @@ const submitForm = () => {
   });
 }
 const submitCategoryForm = () => {
-  itemCategoryFormRef.value.validate(async (valid) => {
+  categoryFormRef.value.validate(async (valid) => {
     if (valid) {
       buttonLoading.value = true;
       if (categoryForm.value.id) {
@@ -679,17 +679,17 @@ const submitCategoryForm = () => {
       }
       proxy?.$modal.msgSuccess(categoryForm.value.id ? '修改成功' : '新增成功');
       categoryDialog.visible = false;
-      useWmsStore().getItemCategoryList();
-      useWmsStore().getItemCategoryTreeList();
+      useWmsStore().getCategoryList();
+      useWmsStore().getCategoryTreeList();
     }
   });
 }
 /** 删除按钮操作 */
 const handleDelete = async (row) => {
   const _ids = row?.itemId || ids.value;
-  await proxy?.$modal.confirm('确认删除商品【' + row?.item.itemName + '】吗？');
+  await proxy?.$modal.confirm('确认删除商品【' + row?.item.goodsName + '】吗？');
   loading.value = true;
-  await delItem(_ids).finally(()=> loading.value = false);
+  await delGoods(_ids).finally(()=> loading.value = false);
   proxy?.$modal.msgSuccess("删除成功");
   await getList();
 }

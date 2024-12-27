@@ -6,7 +6,7 @@ import request from '@/utils/request';
  * @returns {*}
  */
 
-export function listItemPage(query) {
+export function listGoodsPage(query) {
   return request({
     url: '/basic/goods/list',
     method: 'get',
@@ -14,7 +14,7 @@ export function listItemPage(query) {
   });
 };
 
-export function listItem(query) {
+export function listGoods(query) {
   return request({
     url: '/basic/goods/listNoPage',
     method: 'get',
@@ -28,7 +28,7 @@ export function listItem(query) {
  * @returns {*}
  */
 
-export function listItemGroupBySku(query) {
+export function listGoodsGroupBySku(query) {
   return request({
     url: '/basic/goodsSku/selectList',
     method: 'get',
@@ -40,7 +40,7 @@ export function listItemGroupBySku(query) {
  * 查询物料详细
  * @param id
  */
-export function getItem(id) {
+export function getGoods(id) {
   return request({
     url: '/basic/goods/' + id,
     method: 'get'
@@ -51,7 +51,7 @@ export function getItem(id) {
  * 新增物料
  * @param data
  */
-export function addItem(data) {
+export function addGoods(data) {
   return request({
     url: '/basic/goods',
     method: 'post',
@@ -63,7 +63,7 @@ export function addItem(data) {
  * 修改物料
  * @param data
  */
-export function updateItem(data) {
+export function updateGoods(data) {
   return request({
     url: '/basic/goods',
     method: 'put',
@@ -75,7 +75,7 @@ export function updateItem(data) {
  * 删除物料
  * @param id
  */
-export function delItem(id) {
+export function delGoods(id) {
   return request({
     url: '/basic/goods/' + id,
     method: 'delete'

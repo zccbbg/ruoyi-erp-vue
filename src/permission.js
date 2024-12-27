@@ -63,9 +63,9 @@ router.beforeEach((to, from, next) => {
 async function initData() {
   await useWmsStore().getWarehouseList()
   await useWmsStore().getMerchantList()
-  await useWmsStore().getItemCategoryList()
-  await useWmsStore().getItemCategoryTreeList()
-  await useWmsStore().getItemBrandList()
+  await useWmsStore().getCategoryList ()
+  await useWmsStore().getCategoryTreeList ()
+  await useWmsStore().getIBrandList ()
 }
 
 router.afterEach(() => {

@@ -62,7 +62,7 @@
 </template>
 
 <script setup name="ItemBrand">
-import { listItemBrand, getItemBrand, delItemBrand, addItemBrand, updateItemBrand, listItemBrandPage } from "@/api/basic/brand";
+import { listBrand, getBrand, delBrand, addBrand, updateBrand, listBrandPage } from "@/api/basic/brand";
 import {ElMessageBox} from "element-plus";
 import {useWmsStore} from '@/store/modules/wms'
 
@@ -98,7 +98,7 @@ const { queryParams, form, rules } = toRefs(data);
 /** 查询商品品牌列表 */
 async function getList() {
   loading.value = true;
-  await useWmsStore().getItemBrandList()
+  await useWmsStore().getIBrandList ()
   let list = [...useWmsStore().itemBrandList]
   if (queryParams.value.brandName) {
     list = list.filter(it => it.brandName === queryParams.value.brandName)
@@ -149,7 +149,7 @@ function handleAdd() {
 function handleUpdate(row) {
   reset();
   const _id = row.id || ids.value
-  getItemBrand(_id).then(response => {
+  getBrand(_id).then(response => {
     form.value = response.data;
     open.value = true;
     title.value = "修改商品品牌";
@@ -162,7 +162,7 @@ function submitForm() {
     if (valid) {
       buttonLoading.value = true;
       if (form.value.id != null) {
-        updateItemBrand(form.value).then(response => {
+        updateBrand(form.value).then(response => {
           proxy.$modal.msgSuccess("修改成功");
           open.value = false;
           getList();
@@ -170,7 +170,7 @@ function submitForm() {
           buttonLoading.value = false;
         });
       } else {
-        addItemBrand(form.value).then(response => {
+        addBrand(form.value).then(response => {
           proxy.$modal.msgSuccess("新增成功");
           open.value = false;
           getList();
@@ -186,7 +186,7 @@ function submitForm() {
 function handleDelete(row) {
   const _ids = row.id || ids.value;
   proxy.$modal.confirm('确认删除品牌【' + row.brandName + '】吗？').then(function() {
-    return delItemBrand(_ids);
+    return delBrand(_ids);
   }).then(() => {
     loading.value = true;
     getList();
