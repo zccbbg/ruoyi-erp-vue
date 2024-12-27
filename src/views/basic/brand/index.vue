@@ -98,7 +98,7 @@ const { queryParams, form, rules } = toRefs(data);
 /** 查询商品品牌列表 */
 async function getList() {
   loading.value = true;
-  await useWmsStore().getIBrandList ()
+  await useWmsStore().getBrandList ()
   let list = [...useWmsStore().itemBrandList]
   if (queryParams.value.brandName) {
     list = list.filter(it => it.brandName === queryParams.value.brandName)

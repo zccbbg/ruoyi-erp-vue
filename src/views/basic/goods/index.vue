@@ -73,42 +73,42 @@
           <el-table :data="itemList" @selection-change="handleSelectionChange" :span-method="spanMethod" border empty-text="暂无商品" v-loading="loading" cell-class-name="my-cell">
             <el-table-column label="商品信息" prop="itemId">
               <template #default="{ row }">
-                <div>{{ row.item.goodsName + (row.item.goodsNo ? ('(' +  row.item.goodsNo + ')') : '') }}</div>
-                <div v-if="row.item.brand">{{ row.item.brand ? ('品牌：' + useWmsStore().brandMap.get(row.item.brand)?.brandName) : '' }}</div>
-                <div v-if="row.item.category">{{ row.item.category ? ('分类：' + useWmsStore().categoryMap.get(row.item.category)?.categoryName) : '' }}</div>
+                <div>{{ row.goods.goodsName + (row.goods.goodsNo ? ('(' +  row.goods.goodsNo + ')') : '') }}</div>
+                <div v-if="row.goods.brand">{{ row.goods.brand ? ('品牌：' + useWmsStore().brandMap.get(row.goods.brand)?.brandName) : '' }}</div>
+                <div v-if="row.goods.category">{{ row.goods.category ? ('分类：' + useWmsStore().categoryMap.get(row.goods.category)?.categoryName) : '' }}</div>
               </template>
             </el-table-column>
             <el-table-column label="规格信息" prop="skuName" align="left">
               <template #default="{ row }">
-                <div>{{ row.itemSku.skuName }}</div>
-                <div v-if="row.itemSku.skuCode">编号：{{ row.itemSku.skuCode }}</div>
-                <div v-if="row.itemSku.barcode">条码：{{ row.itemSku.barcode }}</div>
+                <div>{{ row.sku.skuName }}</div>
+                <div v-if="row.sku.skuCode">编号：{{ row.sku.skuCode }}</div>
+                <div v-if="row.sku.barcode">条码：{{ row.sku.barcode }}</div>
               </template>
             </el-table-column>
             <el-table-column label="金额(元)" width="160" align="left">
               <template #default="{ row }">
-                <div v-if="row.itemSku.costPrice" class="flex-space-between">
+                <div v-if="row.sku.costPrice" class="flex-space-between">
                   <span>成本价：</span>
-                  <div>{{ (row.itemSku.costPrice || row.itemSku.costPrice === 0) ? row.itemSku.costPrice : '' }}</div>
+                  <div>{{ (row.sku.costPrice || row.sku.costPrice === 0) ? row.sku.costPrice : '' }}</div>
                 </div>
-                <div v-if="row.itemSku.sellingPrice" class="flex-space-between">
+                <div v-if="row.sku.sellingPrice" class="flex-space-between">
                   <span>销售价：</span>
-                  <div>{{ (row.itemSku.sellingPrice || row.itemSku.sellingPrice === 0) ? row.itemSku.sellingPrice : '' }}</div>
+                  <div>{{ (row.sku.sellingPrice || row.sku.sellingPrice === 0) ? row.sku.sellingPrice : '' }}</div>
                 </div>
               </template>
             </el-table-column>
             <el-table-column label="重量(kg)" width="160" align="left">
               <template #default="{ row }">
-                <div v-if="row.itemSku.netWeight" class="flex-space-between">
+                <div v-if="row.sku.netWeight" class="flex-space-between">
                   <span>净重：</span>
                   <div>
-                    {{ (row.itemSku.netWeight || row.itemSku.netWeight === 0) ? row.itemSku.netWeight : '' }}
+                    {{ (row.sku.netWeight || row.sku.netWeight === 0) ? row.sku.netWeight : '' }}
                   </div>
                 </div>
-                <div v-if="row.itemSku.grossWeight" class="flex-space-between">
+                <div v-if="row.sku.grossWeight" class="flex-space-between">
                   <span>毛重：</span>
                   <div>
-                    {{ (row.itemSku.grossWeight || row.itemSku.grossWeight === 0) ? row.itemSku.grossWeight : '' }}
+                    {{ (row.sku.grossWeight || row.sku.grossWeight === 0) ? row.sku.grossWeight : '' }}
                   </div>
                 </div>
               </template>
