@@ -70,8 +70,8 @@
             <span class="mr10" style="font-size: 18px;">商品列表</span>
             <el-button type="primary" plain icon="Plus" @click="handleAdd" class="mb10">新增商品</el-button>
           </div>
-          <el-table :data="itemList" @selection-change="handleSelectionChange" :span-method="spanMethod" border empty-text="暂无商品" v-loading="loading" cell-class-name="my-cell">
-            <el-table-column label="商品信息" prop="itemId">
+          <el-table :data="goodsList" @selection-change="handleSelectionChange" :span-method="spanMethod" border empty-text="暂无商品" v-loading="loading" cell-class-name="my-cell">
+            <el-table-column label="商品信息" prop="goodsId">
               <template #default="{ row }">
                 <div>{{ row.goods.goodsName + (row.goods.goodsNo ? ('(' +  row.goods.goodsNo + ')') : '') }}</div>
                 <div v-if="row.goods.brand">{{ row.goods.brand ? ('品牌：' + useWmsStore().brandMap.get(row.goods.brand)?.brandName) : '' }}</div>
@@ -118,7 +118,7 @@
                 <div>{{ getVolumeText(row) }}</div>
               </template>
             </el-table-column>
-            <el-table-column label="操作" align="right" prop="itemId" width="200">
+            <el-table-column label="操作" align="right" prop="goodsId" width="200">
               <template #default="scope">
                 <el-button link type="primary" @click="handleDelete(scope.row)" icon="Delete">删除</el-button>
                 <el-button link type="primary" @click="handleUpdate(scope.row)" icon="Edit">修改</el-button>
@@ -134,7 +134,7 @@
     <el-drawer :title="dialog.title" v-model="dialog.visible" size="80%" append-to-body :close-on-click-modal="false">
       <div v-loading="skuLoading">
         <el-card>
-          <el-form ref="itemFormRef" :model="form" :rules="rules" label-width="108px">
+          <el-form ref="goodsFormRef" :model="form" :rules="rules" label-width="108px">
             <el-row :gutter="24">
               <el-col :span="12">
                 <el-form-item label="商品名称" prop="goodsName">
@@ -196,10 +196,10 @@
             </div>
           </template>
           <el-form :model="skuForm" :rules="skuRules" ref="skuFormRef" :show-message="false">
-            <el-table :data="skuForm.itemSkuList" border cell-class-name="my-cell">
+            <el-table :data="skuForm.skuList" border cell-class-name="my-cell">
               <el-table-column label="规格名称" prop="skuName">
                 <template #default="scope">
-                  <el-form-item :prop="'itemSkuList.' + scope.$index + '.skuName'" :rules="skuRules.skuName"
+                  <el-form-item :prop="'skuList.' + scope.$index + '.skuName'" :rules="skuRules.skuName"
                                 style="margin-bottom: 0!important;">
                     <el-input v-model="scope.row.skuName" placeholder="请输入规格名称"/>
                   </el-form-item>
@@ -259,10 +259,10 @@
               </el-table-column>
               <el-table-column label="操作" class-name="small-padding fixed-width" width="80" align="right">
                 <template #default="scope">
-                  <el-button link icon="Delete" type="primary" @click="handleDeleteItemSku(scope.row, scope.$index)">删除</el-button>
+                  <el-button link icon="Delete" type="primary" @click="handleDeleteSku(scope.row, scope.$index)">删除</el-button>
                 </template>
               </el-table-column>
-              <template #append v-if="skuForm.itemSkuList.length">
+              <template #append v-if="skuForm.skuList.length">
                 <div style="padding: 6px 2px 6px 2px;text-align: center;">
                   <el-button text class="add-btn" icon="Plus" type="primary" @click="onAppendBtnClick">添加商品规格
                   </el-button>
@@ -332,7 +332,7 @@ import {
   updateOrderNum
 } from "@/api/basic/category";
 import {getRowspanMethod} from "@/utils/getRowSpanMethod";
-import {listItemSkuPage, delItemSku, listItemSku} from "@/api/basic/sku";
+import {listSkuPage, delSku, listSku} from "@/api/basic/sku";
 import {useRoute} from "vue-router";
 import Qrcode from 'qrcode'
 import JSBarcode from 'jsbarcode'
@@ -341,7 +341,7 @@ import {useWmsStore} from '@/store/modules/wms'
 const barcode = ref(null)
 const route = useRoute()
 const {proxy} = getCurrentInstance();
-const itemList = ref([]);
+const goodsList = ref([]);
 const categoryTreeSelectList = computed(() => useWmsStore().categoryTreeList);
 const categoryTreeOptionsList = computed(() => {
   let data = [...categoryTreeSelectList.value];
@@ -361,10 +361,10 @@ const multiple = ref(true);
 const total = ref(0);
 const skuLoading = ref(false)
 const queryFormRef = ref(ElForm);
-const itemFormRef = ref(ElForm);
+const goodsFormRef = ref(ElForm);
 const categoryFormRef = ref(ElForm);
-const spanMethod = computed(() => getRowspanMethod(itemList.value, rowSpanArray.value))
-const rowSpanArray = ref(['itemId'])
+const spanMethod = computed(() => getRowspanMethod(goodsList.value, rowSpanArray.value))
+const rowSpanArray = ref(['goodsId'])
 const qrcode = ref(null)
 const append = (data) => {
   // resetType();
@@ -424,7 +424,7 @@ const data = reactive({
     pageSize: 10,
     goodsNo: undefined,
     goodsName: undefined,
-    itemType: undefined
+    goodsType: undefined
   },
   rules: {
     id: [
@@ -479,9 +479,9 @@ const currentType = ref()
 /** 查询物料列表 */
 const getList = async () => {
   loading.value = true;
-  const res = await listItemSkuPage(queryParams.value);
+  const res = await listSkuPage(queryParams.value);
   const content = [...res.rows];
-  itemList.value = content.map((it) => ({...it, id: it.skuId,itemId: it?.item?.id}));
+  goodsList.value = content.map((it) => ({...it, id: it.skuId,goodsId: it?.goods?.id}));
   total.value = res.total;
   loading.value = false;
 }
@@ -497,18 +497,18 @@ const handleAddType = (show) => {
   });
 }
 const skuForm = reactive({
-  itemSkuList: []
+  skuList: []
 })
 const skuFormRef = ref(ElForm)
 const skuRules = {
   skuName: [{required: true, message: '规格名称不能为空', trigger: 'blur'}]
 }
 // sku 管理
-const resetItemSkuList = () => {
-  skuForm.itemSkuList = []
-  skuForm.itemSkuList.push({
+const resetSkuList = () => {
+  skuForm.skuList = []
+  skuForm.skuList.push({
     id: '',
-    itemId: '',
+    goodsId: '',
     barcode: '',
     inPrice: null,
     outPrice: null,
@@ -518,9 +518,9 @@ const resetItemSkuList = () => {
 }
 
 const onAppendBtnClick = () => {
-  skuForm.itemSkuList.push({
+  skuForm.skuList.push({
     id: '',
-    itemId: '',
+    goodsId: '',
     barcode: '',
     inPrice: null,
     outPrice: null,
@@ -528,20 +528,20 @@ const onAppendBtnClick = () => {
     quantity: null,
   })
 }
-const handleDeleteItemSku = async (row, index) => {
+const handleDeleteSku = async (row, index) => {
   if (!row.id) {
-    skuForm.itemSkuList.splice(index, 1);
+    skuForm.skuList.splice(index, 1);
     return
   }
-  if (skuForm.itemSkuList.length === 1) {
+  if (skuForm.skuList.length === 1) {
     return proxy?.$modal.msgError("至少包含一个商品规格");
   }
   await proxy?.$modal.confirm('确认删除规格【' + row.skuName + '】吗？');
   loading.value = true;
-  await delItemSku(row.id).finally(()=> loading.value = false);
+  await delSku(row.id).finally(()=> loading.value = false);
   proxy?.$modal.msgSuccess("删除成功");
-  const res = await getGoods(row.itemId);
-  skuForm.itemSkuList = res.data.sku
+  const res = await getGoods(row.goodsId);
+  skuForm.skuList = res.data.sku
   form.value = res.data
 }
 const collapse = (draggingNode, dropNode, type) => {
@@ -576,7 +576,7 @@ const cancelType = () => {
 /** 表单重置 */
 const reset = () => {
   form.value = {...initFormData};
-  itemFormRef.value.resetFields();
+  goodsFormRef.value.resetFields();
 }
 
 /** 表单重置 */
@@ -598,14 +598,14 @@ const resetQuery = () => {
 
 /** 多选框选中数据 */
 const handleSelectionChange = (selection) => {
-  ids.value = selection.map(item => item.id);
+  ids.value = selection.map(goods => goods.id);
   single.value = selection.length != 1;
   multiple.value = !selection.length;
 }
 
 /** 新增按钮操作 */
 const handleAdd = () => {
-  resetItemSkuList()
+  resetSkuList()
   dialog.visible = true;
   dialog.title = "新增商品";
   nextTick(async () => {
@@ -614,17 +614,17 @@ const handleAdd = () => {
 }
 /** 修改按钮操作 */
 const handleUpdate = (row) => {
-  resetItemSkuList()
+  resetSkuList()
   skuLoading.value = true
   dialog.visible = true;
   dialog.title = "修改商品";
   nextTick(async () => {
     reset();
-    const _id = row?.itemId || ids.value[0]
-    const res = await listItemSku({'itemId':_id});
-    Object.assign(skuForm.itemSkuList, res.data)
+    const _id = row?.goodsId || ids.value[0]
+    const res = await listSku({'goodsId':_id});
+    Object.assign(skuForm.skuList, res.data)
     skuLoading.value = false
-    Object.assign(form.value, row.item);
+    Object.assign(form.value, row.goods);
   });
 }
 const handleQueryType = (node, data) => {
@@ -641,11 +641,11 @@ const handleQueryType = (node, data) => {
 }
 /** 提交按钮 */
 const submitForm = () => {
-  form.value.sku = skuForm.itemSkuList
-  itemFormRef.value.validate(async (valid) => {
+  form.value.sku = skuForm.skuList
+  goodsFormRef.value.validate(async (valid) => {
     if (valid) {
       let flag = true
-      if (!skuForm.itemSkuList || skuForm.itemSkuList.length === 0) {
+      if (!skuForm.skuList || skuForm.skuList.length === 0) {
         proxy?.$modal.msgError("至少包含一个商品规格");
         flag = false
       }
@@ -686,8 +686,8 @@ const submitCategoryForm = () => {
 }
 /** 删除按钮操作 */
 const handleDelete = async (row) => {
-  const _ids = row?.itemId || ids.value;
-  await proxy?.$modal.confirm('确认删除商品【' + row?.item.goodsName + '】吗？');
+  const _ids = row?.goodsId || ids.value;
+  await proxy?.$modal.confirm('确认删除商品【' + row?.goods.goodsName + '】吗？');
   loading.value = true;
   await delGoods(_ids).finally(()=> loading.value = false);
   proxy?.$modal.msgSuccess("删除成功");
@@ -696,9 +696,9 @@ const handleDelete = async (row) => {
 const treeRef = ref(null)
 /** 导出按钮操作 */
 const handleExport = () => {
-  proxy?.download('wms/item/export', {
+  proxy?.download('wms/goods/export', {
     ...queryParams.value
-  }, `item_${new Date().getTime()}.xlsx`)
+  }, `goods_${new Date().getTime()}.xlsx`)
 }
 /** 下载条形码 */
 const downloadBarcode = (row) => {

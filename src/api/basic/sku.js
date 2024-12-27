@@ -6,7 +6,7 @@ import request from '@/utils/request';
  * @returns {*}
  */
 
-export function listItemSkuPage(query) {
+export function listSkuPage(query) {
   return request({
     url: '/basic/sku/list',
     method: 'get',
@@ -14,7 +14,7 @@ export function listItemSkuPage(query) {
   });
 };
 
-export function listItemSku(query) {
+export function listSku(query) {
   return request({
     url: '/basic/sku/listNoPage',
     method: 'get',
@@ -26,7 +26,7 @@ export function listItemSku(query) {
  * 查询sku信息详细
  * @param id
  */
-export function getItemSku(id) {
+export function getSku(id) {
   return request({
     url: '/basic/sku/' + id,
     method: 'get'
@@ -37,7 +37,7 @@ export function getItemSku(id) {
  * 新增sku信息
  * @param data
  */
-export function addItemSku(data) {
+export function addSku(data) {
   return request({
     url: '/basic/sku',
     method: 'post',
@@ -49,7 +49,7 @@ export function addItemSku(data) {
  * 修改sku信息
  * @param data
  */
-export function updateItemSku(data) {
+export function updateSku(data) {
   return request({
     url: '/basic/sku',
     method: 'put',
@@ -61,7 +61,7 @@ export function updateItemSku(data) {
  * 删除sku信息
  * @param id
  */
-export function delItemSku(id) {
+export function delSku(id) {
   return request({
     url: '/basic/sku/' + id,
     method: 'delete'
