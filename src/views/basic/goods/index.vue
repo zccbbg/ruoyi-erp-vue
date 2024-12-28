@@ -8,8 +8,8 @@
         <el-form-item label="商品名称" prop="goodsName">
           <el-input v-model="queryParams.goodsName" placeholder="请输入商品名称" clearable @keyup.enter="handleQuery"/>
         </el-form-item>
-        <el-form-item label="商品品牌" prop="brand">
-          <el-select v-model="queryParams.brand" clearable filterable>
+        <el-form-item label="商品品牌" prop="brandId">
+          <el-select v-model="queryParams.brandId" clearable filterable>
             <el-option
               v-for="item in useBasicStore().brandList"
               :key="item.id"
@@ -74,8 +74,8 @@
             <el-table-column label="商品信息" prop="goodsId">
               <template #default="{ row }">
                 <div>{{ row.goods.goodsName + (row.goods.goodsNo ? ('(' +  row.goods.goodsNo + ')') : '') }}</div>
-                <div v-if="row.goods.brand">{{ row.goods.brand ? ('品牌：' + useBasicStore().brandMap.get(row.goods.brand)?.brandName) : '' }}</div>
-                <div v-if="row.goods.category">{{ row.goods.category ? ('分类：' + useBasicStore().categoryMap.get(row.goods.category)?.categoryName) : '' }}</div>
+                <div v-if="row.goods.brandId">{{ row.goods.brandId ? ('品牌：' + useBasicStore().brandMap.get(row.goods.brandId)?.brandName) : '' }}</div>
+                <div v-if="row.goods.categoryId">{{ row.goods.categoryId ? ('分类：' + useBasicStore().categoryMap.get(row.goods.categoryId)?.categoryName) : '' }}</div>
               </template>
             </el-table-column>
             <el-table-column label="规格信息" prop="skuName" align="left">
@@ -142,10 +142,10 @@
                 </el-form-item>
               </el-col>
               <el-col :span="10">
-                <el-form-item label="商品分类" prop="category">
+                <el-form-item label="商品分类" prop="categoryId">
                   <el-tree-select
                     ref="treeRef"
-                    v-model="form.category"
+                    v-model="form.categoryId"
                     :data="categoryTreeSelectList"
                     :props="{ value: 'id', label: 'label', children: 'children' }"
                     value-key="id"
@@ -175,8 +175,8 @@
             </el-row>
             <el-row :gutter="24">
               <el-col :span="12">
-                <el-form-item label="商品品牌" prop="brand">
-                  <el-select v-model="form.brand" clearable filterable style="width: 100%!important;">
+                <el-form-item label="商品品牌" prop="brandId">
+                  <el-select v-model="form.brandId" clearable filterable style="width: 100%!important;">
                     <el-option
                       v-for="item in useBasicStore().brandList"
                       :key="item.id"
@@ -404,9 +404,9 @@ const initFormData = {
   id: undefined,
   goodsNo: undefined,
   goodsName: undefined,
-  category: undefined,
+  categoryId: undefined,
   unit: undefined,
-  brand: undefined,
+  brandId: undefined,
   remark: undefined,
 }
 const initCategoryFormData = {
@@ -433,7 +433,7 @@ const data = reactive({
     goodsName: [
       {required: true, message: "名称不能为空", trigger: "blur"}
     ],
-    category: [
+    categoryId: [
       {required: true, message: "分类不能为空", trigger: "blur"}
     ],
     warehouseId: [
@@ -630,11 +630,11 @@ const handleUpdate = (row) => {
 const handleQueryType = (node, data) => {
   queryParams.value.pageNum = 1
   if (data.data.label === '全部') {
-    queryParams.value.category = '';
+    queryParams.value.categoryId = undefined;
     currentType.value = '';
     getList();
   } else {
-    queryParams.value.category = data.data.id;
+    queryParams.value.categoryId = data.data.id;
     currentType.value = data.data.id;
     getList();
   }
