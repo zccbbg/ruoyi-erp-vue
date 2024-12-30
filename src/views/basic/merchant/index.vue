@@ -19,14 +19,12 @@
           />
         </el-form-item>
         <el-form-item label="企业类型" prop="merchantType">
-          <el-select v-model="queryParams.merchantType" placeholder="请选择企业类型" clearable>
-            <el-option
-              v-for="dict in merchant_type"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            />
-          </el-select>
+          <el-checkbox v-model="queryParams.merchantTypeCustomer"
+                       :true-label="1"
+                       :false-label=undefined>客户</el-checkbox>
+          <el-checkbox v-model="queryParams.merchantTypeSupplier"
+                       :true-label="1"
+                       :false-label=undefined>供应商</el-checkbox>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
@@ -56,7 +54,8 @@
         <el-table-column label="名称" prop="merchantName" />
         <el-table-column label="企业类型" prop="merchantType">
           <template #default="scope">
-            <dict-tag :options="merchant_type" :value="scope.row.merchantType"/>
+            <span v-if="scope.row.merchantTypeCustomer">客户</span>
+            <span v-if="scope.row.merchantTypeSupplier"> 供应商</span>
           </template>
         </el-table-column>
         <el-table-column label="级别" prop="merchantLevel" />
@@ -90,15 +89,13 @@
         <el-form-item label="名称" prop="merchantName">
           <el-input v-model="form.merchantName" placeholder="请输入名称" />
         </el-form-item>
-        <el-form-item label="企业类型" prop="merchantType">
-          <el-select v-model="form.merchantType" placeholder="请选择企业类型">
-            <el-option
-              v-for="dict in merchant_type"
-              :key="dict.value"
-              :label="dict.label"
-              :value="parseInt(dict.value)"
-            ></el-option>
-          </el-select>
+        <el-form-item label="企业类型">
+          <el-checkbox v-model="form.merchantTypeCustomer"
+                       :true-label="1"
+                       :false-label="0">客户</el-checkbox>
+          <el-checkbox v-model="form.merchantTypeSupplier"
+                       :true-label="1"
+                       :false-label="0">供应商</el-checkbox>
         </el-form-item>
         <el-form-item label="级别" prop="merchantLevel">
           <el-input v-model="form.merchantLevel" placeholder="请输入级别" />
@@ -154,13 +151,17 @@ const total = ref(0);
 const title = ref("");
 
 const data = reactive({
-  form: {},
+  form: {
+    merchantTypeCustomer: undefined,
+    merchantTypeSupplier: undefined,
+  },
   queryParams: {
     pageNum: 1,
     pageSize: 10,
     merchantNo: undefined,
-    merchantName: undefined,
-    merchantType: undefined,
+    merchantTypeCustomer: undefined,
+    merchantTypeSupplier: undefined,
+    merchantName: undefined
   },
   rules: {
     merchantNo: [
@@ -168,10 +169,7 @@ const data = reactive({
     ],
     merchantName: [
       { required: true, message: "名称不能为空", trigger: "blur" }
-    ],
-    merchantType: [
-      { required: true, message: "企业类型不能为空", trigger: "change" }
-    ],
+    ]
   }
 });
 
@@ -199,7 +197,8 @@ function reset() {
     id: null,
     merchantNo: null,
     merchantName: null,
-    merchantType: null,
+    merchantTypeCustomer: undefined,
+    merchantTypeSupplier: undefined,
     merchantLevel: null,
     bankName: null,
     bankAccount: null,
@@ -226,6 +225,14 @@ function handleQuery() {
 
 /** 重置按钮操作 */
 function resetQuery() {
+  queryParams.value =  {
+    pageNum: 1,
+    pageSize: 10,
+    merchantNo: undefined,
+    merchantTypeCustomer: undefined,
+    merchantTypeSupplier: undefined,
+    merchantName: undefined
+  };
   proxy.resetForm("queryRef");
   handleQuery();
 }
