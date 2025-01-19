@@ -32,7 +32,7 @@
         </el-col>
       </el-row>
 
-      <el-table v-loading="loading" :data="itemBrandList" border class="mt20" empty-text="暂无品牌">
+      <el-table v-loading="loading" :data="brandList" border class="mt20" empty-text="暂无品牌">
         <el-table-column label="品牌名称" prop="brandName" />
         <el-table-column label="创建时间" prop="createTime" width="180"/>
         <el-table-column label="操作" align="right" class-name="small-padding fixed-width" width="180">
@@ -46,7 +46,7 @@
     </el-card>
     <!-- 添加或修改商品品牌对话框 -->
     <el-drawer :title="title" v-model="open" size="50%" append-to-body>
-      <el-form ref="itemBrandRef" :model="form" :rules="rules" label-width="80px">
+      <el-form ref="brandRef" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="品牌名称" prop="brandName">
           <el-input v-model="form.brandName" placeholder="请输入品牌名称" />
         </el-form-item>
@@ -61,14 +61,14 @@
   </div>
 </template>
 
-<script setup name="ItemBrand">
+<script setup name="Brand">
 import { listBrand, getBrand, delBrand, addBrand, updateBrand, listBrandPage } from "@/api/basic/brand";
 import {ElMessageBox} from "element-plus";
 import {useBasicStore} from '@/store/modules/basic'
 
 const { proxy } = getCurrentInstance();
 
-const itemBrandList = ref([]);
+const brandList = ref([]);
 const open = ref(false);
 const buttonLoading = ref(false);
 const loading = ref(true);
@@ -99,11 +99,11 @@ const { queryParams, form, rules } = toRefs(data);
 async function getList() {
   loading.value = true;
   await useBasicStore().getBrandList ()
-  let list = [...useBasicStore().itemBrandList]
+  let list = [...useBasicStore().brandList]
   if (queryParams.value.brandName) {
     list = list.filter(it => it.brandName === queryParams.value.brandName)
   }
-  itemBrandList.value = list;
+  brandList.value = list;
   loading.value = false;
 }
 
@@ -123,7 +123,7 @@ function reset() {
     updateBy: null,
     updateTime: null
   };
-  proxy.resetForm("itemBrandRef");
+  proxy.resetForm("brandRef");
 }
 
 /** 搜索按钮操作 */
@@ -158,7 +158,7 @@ function handleUpdate(row) {
 
 /** 提交按钮 */
 function submitForm() {
-  proxy.$refs["itemBrandRef"].validate(valid => {
+  proxy.$refs["brandRef"].validate(valid => {
     if (valid) {
       buttonLoading.value = true;
       if (form.value.id != null) {
@@ -198,9 +198,9 @@ function handleDelete(row) {
 
 /** 导出按钮操作 */
 function handleExport() {
-  proxy.download('wms/itemBrand/export', {
+  proxy.download('wms/brand/export', {
     ...queryParams.value
-  }, `itemBrand_${new Date().getTime()}.xlsx`)
+  }, `brand_${new Date().getTime()}.xlsx`)
 }
 
 getList();
