@@ -63,17 +63,17 @@
               <el-table :data="props.row.details" v-loading="detailLoading[props.$index]" empty-text="暂无商品明细">
                 <el-table-column label="商品名称">
                   <template #default="{ row }">
-                    <div>{{ row?.item?.itemName }}</div>
+                    <div>{{ row?.goods?.goodsName }}</div>
                   </template>
                 </el-table-column>
                 <el-table-column label="规格名称">
                   <template #default="{ row }">
-                    <div>{{ row?.itemSku?.skuName }}</div>
+                    <div>{{ row?.sku?.skuName }}</div>
                   </template>
                 </el-table-column>
-                <el-table-column label="数量" prop="quantity" align="right">
+                <el-table-column label="数量" prop="qty" align="right">
                   <template #default="{ row }">
-                    <el-statistic :value="Number(row.quantity)" :precision="0"/>
+                    <el-statistic :value="Number(row.qty)" :precision="0"/>
                   </template>
                 </el-table-column>
                 <el-table-column label="金额(元)" align="right">
@@ -282,9 +282,9 @@ async function handlePrint(row) {
   if (receiptDoc.details?.length) {
     table = receiptDoc.details.map(detail => {
       return {
-        itemName: detail.item.itemName,
-        skuName: detail.itemSku.skuName,
-        quantity: Number(detail.quantity).toFixed(0),
+        goodsName: detail.goods.goodsName,
+        skuName: detail.sku.skuName,
+        qty: Number(detail.qty).toFixed(0),
         amount: detail.amount
       }
     })
