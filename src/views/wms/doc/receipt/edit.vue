@@ -169,15 +169,15 @@
   </div>
 </template>
 
-<script setup name="ReceiptOrderEdit">
+<script setup name="ReceiptDocEdit">
 import {computed, getCurrentInstance, onMounted, reactive, ref, toRef, toRefs, watch} from "vue";
-import {addReceiptOrder, getReceiptOrder, updateReceiptOrder, warehousing} from "@/api/wms/receiptOrder";
+import {addReceiptDoc, getReceiptDoc, updateReceiptDoc, warehousing} from "@/api/wms/receiptDoc";
 import {ElMessage, ElMessageBox} from "element-plus";
 import SkuSelect from "../../../components/SkuSelect.vue";
 import {useRoute} from "vue-router";
 import {useBasicStore} from '@/store/modules/basic'
 import { numSub, generateNo } from '@/utils/ruoyi'
-import { delReceiptOrderDetail } from '@/api/wms/receiptOrderDetail'
+import { delReceiptDocDetail } from '@/api/wms/receiptDocDetail'
 import {getWarehouseAndSkuKey} from "@/utils/wmsUtil";
 
 const {proxy} = getCurrentInstance();
@@ -226,7 +226,7 @@ const cancel = async () => {
   close()
 }
 const close = () => {
-  const obj = {path: "/receiptOrder"};
+  const obj = {path: "/receiptDoc"};
   proxy?.$tab.closeOpenPage(obj);
 }
 const skuSelectShow = ref(false)
@@ -303,7 +303,7 @@ const doSave = async (orderStatus = 0) => {
     const params = getParamsBeforeSave(orderStatus)
     loading.value = true
     if (params.id) {
-      updateReceiptOrder(params).then((res) => {
+      updateReceiptDoc(params).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.msg)
           close()
@@ -314,7 +314,7 @@ const doSave = async (orderStatus = 0) => {
         loading.value = false
       })
     } else {
-      addReceiptOrder(params).then((res) => {
+      addReceiptDoc(params).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.msg)
           close()
@@ -379,7 +379,7 @@ onMounted(() => {
 // 获取入库单详情
 const loadDetail = (id) => {
   loading.value = true
-  getReceiptOrder(id).then((response) => {
+  getReceiptDoc(id).then((response) => {
     form.value = {...response.data}
     if (response.data.details?.length) {
       selectedSku.value = response.data.details.map(it => {
@@ -422,7 +422,7 @@ const handleDeleteDetail = (row, index) => {
   if (row.id) {
     proxy.$modal.confirm('确认删除本条商品明细吗？如确认会立即执行！').then(function () {
       loading.value = true
-      return delReceiptOrderDetail(row.id);
+      return delReceiptDocDetail(row.id);
     }).then(() => {
       form.value.details.splice(index, 1)
       proxy.$modal.msgSuccess("删除成功");

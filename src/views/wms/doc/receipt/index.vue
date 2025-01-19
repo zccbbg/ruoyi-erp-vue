@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-card>
       <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="68px">
-        <el-form-item label="入库状态" prop="receiptOrderStatus">
+        <el-form-item label="入库状态" prop="receiptDocStatus">
           <el-radio-group v-model="queryParams.checkedStatus" @change="handleQuery">
             <el-radio-button
               :key="-2"
@@ -49,7 +49,7 @@
         </el-col>
       </el-row>
 
-      <el-table v-loading="loading" :data="receiptOrderList" border class="mt20"
+      <el-table v-loading="loading" :data="receiptDocList" border class="mt20"
                 @expand-change="handleExpandExchange"
                 :row-key="getRowKey"
                 :expand-row-keys="expandedRowKeys"
@@ -175,17 +175,17 @@
   </div>
 </template>
 
-<script setup name="ReceiptOrder">
-import {delReceiptOrder, getReceiptOrder, listReceiptOrder} from "@/api/wms/receiptOrder";
+<script setup name="ReceiptDoc">
+import {delReceiptDoc, getReceiptDoc, listReceiptDoc} from "@/api/wms/receiptDoc";
 import {getCurrentInstance, reactive, ref, toRefs} from "vue";
 import {useBasicStore} from "../../../../store/modules/basic";
-import {listByReceiptOrderId} from "@/api/wms/receiptOrderDetail";
+import {listByReceiptDocId} from "@/api/wms/receiptDocDetail";
 import {ElMessageBox} from "element-plus";
 import receiptPanel from "@/components/PrintTemplate/receipt-panel";
 
 const { proxy } = getCurrentInstance();
 const { wms_receipt_status } = proxy.useDict("wms_receipt_status");
-const receiptOrderList = ref([]);
+const receiptDocList = ref([]);
 const open = ref(false);
 const buttonLoading = ref(false);
 const loading = ref(true);
@@ -216,8 +216,8 @@ function getList() {
   if (query.checkedStatus === -2) {
     query.checkedStatus = null
   }
-  listReceiptOrder(query).then(response => {
-    receiptOrderList.value = response.rows;
+  listReceiptDoc(query).then(response => {
+    receiptDocList.value = response.rows;
     total.value = response.total;
     for (let i = 0; i < total; i++) {
       detailLoading.value.push(false)
@@ -241,7 +241,7 @@ function resetQuery() {
 
 /** 新增按钮操作 */
 function handleAdd() {
-  proxy.$router.push({ path: "/receiptOrderEdit" });
+  proxy.$router.push({ path: "/receiptDocEdit" });
 }
 
 /** 删除按钮操作 */
@@ -249,7 +249,7 @@ function handleDelete(row) {
   const _ids = row.id || ids.value;
   proxy.$modal.confirm('确认删除入库单【' + row.docNo + '】吗？').then(function() {
     loading.value = true;
-    delReceiptOrder(_ids).then(() => {
+    delReceiptDoc(_ids).then(() => {
       proxy.$modal.msgSuccess("删除成功");
     }).finally(() => {
       loading.value = false;
@@ -259,7 +259,7 @@ function handleDelete(row) {
 }
 
 function handleUpdate(row) {
-  proxy.$router.push({ path: "/receiptOrderEdit",  query: { id: row.id } });
+  proxy.$router.push({ path: "/receiptDocEdit",  query: { id: row.id } });
 }
 
 function handleGoDetail(row) {
@@ -270,17 +270,17 @@ function handleGoDetail(row) {
   } else {
     // 展开
     expandedRowKeys.value.push(row.id)
-    loadReceiptOrderDetail(row)
+    loadReceiptDocDetail(row)
   }
 }
 
 /** 导出按钮操作 */
 async function handlePrint(row) {
-  const res = await getReceiptOrder(row.id)
-  const receiptOrder = res.data
+  const res = await getReceiptDoc(row.id)
+  const receiptDoc = res.data
   let table = []
-  if (receiptOrder.details?.length) {
-    table = receiptOrder.details.map(detail => {
+  if (receiptDoc.details?.length) {
+    table = receiptDoc.details.map(detail => {
       return {
         itemName: detail.item.itemName,
         skuName: detail.itemSku.skuName,
@@ -290,16 +290,16 @@ async function handlePrint(row) {
     })
   }
   const printData = {
-    docNo: receiptOrder.docNo,
-    checkedStatus: proxy.selectDictLabel(wms_receipt_status.value, receiptOrder.checkedStatus),
-    warehouseName: useBasicStore().warehouseMap.get(receiptOrder.warehouseId)?.warehouseName,
-    goodsQty: Number(receiptOrder.goodsQty).toFixed(0),
-    goodsAmount: ((receiptOrder.goodsAmount || receiptOrder.goodsAmount === 0) ? (receiptOrder.goodsAmount + '元') : ''),
-    createBy: receiptOrder.createBy,
-    createTime: proxy.parseTime(receiptOrder.createTime, '{mm}-{dd} {hh}:{ii}'),
-    updateBy: receiptOrder.updateBy,
-    updateTime: proxy.parseTime(receiptOrder.updateTime, '{mm}-{dd} {hh}:{ii}'),
-    remark: receiptOrder.remark,
+    docNo: receiptDoc.docNo,
+    checkedStatus: proxy.selectDictLabel(wms_receipt_status.value, receiptDoc.checkedStatus),
+    warehouseName: useBasicStore().warehouseMap.get(receiptDoc.warehouseId)?.warehouseName,
+    goodsQty: Number(receiptDoc.goodsQty).toFixed(0),
+    goodsAmount: ((receiptDoc.goodsAmount || receiptDoc.goodsAmount === 0) ? (receiptDoc.goodsAmount + '元') : ''),
+    createBy: receiptDoc.createBy,
+    createTime: proxy.parseTime(receiptDoc.createTime, '{mm}-{dd} {hh}:{ii}'),
+    updateBy: receiptDoc.updateBy,
+    updateTime: proxy.parseTime(receiptDoc.updateTime, '{mm}-{dd} {hh}:{ii}'),
+    remark: receiptDoc.remark,
     table
   }
   let printTemplate = new proxy.$hiprint.PrintTemplate({template: receiptPanel})
@@ -316,13 +316,13 @@ function handleExpandExchange(value, expandedRows) {
     return
   }
   expandedRowKeys.value = expandedRows.map(it => it.id)
-  loadReceiptOrderDetail(value)
+  loadReceiptDocDetail(value)
 }
 
-function loadReceiptOrderDetail(row) {
-  const index = receiptOrderList.value.findIndex(it => it.id === row.id)
+function loadReceiptDocDetail(row) {
+  const index = receiptDocList.value.findIndex(it => it.id === row.id)
   detailLoading.value[index] = true
-  listByReceiptOrderId(row.id).then(res => {
+  listByReceiptDocId(row.id).then(res => {
     if (res.data?.length) {
       const details = res.data.map(it => {
         return {
@@ -330,7 +330,7 @@ function loadReceiptOrderDetail(row) {
           warehouseName: useBasicStore().warehouseMap.get(it.warehouseId)?.warehouseName,
         }
       })
-      receiptOrderList.value[index].details = details
+      receiptDocList.value[index].details = details
     }
   }).finally(() => {
     detailLoading.value[index] = false

@@ -282,7 +282,7 @@ const getParamsBeforeSave = (orderStatus) => {
     details = form.value.details.map(it => {
       return {
         id: it.id,
-        receiptOrderId: form.value.id,
+        receiptDocId: form.value.id,
         skuId: it.skuId,
         amount: it.amount,
         quantity: it.quantity,

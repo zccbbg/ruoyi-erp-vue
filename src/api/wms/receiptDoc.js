@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 // 查询入库单列表
-export function listReceiptOrder(query) {
+export function listReceiptDoc(query) {
   return request({
     url: '/wms/receipt/list',
     method: 'get',
@@ -10,7 +10,7 @@ export function listReceiptOrder(query) {
 }
 
 // 查询入库单详细
-export function getReceiptOrder(id) {
+export function getReceiptDoc(id) {
   return request({
     url: '/wms/receipt/' + id,
     method: 'get'
@@ -18,7 +18,7 @@ export function getReceiptOrder(id) {
 }
 
 // 新增入库单
-export function addReceiptOrder(data) {
+export function addReceiptDoc(data) {
   return request({
     url: '/wms/receipt',
     method: 'post',
@@ -27,7 +27,7 @@ export function addReceiptOrder(data) {
 }
 
 // 修改入库单
-export function updateReceiptOrder(data) {
+export function updateReceiptDoc(data) {
   return request({
     url: '/wms/receipt',
     method: 'put',
@@ -36,7 +36,7 @@ export function updateReceiptOrder(data) {
 }
 
 // 删除入库单
-export function delReceiptOrder(id) {
+export function delReceiptDoc(id) {
   return request({
     url: '/wms/receipt/' + id,
     method: 'delete'
@@ -53,7 +53,7 @@ export function warehousing(data) {
 }
 
 // 生成入库单号
-export function generateReceiptOrderNo() {
+export function generateReceiptDocNo() {
   return request({
     url: '/wms/receipt/generate/no',
     method: 'get'
