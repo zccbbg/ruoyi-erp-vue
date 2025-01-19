@@ -241,7 +241,7 @@ function resetQuery() {
 
 /** 新增按钮操作 */
 function handleAdd() {
-  proxy.$router.push({ path: "/receiptDocEdit" });
+  proxy.$router.push({ path: "/wms/receiptEdit" });
 }
 
 /** 删除按钮操作 */
