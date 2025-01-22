@@ -10,41 +10,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="仓库" prop="warehouseId">
-                <el-select v-model="form.warehouseId" placeholder="请选择仓库" filterable>
-                  <el-option v-for="item in useBasicStore().warehouseList" :key="item.id" :label="item.warehouseName" :value="item.id"/>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
               <el-form-item label="总数量" prop="totalQuantity">
                 <el-input-number style="width:100%" v-model="form.totalQuantity" :controls="false" :precision="0" :disabled="true"></el-input-number>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row :gutter="24">
-            <el-col :span="11">
-              <el-form-item label="入库类型" prop="optType">
-                <el-radio-group v-model="form.optType">
-                  <el-radio-button
-                    v-for="item in wms_receipt_type"
-                    :key="item.value"
-                    :label="item.value"
-                    >{{ item.label }}</el-radio-button
-                  >
-                </el-radio-group>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="供应商" prop="merchantId">
-                <el-select v-model="form.merchantId" placeholder="请选择供应商" clearable filterable>
-                  <el-option v-for="item in useBasicStore().merchantList" :key="item.id" :label="item.merchantName" :value="item.id"/>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="业务单号" prop="bizOrderNo">
-                <el-input v-model="form.bizOrderNo" placeholder="请输入业务单号"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -89,18 +56,8 @@
                 inactive-text="关闭"
               />
             </div>
-            <el-popover
-              placement="left"
-              title="提示"
-              :width="200"
-              trigger="hover"
-              :disabled="form.warehouseId"
-              content="请先选择仓库！"
-            >
-              <template #reference>
-                <el-button type="primary" plain="plain" size="default" @click="showAddItem" icon="Plus" :disabled="!form.warehouseId">添加商品</el-button>
-              </template>
-            </el-popover>
+
+            <el-button type="primary" plain="plain" size="default" @click="showAddItem" icon="Plus">添加商品</el-button>
           </div>
           <el-table :data="form.details" border empty-text="暂无商品明细">
             <el-table-column label="商品信息" prop="itemSku.itemName">
