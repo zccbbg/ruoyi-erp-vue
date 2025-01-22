@@ -4,12 +4,12 @@
           <el-row :gutter="20">
             <el-col :span="8">
               <el-form-item label="商品名称">
-                <el-input v-model="query.itemName" clearable placeholder="商品名称"></el-input>
+                <el-input v-model="query.goodsName" clearable placeholder="商品名称"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="商品编号">
-                <el-input class="w200" v-model="query.itemCode" clearable placeholder="商品编号"></el-input>
+                <el-input class="w200" v-model="query.goodsNo" clearable placeholder="商品编号"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -33,39 +33,39 @@
               <el-table-column type="selection" width="55" :reserve-selection="true" v-if="!singleSelect" :selectable="judgeSelectable"/>
               <el-table-column label="商品信息" prop="itemId">
                 <template #default="{ row }">
-                  <div>{{ row.item.itemName }}</div>
-                  <div v-if="row.item.itemCode">编号：{{ row.item.itemCode }}</div>
-                  <div v-if="row.item.itemBrand">品牌：{{ useBasicStore().itemBrandMap.get(row.item.itemBrand).brandName }}</div>
+                  <div>{{ row.goods.goodsName }}</div>
+                  <div v-if="row.goods.goodsNo">编号：{{ row.goods.goodsNo }}</div>
+                  <div v-if="row.goods.itemBrand">品牌：{{ useBasicStore().brandMap.get(row.goods.itemBrand).brandName }}</div>
                 </template>
               </el-table-column>
               <el-table-column label="规格信息">
                 <template #default="{ row }">
-                  <div>{{ row.itemSku.skuName }}</div>
-                  <div v-if="row.itemSku.skuCode">编号：{{ row.itemSku.skuCode }}</div>
-                  <div v-if="row.itemSku.barcode">条码：{{ row.itemSku.barcode }}</div>
+                  <div>{{ row.sku.skuName }}</div>
+                  <div v-if="row.sku.skuCode">编号：{{ row.sku.skuCode }}</div>
+                  <div v-if="row.sku.barcode">条码：{{ row.sku.barcode }}</div>
                 </template>
               </el-table-column>
               <el-table-column label="价格(元)" width="160" align="left">
                 <template #default="{ row }">
-                  <div v-if="row.itemSku.costPrice" class="flex-space-between">
+                  <div v-if="row.sku.costPrice" class="flex-space-between">
                     <span>成本价：</span>
-                    <div>{{ (row.itemSku.costPrice || row.itemSku.costPrice === 0) ? row.itemSku.costPrice : '' }}</div>
+                    <div>{{ (row.sku.costPrice || row.sku.costPrice === 0) ? row.sku.costPrice : '' }}</div>
                   </div>
-                  <div v-if="row.itemSku.sellingPrice" class="flex-space-between">
+                  <div v-if="row.sku.sellingPrice" class="flex-space-between">
                     <span>销售价：</span>
-                    <div>{{ (row.itemSku.sellingPrice || row.itemSku.sellingPrice === 0) ? row.itemSku.sellingPrice : '' }}</div>
+                    <div>{{ (row.sku.sellingPrice || row.sku.sellingPrice === 0) ? row.sku.sellingPrice : '' }}</div>
                   </div>
                 </template>
               </el-table-column>
               <el-table-column label="重量(kg)" width="160" align="left">
                 <template #default="{ row }">
-                  <div v-if="row.itemSku.netWeight" class="flex-space-between">
+                  <div v-if="row.sku.netWeight" class="flex-space-between">
                     <span>净重：</span>
-                    <div>{{ (row.itemSku.netWeight || row.itemSku.netWeight === 0) ? row.itemSku.netWeight : '' }}</div>
+                    <div>{{ (row.sku.netWeight || row.sku.netWeight === 0) ? row.sku.netWeight : '' }}</div>
                   </div>
-                  <div v-if="row.itemSku.grossWeight" class="flex-space-between">
+                  <div v-if="row.sku.grossWeight" class="flex-space-between">
                     <span>毛重：</span>
-                    <div>{{ (row.itemSku.grossWeight || row.itemSku.grossWeight === 0) ? row.itemSku.grossWeight : '' }}</div>
+                    <div>{{ (row.sku.grossWeight || row.sku.grossWeight === 0) ? row.sku.grossWeight : '' }}</div>
                   </div>
                 </template>
               </el-table-column>
@@ -111,8 +111,8 @@ const router = useRouter()
 const loading = ref(false)
 const deptOptions = ref([]);
 const query = reactive({
-  itemName: '',
-  itemCode: '',
+  goodsName: '',
+  goodsNo: '',
   skuName: '',
   barcode: ''
 });
