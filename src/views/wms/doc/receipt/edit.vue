@@ -60,16 +60,16 @@
             <el-button type="primary" plain="plain" size="default" @click="showAddItem" icon="Plus">添加商品</el-button>
           </div>
           <el-table :data="form.details" border empty-text="暂无商品明细">
-            <el-table-column label="商品信息" prop="itemSku.itemName">
+            <el-table-column label="商品信息" prop="sku.goodsName">
               <template #default="{ row }">
-                <div>{{ row.item.itemName + (row.item.itemCode ? ('(' + row.item.itemCode + ')') : '') }}</div>
-                <div v-if="row.item.itemBrand">品牌：{{ useBasicStore().itemBrandMap.get(row.item.itemBrand).brandName }}</div>
+                <div>{{ row.goods.goodsName + (row.goods.itemCode ? ('(' + row.goods.itemCode + ')') : '') }}</div>
+                <div v-if="row.goods.brand">品牌：{{ useBasicStore().brandMap.get(row.goods.brand).brandName }}</div>
               </template>
             </el-table-column>
             <el-table-column label="规格信息">
               <template #default="{ row }">
-                <div>{{ row.itemSku.skuName }}</div>
-                <div v-if="row.itemSku.barcode">条码：{{row.itemSku.barcode}}</div>
+                <div>{{ row.sku.skuName }}</div>
+                <div v-if="row.sku.barcode">条码：{{row.sku.barcode}}</div>
               </template>
             </el-table-column>
             <el-table-column label="数量" prop="quantity" width="180">
@@ -198,11 +198,11 @@ const handleOkClick = (item) => {
   skuSelectShow.value = false
   selectedSku.value = [...item]
   item.forEach((it) => {
-    if (!form.value.details.find(detail => detail.itemSku.id === it.id)) {
+    if (!form.value.details.find(detail => detail.sku.id === it.id)) {
       form.value.details.push(
         {
-          itemSku: it.itemSku,
-          item: it.item,
+          sku: it.sku,
+          goods: it.goods,
           amount: undefined,
           quantity: it.quantity,
           warehouseId: form.value.warehouseId
@@ -227,7 +227,7 @@ const getParamsBeforeSave = (orderStatus) => {
     details = form.value.details.map(it => {
       return {
         id: it.id,
-        skuId: it.itemSku.id,
+        skuId: it.sku.id,
         amount: it.amount,
         quantity: it.quantity,
         warehouseId: form.value.warehouseId,
@@ -389,7 +389,7 @@ const handleDeleteDetail = (row, index) => {
   } else {
     form.value.details.splice(index, 1)
   }
-  const indexOfSelected = selectedSku.value.findIndex(it => row.itemSku.id=== it.id)
+  const indexOfSelected = selectedSku.value.findIndex(it => row.sku.id=== it.id)
   selectedSku.value.splice(indexOfSelected, 1)
 }
 const goSaasTip = () => {
