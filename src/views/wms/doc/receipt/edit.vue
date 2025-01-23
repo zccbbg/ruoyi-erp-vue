@@ -30,8 +30,8 @@
             </el-col>
             <el-col :span="6">
               <div style="display: flex;align-items: start">
-                <el-form-item label="总金额" prop="totalAmount">
-                  <el-input-number style="width:100%" v-model="form.totalAmount" :precision="2" :min="0"></el-input-number>
+                <el-form-item label="总金额" prop="goodslAmount">
+                  <el-input-number style="width:100%" v-model="form.goodslAmount" :precision="2" :min="0"></el-input-number>
                 </el-form-item>
                 <el-button link type="primary" @click="handleAutoCalc" style="line-height: 32px">自动计算</el-button>
               </div>
@@ -92,10 +92,10 @@
                 ></el-input-number>
               </template>
             </el-table-column>
-            <el-table-column label="金额" prop="amount" width="180">
+            <el-table-column label="金额(合计)" prop="totalAmount" width="180">
               <template #default="scope">
                 <el-input-number
-                  v-model="scope.row.amount"
+                  v-model="scope.row.totalAmount"
                   placeholder="金额"
                   :precision="2"
                   :min="0"
@@ -156,8 +156,7 @@ const initFormData = {
   docNo: undefined,
   optType: "2",
   merchantId: undefined,
-  bizOrderNo: undefined,
-  totalAmount: undefined,
+  goodslAmount: undefined,
   orderStatus: 0,
   remark: undefined,
   warehouseId: undefined,
@@ -171,8 +170,7 @@ const data = reactive({
     pageSize: 10,
     docNo: undefined,
     optType: undefined,
-    bizOrderNo: undefined,
-    totalAmount: undefined,
+    goodslAmount: undefined,
     orderStatus: undefined,
   },
   rules: {
@@ -211,7 +209,7 @@ const handleOkClick = (item) => {
         {
           sku: it.sku,
           goods: it.goods,
-          amount: undefined,
+          totalAmount: undefined,
           qty: it.qty,
           warehouseId: form.value.warehouseId
         }
@@ -236,7 +234,7 @@ const getParamsBeforeSave = (orderStatus) => {
       return {
         id: it.id,
         skuId: it.sku.id,
-        amount: it.amount,
+        totalAmount: it.totalAmount,
         qty: it.qty,
         warehouseId: it.warehouseId
       }
@@ -249,9 +247,8 @@ const getParamsBeforeSave = (orderStatus) => {
     orderStatus,
     optType: form.value.optType,
     merchantId: form.value.merchantId,
-    bizOrderNo: form.value.bizOrderNo,
     remark: form.value.remark,
-    totalAmount: form.value.totalAmount,
+    goodslAmount: form.value.goodslAmount,
     totalQty: form.value.totalQty,
     details: details
   }
@@ -367,14 +364,14 @@ const handleChangeQty = () => {
 const handleAutoCalc = () => {
   let sum = undefined
   form.value.details.forEach(it => {
-    if (it.amount >= 0) {
+    if (it.totalAmount >= 0) {
       if (!sum) {
         sum = 0
       }
-      sum = numSub(sum, -Number(it.amount))
+      sum = numSub(sum, -Number(it.totalAmount))
     }
   })
-  form.value.totalAmount = sum
+  form.value.goodslAmount = sum
 }
 
 const handleDeleteDetail = (row, index) => {
