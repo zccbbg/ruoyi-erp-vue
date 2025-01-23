@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-card>
       <el-form :model="queryParams" ref="queryRef" label-width="90px" :inline="true">
-        <el-form-item class="col4" label="维度 " prop="itemId">
+        <el-form-item class="col4" label="维度 " prop="goodsId">
           <el-radio-group v-model="queryType" size="default" @change="handleSortTypeChange">
             <el-radio-button label="warehouse">仓库</el-radio-button>
             <el-radio-button label="item">商品</el-radio-button>
@@ -15,17 +15,17 @@
                        :value="item.id"/>
           </el-select>
         </el-form-item>
-        <el-form-item class="col4" label="商品名称" prop="itemName">
-          <el-input v-model="queryParams.itemName" clearable placeholder="商品名称"></el-input>
+        <el-form-item class="col4" label="商品名称" prop="goodsName">
+          <el-input v-model="queryParams.goodsName" clearable placeholder="商品名称"></el-input>
         </el-form-item>
         <el-form-item class="col4" label="商品编号" prop="itemCode">
-          <el-input v-model="queryParams.itemCode" clearable placeholder="商品编号"></el-input>
+          <el-input v-model="queryParams.goodsNo" clearable placeholder="商品编号"></el-input>
         </el-form-item>
         <el-form-item class="col4" label="规格名称" prop="skuName">
           <el-input v-model="queryParams.skuName" clearable placeholder="规格名称"></el-input>
         </el-form-item>
-        <el-form-item class="col4" label="规格编号" prop="skuCode">
-          <el-input v-model="queryParams.skuCode" clearable placeholder="规格编号"></el-input>
+        <el-form-item class="col4" label="规格编号" prop="skuNo">
+          <el-input v-model="queryParams.skuNo" clearable placeholder="规格编号"></el-input>
         </el-form-item>
         <el-form-item class="col4" style="margin-left: 32px">
           <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
@@ -46,30 +46,30 @@
               <div>{{ useBasicStore().warehouseMap.get(row.warehouseId)?.warehouseName }}</div>
             </template>
           </el-table-column>
-          <el-table-column label="商品信息" prop="warehouseIdAndItemId">
+          <el-table-column label="商品信息" prop="warehouseIdAndGoodsId">
             <template #default="{ row }">
-              <div>{{ row.item.itemName }}</div>
-              <div v-if="row.item.itemCode">商品编号：{{ row.item.itemCode }}</div>
+              <div>{{ row.goods.goodsName }}</div>
+              <div v-if="row.goods.goodsNo">商品编号：{{ row.goods.goodsNo }}</div>
             </template>
           </el-table-column>
           <el-table-column label="规格信息" :prop="skuId">
             <template #default="{ row }">
-              <div>{{ row.itemSku.skuName }}</div>
-              <div v-if="row.itemSku.skuCode">规格编号：{{ row.itemSku.skuCode }}</div>
+              <div>{{ row.sku.skuName }}</div>
+              <div v-if="row.sku.skuNo">规格编号：{{ row.sku.skuNo }}</div>
             </template>
           </el-table-column>
         </template>
         <template v-else>
-          <el-table-column label="商品信息" prop="itemId">
+          <el-table-column label="商品信息" prop="goodsId">
             <template #default="{ row }">
-              <div>{{ row.item.itemName }}</div>
-              <div v-if="row.item.itemCode">商品编号：{{ row.item.itemCode }}</div>
+              <div>{{ row.goods.goodsName }}</div>
+              <div v-if="row.goods.goodsNo">商品编号：{{ row.goods.goodsNo }}</div>
             </template>
           </el-table-column>
           <el-table-column label="规格信息" prop="skuId">
             <template #default="{ row }">
-              <div>{{ row.itemSku.skuName }}</div>
-              <div v-if="row.itemSku.skuCode">规格编号：{{ row.itemSku.skuCode }}</div>
+              <div>{{ row.sku.skuName }}</div>
+              <div v-if="row.sku.skuNo">规格编号：{{ row.sku.skuNo }}</div>
             </template>
           </el-table-column>
           <el-table-column label="仓库" prop="skuIdAndWarehouseId">
@@ -78,9 +78,9 @@
             </template>
           </el-table-column>
         </template>
-        <el-table-column label="库存" prop="quantity" align="right">
+        <el-table-column label="库存" prop="qty" align="right">
           <template #default="{ row }">
-            <el-statistic :value="Number(row.quantity)" :precision="0"/>
+            <el-statistic :value="Number(row.qty)" :precision="0"/>
           </template>
         </el-table-column>
       </el-table>
@@ -113,7 +113,7 @@ const ids = ref([]);
 const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
-const rowSpanArray = ref(['warehouseId', 'warehouseIdAndItemId', 'warehouseIdAndSkuId'])
+const rowSpanArray = ref(['warehouseId', 'warehouseIdAndGoodsId', 'warehouseIdAndSkuId'])
 
 const filterable = ref(false)
 const queryType = ref("warehouse")
@@ -122,29 +122,29 @@ const queryParams = ref({
   pageSize: 10,
   skuId: undefined,
   warehouseId: undefined,
-  itemName: undefined,
-  itemCode: undefined,
+  goodsName: undefined,
+  goodsNo: undefined,
   skuName: undefined,
-  skuCode: undefined,
-  minQuantity: undefined
+  skuNo: undefined,
+  minQty: undefined
 })
 
 /** 查询库存列表 */
 const getList = async () => {
   let query = {...queryParams.value}
   if (filterable.value) {
-    query.minQuantity = 1
+    query.minQty = 1
   } else {
-    query.minQuantity = undefined
+    query.minQty = undefined
   }
   loading.value = true;
   const res = await listInventoryBoard(query,queryType.value);
   inventoryList.value = res.rows;
   inventoryList.value.forEach(it => {
     if (queryType.value == "warehouse") {
-      it.warehouseIdAndItemId = it.warehouseId + '-' + it.item.id
+      it.warehouseIdAndGoodsId = it.warehouseId + '-' + it.goods.id
     } else if (queryType.value == "item") {
-      it.itemId = it.item.id
+      it.goodsId = it.goods.id
       it.skuIdAndWarehouseId = it.skuId + '-' + it.warehouseId
     }
   })
@@ -164,19 +164,19 @@ const resetQuery = () => {
   handleQuery();
 }
 const calcSubtotal = (row) => {
-  const tempList = inventoryList.value.filter(it => it.itemId === row.itemId)
+  const tempList = inventoryList.value.filter(it => it.goodsId === row.goodsId)
   let sum = 0
   tempList.forEach(it => {
-    sum += Number(it.quantity)
+    sum += Number(it.qty)
   })
   return sum
 }
 
 const handleSortTypeChange = (e) => {
   if (e === "warehouse") {
-    rowSpanArray.value = ['warehouseId', 'warehouseIdAndItemId']
+    rowSpanArray.value = ['warehouseId', 'warehouseIdAndGoodsId']
   }  else if (e === "item") {
-    rowSpanArray.value = ['itemId', 'skuId','skuIdAndWarehouseId']
+    rowSpanArray.value = ['goodsId', 'skuId','skuIdAndWarehouseId']
   }
   queryParams.value.pageNum = 1;
   getList()
