@@ -10,8 +10,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="总数量" prop="totalQty">
-                <el-input-number style="width:100%" v-model="form.totalQty" :controls="false" :precision="0" :disabled="true"></el-input-number>
+              <el-form-item label="总数量" prop="goodsQty">
+                <el-input-number style="width:100%" v-model="form.goodsQty" :controls="false" :precision="0" :disabled="true"></el-input-number>
               </el-form-item>
             </el-col>
           </el-row>
@@ -30,8 +30,8 @@
             </el-col>
             <el-col :span="6">
               <div style="display: flex;align-items: start">
-                <el-form-item label="总金额" prop="goodslAmount">
-                  <el-input-number style="width:100%" v-model="form.goodslAmount" :precision="2" :min="0"></el-input-number>
+                <el-form-item label="总金额" prop="goodsAmount">
+                  <el-input-number style="width:100%" v-model="form.goodsAmount" :precision="2" :min="0"></el-input-number>
                 </el-form-item>
                 <el-button link type="primary" @click="handleAutoCalc" style="line-height: 32px">自动计算</el-button>
               </div>
@@ -156,11 +156,11 @@ const initFormData = {
   docNo: undefined,
   optType: "2",
   merchantId: undefined,
-  goodslAmount: undefined,
+  goodsAmount: undefined,
   orderStatus: 0,
   remark: undefined,
   warehouseId: undefined,
-  totalQty: 0,
+  goodsQty: 0,
   details: [],
 }
 const data = reactive({
@@ -170,7 +170,7 @@ const data = reactive({
     pageSize: 10,
     docNo: undefined,
     optType: undefined,
-    goodslAmount: undefined,
+    goodsAmount: undefined,
     orderStatus: undefined,
   },
   rules: {
@@ -248,8 +248,8 @@ const getParamsBeforeSave = (orderStatus) => {
     optType: form.value.optType,
     merchantId: form.value.merchantId,
     remark: form.value.remark,
-    goodslAmount: form.value.goodslAmount,
-    totalQty: form.value.totalQty,
+    goodsAmount: form.value.goodsAmount,
+    goodsQty: form.value.goodsQty,
     details: details
   }
 }
@@ -358,7 +358,7 @@ const handleChangeQty = () => {
       sum += Number(it.qty)
     }
   })
-  form.value.totalQty = sum
+  form.value.goodsQty = sum
 }
 
 const handleAutoCalc = () => {
@@ -371,7 +371,7 @@ const handleAutoCalc = () => {
       sum = numSub(sum, -Number(it.totalAmount))
     }
   })
-  form.value.goodslAmount = sum
+  form.value.goodsAmount = sum
 }
 
 const handleDeleteDetail = (row, index) => {
