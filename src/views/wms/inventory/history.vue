@@ -2,8 +2,8 @@
   <div class="app-container">
     <el-card>
       <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="68px">
-        <el-form-item label="订单类型" prop="orderType">
-          <el-radio-group v-model="queryParams.orderType" @change="handleQuery">
+        <el-form-item label="操作类型" prop="optType">
+          <el-radio-group v-model="queryParams.optType" @change="handleQuery">
             <el-radio-button
               :key="-1"
               :label="-1"
@@ -26,8 +26,8 @@
                        :value="item.id"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="操作单号" prop="orderNo">
-          <el-input v-model="queryParams.orderNo" clearable placeholder="请输入操作单号"></el-input>
+        <el-form-item label="操作单号" prop="optNo">
+          <el-input v-model="queryParams.optNo" clearable placeholder="请输入操作单号"></el-input>
         </el-form-item>
 
         <el-form-item label="商品名称" prop="goodsName">
@@ -66,7 +66,7 @@
         <el-col :span="6"><span style="font-size: large">库存记录</span></el-col>
       </el-row>
       <el-table v-loading="loading" :data="inventoryHistoryList" border class="mt20" empty-text="暂无库存记录" cell-class-name="vertical-top-cell">
-        <el-table-column label="操作单号" prop="orderNo"/>
+        <el-table-column label="操作单号" prop="optNo"/>
         <el-table-column label="商品信息">
           <template #default="{ row }">
             <div>{{ row.goods.goodsName }}</div>
@@ -79,9 +79,9 @@
             <div v-if="row.sku.skuNo">规格编号：{{ row.sku.skuNo }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="订单类型" align="center" width="100">
+        <el-table-column label="操作类型" align="center" width="100">
           <template #default="{ row }">
-            <dict-tag :options="wms_inventory_history_type" :value="row.orderType"/>
+            <dict-tag :options="wms_inventory_history_type" :value="row.optType"/>
           </template>
         </el-table-column>
         <el-table-column label="仓库">
@@ -92,7 +92,7 @@
         <el-table-column label="操作前" align="right">
           <template #default="{ row }">
             <div >
-              <el-statistic :value="Number(row.beforeQuantity)" :precision="0" v-if="row.beforeQuantity"/>
+              <el-statistic :value="Number(row.beforeQty)" :precision="0" v-if="row.beforeQty"/>
               <span v-else>-</span>
             </div>
           </template>
@@ -100,7 +100,7 @@
         <el-table-column label="操作后" align="right">
           <template #default="{ row }">
             <div>
-              <el-statistic :value="Number(row.afterQuantity)" :precision="0" v-if="row.afterQuantity"/>
+              <el-statistic :value="Number(row.afterQty)" :precision="0" v-if="row.afterQty"/>
               <span v-else>-</span>
             </div>
           </template>
@@ -109,7 +109,7 @@
           <template #default="{ row }">
             <div class="flex-space-between">
               <div>数量：</div>
-              <el-statistic :value="Number(row.quantity)" :precision="0"/>
+              <el-statistic :value="Number(row.qty)" :precision="0"/>
             </div>
             <div class="flex-space-between" v-if="row.amount || row.amount === 0">
               <div>金额：</div>
@@ -149,8 +149,8 @@ const queryRef = ref(null)
 const queryParams = ref({
   pageNum: 1,
   pageSize: 10,
-  orderType: -1,
-  orderNo: undefined,
+  optType: -1,
+  optNo: undefined,
   goodsName: undefined,
   goodsNo: undefined,
   skuName: undefined,
@@ -161,8 +161,8 @@ const queryParams = ref({
 /** 查询往来单位列表 */
 function getList() {
   const query = {...queryParams.value}
-  if (query.orderType === -1) {
-    query.orderType = null
+  if (query.optType === -1) {
+    query.optType = null
   }
   if (query.createTimeRange) {
     query.startTime = query.createTimeRange[0]
