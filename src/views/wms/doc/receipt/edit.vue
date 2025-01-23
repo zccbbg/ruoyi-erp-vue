@@ -10,8 +10,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="总数量" prop="totalQuantity">
-                <el-input-number style="width:100%" v-model="form.totalQuantity" :controls="false" :precision="0" :disabled="true"></el-input-number>
+              <el-form-item label="总数量" prop="totalQty">
+                <el-input-number style="width:100%" v-model="form.totalQty" :controls="false" :precision="0" :disabled="true"></el-input-number>
               </el-form-item>
             </el-col>
           </el-row>
@@ -73,22 +73,22 @@
               </template>
             </el-table-column>
             <el-table-column label="仓库">
-              <template #default="{ row }">
-                <el-select v-model="row.warehouseId" placeholder="请选择仓库"
+              <template #default="scope">
+                <el-select v-model="scope.row.warehouseId" placeholder="请选择仓库"
                            filterable>
                   <el-option v-for="item in useBasicStore().warehouseList" :key="item.id" :label="item.warehouseName"
                              :value="item.id"/>
                 </el-select>
               </template>
             </el-table-column>
-            <el-table-column label="数量" prop="quantity" width="180">
+            <el-table-column label="数量" prop="qty" width="180">
               <template #default="scope">
                 <el-input-number
-                  v-model="scope.row.quantity"
+                  v-model="scope.row.qty"
                   placeholder="数量"
                   :min="1"
                   :precision="0"
-                  @change="handleChangeQuantity"
+                  @change="handleChangeQty"
                 ></el-input-number>
               </template>
             </el-table-column>
@@ -161,7 +161,7 @@ const initFormData = {
   orderStatus: 0,
   remark: undefined,
   warehouseId: undefined,
-  totalQuantity: 0,
+  totalQty: 0,
   details: [],
 }
 const data = reactive({
@@ -212,7 +212,7 @@ const handleOkClick = (item) => {
           sku: it.sku,
           goods: it.goods,
           amount: undefined,
-          quantity: it.quantity,
+          qty: it.qty,
           warehouseId: form.value.warehouseId
         }
       )
@@ -237,8 +237,8 @@ const getParamsBeforeSave = (orderStatus) => {
         id: it.id,
         skuId: it.sku.id,
         amount: it.amount,
-        quantity: it.quantity,
-        warehouseId: form.value.warehouseId,
+        qty: it.qty,
+        warehouseId: it.warehouseId
       }
     })
   }
@@ -252,8 +252,7 @@ const getParamsBeforeSave = (orderStatus) => {
     bizOrderNo: form.value.bizOrderNo,
     remark: form.value.remark,
     totalAmount: form.value.totalAmount,
-    totalQuantity: form.value.totalQuantity,
-    warehouseId: form.value.warehouseId,
+    totalQty: form.value.totalQty,
     details: details
   }
 }
@@ -305,8 +304,8 @@ const doWarehousing = async () => {
       return ElMessage.error('请选择商品')
     }
     if (form.value.details?.length) {
-      const invalidQuantityList = form.value.details.filter(it => !it.quantity)
-      if (invalidQuantityList?.length) {
+      const invalidQtyList = form.value.details.filter(it => !it.qty)
+      if (invalidQtyList?.length) {
         return ElMessage.error('请选择数量')
       }
     }
@@ -355,14 +354,14 @@ const loadDetail = (id) => {
   })
 }
 
-const handleChangeQuantity = () => {
+const handleChangeQty = () => {
   let sum = 0
   form.value.details.forEach(it => {
-    if (it.quantity) {
-      sum += Number(it.quantity)
+    if (it.qty) {
+      sum += Number(it.qty)
     }
   })
-  form.value.totalQuantity = sum
+  form.value.totalQty = sum
 }
 
 const handleAutoCalc = () => {
