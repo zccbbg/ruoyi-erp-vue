@@ -5,8 +5,8 @@
         <el-form label-width="108px" :model="form" ref="receiptForm" :rules="rules">
           <el-row :gutter="24">
             <el-col :span="11">
-              <el-form-item label="入库单号" prop="orderNo">
-                <el-input class="w200" v-model="form.orderNo" placeholder="入库单号" :disabled="form.id"></el-input>
+              <el-form-item label="入库单号" prop="docNo">
+                <el-input class="w200" v-model="form.docNo" placeholder="入库单号" :disabled="form.id"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="6">
@@ -72,6 +72,15 @@
                 <div v-if="row.sku.barcode">条码：{{row.sku.barcode}}</div>
               </template>
             </el-table-column>
+            <el-table-column label="仓库">
+              <template #default="{ row }">
+                <el-select v-model="row.warehouseId" placeholder="请选择仓库"
+                           filterable>
+                  <el-option v-for="item in useBasicStore().warehouseList" :key="item.id" :label="item.warehouseName"
+                             :value="item.id"/>
+                </el-select>
+              </template>
+            </el-table-column>
             <el-table-column label="数量" prop="quantity" width="180">
               <template #default="scope">
                 <el-input-number
@@ -115,7 +124,6 @@
       <div class="btn-box">
         <div>
           <el-button @click="doWarehousing" type="primary" class="ml10">完成入库</el-button>
-          <el-button @click="updateToInvalid" type="danger" v-if="form.id">作废</el-button>
         </div>
         <div>
           <el-button @click="save" type="primary">暂存</el-button>
@@ -145,7 +153,7 @@ const loading = ref(false)
 const skuSelectRef = ref(null)
 const initFormData = {
   id: undefined,
-  orderNo: undefined,
+  docNo: undefined,
   optType: "2",
   merchantId: undefined,
   bizOrderNo: undefined,
@@ -161,14 +169,14 @@ const data = reactive({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
-    orderNo: undefined,
+    docNo: undefined,
     optType: undefined,
     bizOrderNo: undefined,
     totalAmount: undefined,
     orderStatus: undefined,
   },
   rules: {
-    orderNo: [
+    docNo: [
       {required: true, message: "入库单号不能为空", trigger: "blur"}
     ],
     warehouseId: [
@@ -183,7 +191,7 @@ const cancel = async () => {
   close()
 }
 const close = () => {
-  const obj = {path: "/receiptDoc"};
+  const obj = {path: "/wms/receipt"};
   proxy?.$tab.closeOpenPage(obj);
 }
 const skuSelectShow = ref(false)
@@ -237,7 +245,7 @@ const getParamsBeforeSave = (orderStatus) => {
 
   return {
     id: form.value.id,
-    orderNo: form.value.orderNo,
+    docNo: form.value.docNo,
     orderStatus,
     optType: form.value.optType,
     merchantId: form.value.merchantId,
@@ -317,18 +325,13 @@ const doWarehousing = async () => {
   })
 }
 
-const updateToInvalid = async () => {
-  await proxy?.$modal.confirm('确认作废入库单吗？');
-  doSave(-1)
-}
-
 const route = useRoute();
 onMounted(() => {
   const id = route.query && route.query.id;
   if (id) {
     loadDetail(id)
   } else {
-    form.value.orderNo = 'RK' + generateNo()
+    form.value.docNo = 'RK' + generateNo()
   }
 })
 

@@ -259,7 +259,7 @@ function handleDelete(row) {
 }
 
 function handleUpdate(row) {
-  proxy.$router.push({ path: "/receiptDocEdit",  query: { id: row.id } });
+  proxy.$router.push({ path: "/wms/receiptEdit",  query: { id: row.id } });
 }
 
 function handleGoDetail(row) {
