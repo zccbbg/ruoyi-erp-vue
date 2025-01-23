@@ -30,17 +30,17 @@
           <el-input v-model="queryParams.orderNo" clearable placeholder="请输入操作单号"></el-input>
         </el-form-item>
 
-        <el-form-item label="商品名称" prop="itemName">
-          <el-input v-model="queryParams.itemName" clearable placeholder="请输入商品名称"></el-input>
+        <el-form-item label="商品名称" prop="goodsName">
+          <el-input v-model="queryParams.goodsName" clearable placeholder="请输入商品名称"></el-input>
         </el-form-item>
-        <el-form-item label="商品编号" prop="itemCode">
-          <el-input v-model="queryParams.itemCode" clearable placeholder="请输入商品编号"></el-input>
+        <el-form-item label="商品编号" prop="goodsNo">
+          <el-input v-model="queryParams.goodsNo" clearable placeholder="请输入商品编号"></el-input>
         </el-form-item>
         <el-form-item label="规格名称" prop="skuName">
           <el-input v-model="queryParams.skuName" clearable placeholder="请输入规格名称"></el-input>
         </el-form-item>
-        <el-form-item label="规格编号" prop="skuCode">
-          <el-input v-model="queryParams.skuCode" clearable placeholder="请输入规格编号"></el-input>
+        <el-form-item label="规格编号" prop="skuNo">
+          <el-input v-model="queryParams.skuNo" clearable placeholder="请输入规格编号"></el-input>
         </el-form-item>
         <el-form-item label="操作时间" prop="createTimeRange">
           <el-date-picker
@@ -69,14 +69,14 @@
         <el-table-column label="操作单号" prop="orderNo"/>
         <el-table-column label="商品信息">
           <template #default="{ row }">
-            <div>{{ row.item.itemName }}</div>
-            <div v-if="row.item.itemCode">商品编号：{{ row.item.itemCode }}</div>
+            <div>{{ row.goods.goodsName }}</div>
+            <div v-if="row.goods.goodsNo">商品编号：{{ row.goods.goodsNo }}</div>
           </template>
         </el-table-column>
         <el-table-column label="规格信息">
           <template #default="{ row }">
-            <div>{{ row.itemSku.skuName }}</div>
-            <div v-if="row.itemSku.skuCode">规格编号：{{ row.itemSku.skuCode }}</div>
+            <div>{{ row.sku.skuName }}</div>
+            <div v-if="row.sku.skuNo">规格编号：{{ row.sku.skuNo }}</div>
           </template>
         </el-table-column>
         <el-table-column label="订单类型" align="center" width="100">
@@ -151,10 +151,10 @@ const queryParams = ref({
   pageSize: 10,
   orderType: -1,
   orderNo: undefined,
-  itemName: undefined,
-  itemCode: undefined,
+  goodsName: undefined,
+  goodsNo: undefined,
   skuName: undefined,
-  skuCode: undefined,
+  skuNo: undefined,
   warehouseId: undefined,
 })
 
