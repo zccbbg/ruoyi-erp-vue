@@ -71,6 +71,11 @@
                     <div>{{ row?.sku?.skuName }}</div>
                   </template>
                 </el-table-column>
+                <el-table-column label="仓库" align="left">
+                  <template #default="{ row }">
+                    <div>{{ useBasicStore().warehouseMap.get(row.warehouseId)?.warehouseName }}</div>
+                  </template>
+                </el-table-column>
                 <el-table-column label="数量" prop="qty" align="right">
                   <template #default="{ row }">
                     <el-statistic :value="Number(row.qty)" :precision="0"/>
@@ -78,7 +83,7 @@
                 </el-table-column>
                 <el-table-column label="金额(元)" align="right">
                   <template #default="{ row }">
-                    <el-statistic v-if="row.amount || row.amount === 0" :precision="2" :value="Number(row.amount)"/>
+                    <el-statistic v-if="row.totalAmount || row.totalAmount === 0" :precision="2" :value="Number(row.totalAmount)"/>
                     <div v-else>-</div>
                   </template>
                 </el-table-column>
@@ -285,7 +290,7 @@ async function handlePrint(row) {
         goodsName: detail.goods.goodsName,
         skuName: detail.sku.skuName,
         qty: Number(detail.qty).toFixed(0),
-        amount: detail.amount
+        totalAmount: detail.totalAmount
       }
     })
   }
