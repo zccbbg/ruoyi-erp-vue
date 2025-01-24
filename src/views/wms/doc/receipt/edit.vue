@@ -332,8 +332,7 @@ const doSave = async (orderStatus = 0) => {
 }
 
 const doWarehousing = async () => {
-  await proxy?.$modal.confirm('确认入库吗？');
-  receiptForm.value?.validate((valid) => {
+  receiptForm.value?.validate(async (valid) => {
     // 校验
     if (!valid) {
       return ElMessage.error('请填写必填项')
@@ -348,10 +347,19 @@ const doWarehousing = async () => {
       if (invalidQtyList?.length) {
         return ElMessage.error('请设置商品明细中商品数量')
       }
-      if(invalidWarehouseList?.length){
+      if (invalidWarehouseList?.length) {
         return ElMessage.error('请设置商品明细中商品仓库')
       }
     }
+
+    // 弹出确认框
+    try {
+      await proxy?.$modal.confirm('确认入库吗？');
+    } catch (error) {
+      // 用户取消操作
+      return;
+    }
+
     const params = getParamsBeforeSave(1);
     loading.value = true
     warehousing(params).then((res) => {
