@@ -72,7 +72,13 @@
                 <div v-if="row.sku.barcode">条码：{{row.sku.barcode}}</div>
               </template>
             </el-table-column>
-            <el-table-column label="仓库">
+            <el-table-column>
+              <template #header>
+                <div style="display: flex; align-items: center;">
+                  <div>仓库</div>
+                  <el-button style="margin-left: 10px" @click="setWarehouseDialogVisible">批量</el-button>
+                </div>
+              </template>
               <template #default="scope">
                 <el-select v-model="scope.row.warehouseId" placeholder="请选择仓库"
                            filterable>
@@ -132,6 +138,17 @@
       </div>
     </div>
   </div>
+  <el-dialog v-model="batchSetWarehouseVisible" title="批量设置仓库" width="400" append-to-body>
+    <el-select v-model="batchSetWarehouseId" placeholder="请选择仓库"
+               filterable>
+      <el-option v-for="item in useBasicStore().warehouseList" :key="item.id" :label="item.warehouseName"
+                 :value="item.id"/>
+    </el-select>
+    <template #footer>
+      <el-button @click="batchSetWarehouseVisible = false">取消</el-button>
+      <el-button type="primary" @click="handleConfirmSetWarehouse">确定</el-button>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup name="ReceiptDocEdit">
@@ -150,7 +167,9 @@ const { wms_receipt_type } = proxy.useDict("wms_receipt_type");
 const selectedSku = ref([])
 const mode = ref(false)
 const loading = ref(false)
+const batchSetWarehouseVisible = ref(false)
 const skuSelectRef = ref(null)
+const batchSetWarehouseId = ref(null)
 const initFormData = {
   id: undefined,
   docNo: undefined,
@@ -193,6 +212,29 @@ const close = () => {
   proxy?.$tab.closeOpenPage(obj);
 }
 const skuSelectShow = ref(false)
+
+
+const setWarehouseDialogVisible = () => {
+  if(form.value.details?.length == 0){
+    ElMessage.error("请先添加商品！");
+  }else {
+    batchSetWarehouseVisible.value = true;
+  }
+}
+const handleConfirmSetWarehouse = () => {
+  if (!batchSetWarehouseId) {
+    ElMessage.error("请选择仓库后再确定");
+    return;
+  }
+  form.value.details.forEach(item => {
+    if (item && typeof item === "object") {
+      item.warehouseId = batchSetWarehouseId;
+    }
+  });
+  batchSetWarehouseVisible.value =false;
+  // 提示操作成功
+  ElMessage.success("仓库批量设置成功");
+}
 
 // 选择商品 start
 const showAddItem = () => {
