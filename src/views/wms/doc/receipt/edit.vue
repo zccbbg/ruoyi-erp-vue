@@ -302,8 +302,12 @@ const doWarehousing = async () => {
     }
     if (form.value.details?.length) {
       const invalidQtyList = form.value.details.filter(it => !it.qty)
+      const invalidWarehouseList = form.value.details.filter(it => !it.warehouseId)
       if (invalidQtyList?.length) {
-        return ElMessage.error('请选择数量')
+        return ElMessage.error('请设置商品明细中商品数量')
+      }
+      if(invalidWarehouseList?.length){
+        return ElMessage.error('请设置商品明细中商品仓库')
       }
     }
     const params = getParamsBeforeSave(1);
