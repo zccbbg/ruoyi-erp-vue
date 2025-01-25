@@ -91,10 +91,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="单号/业务单号" align="left" min-width="120">
-          <template #default="{ row }">
-            <div>单号：{{ row.docNo }}</div>
-          </template>
+        <el-table-column label="单号" align="left" min-width="60" prop="docNo">
         </el-table-column>
         <el-table-column label="仓库" align="left">
           <template #default="{ row }">
@@ -140,10 +137,10 @@
                 :width="300"
                 trigger="hover"
                 :disabled="scope.row.checkedStatus === 0"
-                :content="'入库单【' + scope.row.docNo + '】已' + (scope.row.checkedStatus === 1 ? '入库' : '作废') + '，无法修改！' "
+                :content="'入库单【' + scope.row.docNo + '】已入库，无法修改！' "
               >
                 <template #reference>
-                  <el-button link type="primary" @click="handleUpdate(scope.row)" v-hasPermi="['wms:receipt:all']" :disabled="[-1, 1].includes(scope.row.checkedStatus)">修改</el-button>
+                  <el-button link type="primary" @click="handleUpdate(scope.row)" v-hasPermi="['wms:receipt:all']" :disabled="[ 1].includes(scope.row.checkedStatus)">修改</el-button>
                 </template>
               </el-popover>
               <el-button link type="primary" @click="handleGoDetail(scope.row)" v-hasPermi="['wms:receipt:all']">{{ expandedRowKeys.includes(scope.row.id) ? '收起' : '查看' }}</el-button>
@@ -154,7 +151,7 @@
                 title="提示"
                 :width="300"
                 trigger="hover"
-                :disabled="[-1, 0].includes(scope.row.checkedStatus)"
+                :disabled="[0].includes(scope.row.checkedStatus)"
                 :content="'入库单【' + scope.row.docNo + '】已入库，无法删除！' "
               >
                 <template #reference>
@@ -269,14 +266,7 @@ function handleUpdate(row) {
 
 function handleGoDetail(row) {
   const index = expandedRowKeys.value.indexOf(row.id)
-  if (index !== -1) {
-    // 收起
-    expandedRowKeys.value.splice(index, 1)
-  } else {
-    // 展开
-    expandedRowKeys.value.push(row.id)
-    loadReceiptDocDetail(row)
-  }
+  expandedRowKeys.value.splice(index, 1)
 }
 
 /** 导出按钮操作 */
