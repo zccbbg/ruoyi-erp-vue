@@ -2,11 +2,18 @@
   <el-drawer :model-value="show" title="选择库存" @close="handleCancelClick" :size="size" :close-on-click-modal="false"
              append-to-body>
     <el-form :inline="true" label-width="68px">
+      <el-form-item label="仓库">
+        <el-select v-model="query.warehouseId" placeholder="请选择仓库" clearable
+                   filterable>
+          <el-option v-for="item in useBasicStore().warehouseList" :key="item.id" :label="item.warehouseName"
+                     :value="item.id"/>
+        </el-select>
+      </el-form-item>
       <el-form-item label="商品名称">
-        <el-input v-model="query.itemName" clearable placeholder="商品名称"></el-input>
+        <el-input v-model="query.goodsName" clearable placeholder="商品名称"></el-input>
       </el-form-item>
       <el-form-item label="商品编号">
-        <el-input class="w200" v-model="query.itemCode" clearable placeholder="商品编号"></el-input>
+        <el-input class="w200" v-model="query.goodsNo" clearable placeholder="商品编号"></el-input>
       </el-form-item>
       <el-form-item label="规格名称">
         <el-input class="w200" v-model="query.skuName" clearable placeholder="规格名称"></el-input>
@@ -21,23 +28,28 @@
     <el-table :data="list" @selection-change="handleSelectionChange" border :row-key="getRowKey" empty-text="暂无库存"
               v-loading="loading" ref="inventorySelectFormRef" cell-class-name="my-cell" class="mt20">
       <el-table-column type="selection" width="55" :reserve-selection="true" :selectable="judgeSelectable"/>
+      <el-table-column label="仓库" align="left">
+        <template #default="{ row }">
+          <div>{{ useBasicStore().warehouseMap.get(row.warehouseId)?.warehouseName }}</div>
+        </template>
+      </el-table-column>
       <el-table-column label="商品信息" prop="itemId">
         <template #default="{ row }">
-          <div>{{ row.item.itemName }}</div>
-          <div v-if="row.item.itemCode">编号：{{ row.item.itemCode }}</div>
-          <div v-if="row.item.itemBrand">品牌：{{ useBasicStore().itemBrandMap.get(row.item.itemBrand).brandName }}</div>
+          <div>{{ row.goods.goodsName }}</div>
+          <div v-if="row.goods.goodsNo">编号：{{ row.goods.goodsNo }}</div>
+          <div v-if="row.goods.brand">品牌：{{ useBasicStore().brandMap.get(row.goods.brand).brandName }}</div>
         </template>
       </el-table-column>
       <el-table-column label="规格信息">
         <template #default="{ row }">
-          <div>{{ row.itemSku.skuName }}</div>
-          <div v-if="row.itemSku.skuCode">编号：{{ row.itemSku.skuCode }}</div>
-          <div v-if="row.itemSku.barcode">条码：{{ row.itemSku.barcode }}</div>
+          <div>{{ row.sku.skuName }}</div>
+          <div v-if="row.sku.skuCode">编号：{{ row.sku.skuCode }}</div>
+          <div v-if="row.sku.barcode">条码：{{ row.sku.barcode }}</div>
         </template>
       </el-table-column>
       <el-table-column label="剩余库存" prop="quantity" align="right">
         <template #default="{ row }">
-          <el-statistic :value="Number(row.quantity)" :precision="0"/>
+          <el-statistic :value="Number(row.qty)" :precision="0"/>
         </template>
       </el-table-column>
     </el-table>
@@ -80,12 +92,11 @@ const router = useRouter()
 const loading = ref(false)
 const deptOptions = ref([]);
 const query = reactive({
-  itemName: '',
-  itemCode: '',
+  goodsName: '',
+  goodsNo: '',
   skuName: '',
   skuCode: '',
   minQuantity: 1,
-  areaId: null,
   warehouseId: null
 });
 const selectInventoryVoCheck = ref([])
