@@ -241,7 +241,7 @@ function resetQuery() {
 
 /** 新增按钮操作 */
 function handleAdd() {
-  proxy.$router.push({ path: "/shipmentEdit" });
+  proxy.$router.push({ path: "/wms/shipmentEdit" });
 }
 
 /** 删除按钮操作 */
@@ -259,7 +259,7 @@ function handleDelete(row) {
 }
 
 function handleUpdate(row) {
-  proxy.$router.push({ path: "/shipmentEdit",  query: { id: row.id } });
+  proxy.$router.push({ path: "/wms/shipmentEdit",  query: { id: row.id } });
 }
 
 function handleGoDetail(row) {
