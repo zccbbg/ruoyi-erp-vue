@@ -61,11 +61,16 @@ router.beforeEach((to, from, next) => {
 })
 
 async function initData() {
-  await useBasicStore().getWarehouseList()
-  await useBasicStore().getMerchantList()
-  await useBasicStore().getCategoryList ()
-  await useBasicStore().getCategoryTreeList ()
-  await useBasicStore().getBrandList ()
+  try{
+    await useBasicStore().getWarehouseList()
+    await useBasicStore().getMerchantList()
+    await useBasicStore().getCategoryList ()
+    await useBasicStore().getCategoryTreeList ()
+    await useBasicStore().getBrandList ()
+  }catch (error) {
+    console.error("Error during initData:", error)
+    // 可以在这里执行额外的错误处理逻辑，例如通知用户或记录日志
+  }
 }
 
 router.afterEach(() => {
