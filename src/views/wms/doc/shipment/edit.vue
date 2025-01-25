@@ -188,8 +188,8 @@
 
 <script setup name="ShipmentOrderEdit">
 import {computed, getCurrentInstance, onMounted, reactive, ref, toRef, toRefs, watch} from "vue";
-import {addShipmentOrder, getShipmentOrder, updateShipmentOrder, shipment} from "@/api/wms/shipmentOrder";
-import {delShipmentOrderDetail} from "@/api/wms/shipmentOrderDetail";
+import {addShipmentOrder, getShipmentOrder, updateShipmentOrder, shipment} from "@/api/wms/shipmentDoc";
+import {delShipmentOrderDetail} from "@/api/wms/shipmentDocDetail";
 import {ElMessage, ElMessageBox} from "element-plus";
 import {useRoute} from "vue-router";
 import {useBasicStore} from '@/store/modules/basic'
@@ -236,7 +236,7 @@ const cancel = async () => {
   close()
 }
 const close = () => {
-  const obj = {path: "/shipmentOrder"};
+  const obj = {path: "/shipment"};
   proxy?.$tab.closeOpenPage(obj);
 }
 const inventorySelectShow = ref(false)

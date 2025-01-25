@@ -48,7 +48,7 @@ export default {
           "field": "orderNo"
         }, {
           "text": "盘库类型",
-          "field": "shipmentOrderType"
+          "field": "shipmentType"
         }, {
           "text": "盘库状态",
           "field": "orderStatus"
@@ -92,7 +92,7 @@ export default {
           "field": "orderNo"
         }, {
           "text": "盘库类型",
-          "field": "shipmentOrderType"
+          "field": "shipmentType"
         }, {
           "text": "盘库状态",
           "field": "orderStatus"
@@ -134,7 +134,7 @@ export default {
           "field": "orderNo"
         }, {
           "text": "盘库类型",
-          "field": "shipmentOrderType"
+          "field": "shipmentType"
         }, {
           "text": "盘库状态",
           "field": "orderStatus"
@@ -172,7 +172,7 @@ export default {
           "field": "orderNo"
         }, {
           "text": "盘库类型",
-          "field": "shipmentOrderType"
+          "field": "shipmentType"
         }, {
           "text": "盘库状态",
           "field": "orderStatus"
@@ -210,7 +210,7 @@ export default {
           "field": "orderNo"
         }, {
           "text": "盘库类型",
-          "field": "shipmentOrderType"
+          "field": "shipmentType"
         }, {
           "text": "盘库状态",
           "field": "orderStatus"
@@ -248,7 +248,7 @@ export default {
           "field": "orderNo"
         }, {
           "text": "盘库类型",
-          "field": "shipmentOrderType"
+          "field": "shipmentType"
         }, {
           "text": "盘库状态",
           "field": "orderStatus"
@@ -290,7 +290,7 @@ export default {
           "field": "orderNo"
         }, {
           "text": "盘库类型",
-          "field": "shipmentOrderType"
+          "field": "shipmentType"
         }, {
           "text": "盘库状态",
           "field": "orderStatus"
@@ -328,7 +328,7 @@ export default {
           "field": "orderNo"
         }, {
           "text": "盘库类型",
-          "field": "shipmentOrderType"
+          "field": "shipmentType"
         }, {
           "text": "盘库状态",
           "field": "orderStatus"
@@ -370,7 +370,7 @@ export default {
           "field": "orderNo"
         }, {
           "text": "盘库类型",
-          "field": "shipmentOrderType"
+          "field": "shipmentType"
         }, {
           "text": "盘库状态",
           "field": "orderStatus"

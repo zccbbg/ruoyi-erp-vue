@@ -187,7 +187,7 @@ const loading = ref(false)
 const initFormData = {
   id: undefined,
   orderNo: undefined,
-  shipmentOrderStatus: 0,
+  shipmentStatus: 0,
   remark: undefined,
   totalAmount: undefined,
   sourceWarehouseId: undefined,

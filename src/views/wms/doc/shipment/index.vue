@@ -73,7 +73,7 @@
           >新增</el-button>
         </el-col>
       </el-row>
-      <el-table v-loading="loading" :data="shipmentOrderList" border class="mt20"
+      <el-table v-loading="loading" :data="shipmentList" border class="mt20"
                 @expand-change="handleExpandExchange"
                 :row-key="getRowKey"
                 :expand-row-keys="expandedRowKeys"
@@ -211,15 +211,15 @@
 </template>
 
 <script setup name="ShipmentOrder">
-import {listShipmentOrder, delShipmentOrder, getShipmentOrder} from "@/api/wms/shipmentOrder";
-import {listByShipmentOrderId} from "@/api/wms/shipmentOrderDetail";
+import {listShipmentOrder, delShipmentOrder, getShipmentOrder} from "@/api/wms/shipmentDoc";
+import {listByShipmentOrderId} from "@/api/wms/shipmentDocDetail";
 import {getCurrentInstance, reactive, ref, toRefs} from "vue";
 import {useBasicStore} from "../../../../store/modules/basic";
 import shipmentPanel from "@/components/PrintTemplate/shipment-panel";
 
 const { proxy } = getCurrentInstance();
 const { wms_shipment_status, wms_shipment_type} = proxy.useDict("wms_shipment_status", "wms_shipment_type");
-const shipmentOrderList = ref([]);
+const shipmentList = ref([]);
 const open = ref(false);
 const buttonLoading = ref(false);
 const loading = ref(true);
@@ -256,7 +256,7 @@ function getList() {
     query.optType = null
   }
   listShipmentOrder(query).then(response => {
-    shipmentOrderList.value = response.rows;
+    shipmentList.value = response.rows;
     total.value = response.total;
     for (let i = 0; i < total; i++) {
       detailLoading.value.push(false)
@@ -280,7 +280,7 @@ function resetQuery() {
 
 /** 新增按钮操作 */
 function handleAdd() {
-  proxy.$router.push({ path: "/shipmentOrderEdit" });
+  proxy.$router.push({ path: "/shipmentEdit" });
 }
 
 /** 删除按钮操作 */
@@ -298,7 +298,7 @@ function handleDelete(row) {
 }
 
 function handleUpdate(row) {
-  proxy.$router.push({ path: "/shipmentOrderEdit",  query: { id: row.id } });
+  proxy.$router.push({ path: "/shipmentEdit",  query: { id: row.id } });
 }
 
 function handleGoDetail(row) {
@@ -316,10 +316,10 @@ function handleGoDetail(row) {
 /** 导出按钮操作 */
 async function handlePrint(row) {
   const res = await getShipmentOrder(row.id)
-  const shipmentOrder = res.data
+  const shipment = res.data
   let table = []
-  if (shipmentOrder.details?.length) {
-    table = shipmentOrder.details.map(detail => {
+  if (shipment.details?.length) {
+    table = shipment.details.map(detail => {
       return {
         itemName: detail.item.itemName,
         skuName: detail.itemSku.skuName,
@@ -329,19 +329,19 @@ async function handlePrint(row) {
     })
   }
   const printData = {
-    orderNo: shipmentOrder.orderNo,
-    optType: proxy.selectDictLabel(wms_shipment_type.value, shipmentOrder.optType),
-    orderStatus: proxy.selectDictLabel(wms_shipment_status.value, shipmentOrder.orderStatus),
-    merchantName: useBasicStore().merchantMap.get(shipmentOrder.merchantId)?.merchantName,
-    bizOrderNo: shipmentOrder.bizOrderNo,
-    warehouseName: useBasicStore().warehouseMap.get(shipmentOrder.warehouseId)?.warehouseName,
-    totalQuantity: Number(shipmentOrder.totalQuantity).toFixed(0),
-    totalAmount: ((shipmentOrder.totalAmount || shipmentOrder.totalAmount === 0) ? (shipmentOrder.totalAmount + '元') : ''),
-    createBy: shipmentOrder.createBy,
-    createTime: proxy.parseTime(shipmentOrder.createTime, '{mm}-{dd} {hh}:{ii}'),
-    updateBy: shipmentOrder.updateBy,
-    updateTime: proxy.parseTime(shipmentOrder.updateTime, '{mm}-{dd} {hh}:{ii}'),
-    remark: shipmentOrder.remark,
+    orderNo: shipment.orderNo,
+    optType: proxy.selectDictLabel(wms_shipment_type.value, shipment.optType),
+    orderStatus: proxy.selectDictLabel(wms_shipment_status.value, shipment.orderStatus),
+    merchantName: useBasicStore().merchantMap.get(shipment.merchantId)?.merchantName,
+    bizOrderNo: shipment.bizOrderNo,
+    warehouseName: useBasicStore().warehouseMap.get(shipment.warehouseId)?.warehouseName,
+    totalQuantity: Number(shipment.totalQuantity).toFixed(0),
+    totalAmount: ((shipment.totalAmount || shipment.totalAmount === 0) ? (shipment.totalAmount + '元') : ''),
+    createBy: shipment.createBy,
+    createTime: proxy.parseTime(shipment.createTime, '{mm}-{dd} {hh}:{ii}'),
+    updateBy: shipment.updateBy,
+    updateTime: proxy.parseTime(shipment.updateTime, '{mm}-{dd} {hh}:{ii}'),
+    remark: shipment.remark,
     table
   }
   let printTemplate = new proxy.$hiprint.PrintTemplate({template: shipmentPanel})
@@ -362,7 +362,7 @@ function handleExpandExchange(value, expandedRows) {
 }
 
 function loadShipmentOrderDetail(row) {
-  const index = shipmentOrderList.value.findIndex(it => it.id === row.id)
+  const index = shipmentList.value.findIndex(it => it.id === row.id)
   detailLoading.value[index] = true
   listByShipmentOrderId(row.id).then(res => {
     if (res.data?.length) {
@@ -372,7 +372,7 @@ function loadShipmentOrderDetail(row) {
           warehouseName: useBasicStore().warehouseMap.get(it.warehouseId)?.warehouseName
         }
       })
-      shipmentOrderList.value[index].details = details
+      shipmentList.value[index].details = details
     }
   }).finally(() => {
     detailLoading.value[index] = false
