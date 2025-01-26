@@ -2,8 +2,8 @@
   <div class="app-container">
     <el-card>
       <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="98px">
-        <el-form-item label="调拨状态" prop="orderStatus">
-          <el-radio-group v-model="queryParams.orderStatus" @change="handleQuery">
+        <el-form-item label="调拨状态" prop="checkedStatus">
+          <el-radio-group v-model="queryParams.checkedStatus" @change="handleQuery">
             <el-radio-button
               :key="-2"
               :label="-2"
@@ -63,17 +63,17 @@
               <el-table :data="props.row.details" v-loading="detailLoading[props.$index]" empty-text="暂无商品明细">
                 <el-table-column label="商品名称">
                   <template #default="{ row }">
-                    <div>{{ row?.item?.itemName }}</div>
+                    <div>{{ row?.item?.goodsName }}</div>
                   </template>
                 </el-table-column>
                 <el-table-column label="规格名称">
                   <template #default="{ row }">
-                    <div>{{ row?.itemSku?.skuName }}</div>
+                    <div>{{ row?.sku?.skuName }}</div>
                   </template>
                 </el-table-column>
-                <el-table-column label="数量" prop="quantity" align="right">
+                <el-table-column label="数量" prop="qty" align="right">
                   <template #default="{ row }">
-                    <el-statistic :value="Number(row.quantity)" :precision="0"/>
+                    <el-statistic :value="Number(row.qty)" :precision="0"/>
                   </template>
                 </el-table-column>
                 <el-table-column label="金额(元)" align="right">
@@ -97,20 +97,20 @@
             <div>{{ useBasicStore().warehouseMap.get(row.targetWarehouseId)?.warehouseName }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="调拨状态" align="center" prop="orderStatus" width="80">
+        <el-table-column label="调拨状态" align="center" prop="checkedStatus" width="80">
           <template #default="{ row }">
-            <dict-tag :options="wms_movement_status" :value="row.orderStatus" />
+            <dict-tag :options="wms_movement_status" :value="row.checkedStatus" />
           </template>
         </el-table-column>
         <el-table-column label="总数量/总金额(元)" align="left">
           <template #default="{ row }">
             <div class="flex-space-between">
               <span>数量：</span>
-              <el-statistic :value="Number(row.totalQuantity)" :precision="0"/>
+              <el-statistic :value="Number(row.goodsQuantity)" :precision="0"/>
             </div>
-            <div class="flex-space-between" v-if="row.totalAmount || row.totalAmount === 0">
+            <div class="flex-space-between" v-if="row.goodsAmount || row.goodsAmount === 0">
               <span>金额：</span>
-              <el-statistic :value="Number(row.totalAmount)" :precision="2"/>
+              <el-statistic :value="Number(row.goodsAmount)" :precision="2"/>
             </div>
           </template>
         </el-table-column>
@@ -135,11 +135,11 @@
                 title="提示"
                 :width="300"
                 trigger="hover"
-                :disabled="scope.row.orderStatus === 0"
-                :content="'调拨单【' + scope.row.docNo + '】已' + (scope.row.orderStatus === 1 ? '调拨' : '作废') + '，无法修改！' "
+                :disabled="scope.row.checkedStatus === 0"
+                :content="'调拨单【' + scope.row.docNo + '】已' + (scope.row.checkedStatus === 1 ? '调拨' : '作废') + '，无法修改！' "
               >
                 <template #reference>
-                  <el-button link type="primary" @click="handleUpdate(scope.row)" v-hasPermi="['wms:movement:all']" :disabled="[-1, 1].includes(scope.row.orderStatus)">修改</el-button>
+                  <el-button link type="primary" @click="handleUpdate(scope.row)" v-hasPermi="['wms:movement:all']" :disabled="[-1, 1].includes(scope.row.checkedStatus)">修改</el-button>
                 </template>
               </el-popover>
               <el-button link type="primary" @click="handleGoDetail(scope.row)" v-hasPermi="['wms:movement:all']">{{ expandedRowKeys.includes(scope.row.id) ? '收起' : '查看' }}</el-button>
@@ -150,11 +150,11 @@
                 title="提示"
                 :width="300"
                 trigger="hover"
-                :disabled="[-1, 0].includes(scope.row.orderStatus)"
+                :disabled="[-1, 0].includes(scope.row.checkedStatus)"
                 :content="'调拨单【' + scope.row.docNo + '】已调拨，无法删除！' "
               >
                 <template #reference>
-                  <el-button link type="danger" @click="handleDelete(scope.row)" v-hasPermi="['wms:movement:all']" :disabled="scope.row.orderStatus === 1">删除</el-button>
+                  <el-button link type="danger" @click="handleDelete(scope.row)" v-hasPermi="['wms:movement:all']" :disabled="scope.row.checkedStatus === 1">删除</el-button>
                 </template>
               </el-popover>
               <el-button link type="primary" @click="handlePrint(scope.row)" v-hasPermi="['wms:movement:all']">打印</el-button>
@@ -177,8 +177,8 @@
 </template>
 
 <script setup name="MovementOrder">
-import {listMovementOrder, delMovementOrder, getMovementOrder} from "@/api/wms/movement";
-import {listByMovementOrderId} from "@/api/wms/movementDetail";
+import {listMovementOrder, delMovementOrder, getMovementOrder} from "@/api/wms/movementDoc";
+import {listByMovementOrderId} from "@/api/wms/movementDetailDoc";
 import {getCurrentInstance, reactive, ref, toRefs} from "vue";
 import {useBasicStore} from "../../../../store/modules/basic";
 import {ElMessageBox} from "element-plus";
@@ -202,7 +202,7 @@ const data = reactive({
     pageNum: 1,
     pageSize: 10,
     docNo: undefined,
-    orderStatus: -2,
+    checkedStatus: -2,
   },
 });
 
@@ -212,8 +212,8 @@ const { queryParams } = toRefs(data);
 function getList() {
   loading.value = true;
   const query = {...queryParams.value}
-  if (query.orderStatus === -2) {
-    query.orderStatus = null
+  if (query.checkedStatus === -2) {
+    query.checkedStatus = null
   }
   if (query.sourcePlace?.length) {
     query.warehouseId = query.sourcePlace[0]
@@ -287,18 +287,18 @@ async function handlePrint(row) {
   if (movement.details?.length) {
     table = movement.details.map(detail => {
       return {
-        itemName: detail.item.itemName,
-        skuName: detail.itemSku.skuName,
-        quantity: Number(detail.quantity).toFixed(0)
+        goodsName: detail.goods.goodsName,
+        skuName: detail.sku.skuName,
+        qty: Number(detail.qty).toFixed(0)
       }
     })
   }
   const printData = {
     docNo: movement.docNo,
-    orderStatus: proxy.selectDictLabel(wms_movement_status.value, movement.orderStatus),
+    checkedStatus: proxy.selectDictLabel(wms_movement_status.value, movement.checkedStatus),
     sourceWarehouseName: useBasicStore().warehouseMap.get(movement.warehouseId)?.warehouseName,
     targetWarehouseName: useBasicStore().warehouseMap.get(movement.targetWarehouseId)?.warehouseName,
-    totalQuantity: Number(movement.totalQuantity).toFixed(0),
+    goodsQuantity: Number(movement.goodsQuantity).toFixed(0),
     createBy: movement.createBy,
     createTime: proxy.parseTime(movement.createTime, '{mm}-{dd} {hh}:{ii}'),
     updateBy: movement.updateBy,

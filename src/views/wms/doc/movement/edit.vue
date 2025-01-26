@@ -94,27 +94,27 @@
             </el-popover>
           </div>
           <el-table :data="form.details" border empty-text="暂无商品明细">
-            <el-table-column label="商品信息" prop="itemSku.itemName">
+            <el-table-column label="商品信息" prop="sku.goodsName">
               <template #default="{ row }">
                 <div>{{
-                    row.item.itemName + (row.item.itemCode ? ('(' + row.item.itemCode + ')') : '')
+                    row.goods.goodsName + (row.goods.itemCode ? ('(' + row.goods.itemCode + ')') : '')
                   }}
                 </div>
-                <div v-if="row.item.itemBrand">
-                  品牌：{{ useBasicStore().itemBrandMap.get(row.item.itemBrand).brandName }}
+                <div v-if="row.goods.itemBrand">
+                  品牌：{{ useBasicStore().itemBrandMap.get(row.goods.itemBrand).brandName }}
                 </div>
               </template>
             </el-table-column>
             <el-table-column label="规格信息">
               <template #default="{ row }">
-                <div>{{ row.itemSku.skuName}}</div>
-                <div v-if="row.itemSku.barcode">条码：{{ row.itemSku.barcode }}</div>
+                <div>{{ row.sku.skuName}}</div>
+                <div v-if="row.sku.barcode">条码：{{ row.sku.barcode }}</div>
               </template>
             </el-table-column>
-            <el-table-column label="调拨数量" prop="quantity" width="180" align="center">
+            <el-table-column label="调拨数量" prop="qty" width="180" align="center">
               <template #default="scope">
                 <el-input-number
-                  v-model="scope.row.quantity"
+                  v-model="scope.row.qty"
                   placeholder="调拨数量"
                   :min="1"
                   :precision="0"
@@ -122,10 +122,10 @@
                 ></el-input-number>
               </template>
             </el-table-column>
-            <el-table-column label="金额" prop="amount" width="180" align="center">
+            <el-table-column label="金额" prop="totalAmount" width="180" align="center">
               <template #default="scope">
                 <el-input-number
-                  v-model="scope.row.amount"
+                  v-model="scope.row.totalAmount"
                   placeholder="金额"
                   :precision="2"
                   :min="0"
@@ -171,8 +171,8 @@
 
 <script setup name="MovementOrderEdit">
 import {computed, getCurrentInstance, onMounted, reactive, ref, toRef, toRefs, watch} from "vue";
-import {addMovementOrder, getMovementOrder, updateMovementOrder, movement} from "@/api/wms/movement";
-import {delMovementOrderDetail} from "@/api/wms/movementDetail";
+import {addMovementOrder, getMovementOrder, updateMovementOrder, movement} from "@/api/wms/movementDoc";
+import {delMovementOrderDetail} from "@/api/wms/movementDetailDoc";
 import {ElMessage, ElMessageBox} from "element-plus";
 import {useRoute} from "vue-router";
 import {useBasicStore} from '@/store/modules/basic'
@@ -187,7 +187,6 @@ const loading = ref(false)
 const initFormData = {
   id: undefined,
   docNo: undefined,
-  shipmentStatus: 0,
   remark: undefined,
   totalAmount: undefined,
   warehouseId: undefined,
@@ -235,11 +234,11 @@ const handleOkClick = (item) => {
     if (!form.value.details.find(detail => getSourceWarehouseAndSkuKey(detail) === getWarehouseAndSkuKey(it))) {
       form.value.details.push(
         {
-          itemSku: it.itemSku,
-          item: it.item,
+          sku: it.sku,
+          goods: it.goods,
           skuId: it.skuId,
-          quantity: undefined,
-          amount: undefined,
+          qty: undefined,
+          totalAmount: undefined,
           warehouseId: form.value.warehouseId
         })
     }
@@ -253,11 +252,11 @@ const movementForm = ref()
 const handleAutoCalc = () => {
   let sum = undefined
   form.value.details.forEach(it => {
-    if (it.amount >= 0) {
+    if (it.totalAmount >= 0) {
       if (!sum) {
         sum = 0
       }
-      sum = numSub(sum, -Number(it.amount))
+      sum = numSub(sum, -Number(it.totalAmount))
     }
   })
   form.value.totalAmount = sum
@@ -267,7 +266,7 @@ const save = async () => {
   await proxy?.$modal.confirm('确认暂存调拨单吗？');
   doSave()
 }
-const getParams = (orderStatus) => {
+const getParams = (checkedStatus) => {
   let details = []
   if (form.value.details?.length) {
     // 构建参数
@@ -276,8 +275,8 @@ const getParams = (orderStatus) => {
         id: it.id,
         movementId: form.value.id,
         skuId: it.skuId,
-        quantity: it.quantity,
-        amount: it.amount,
+        qty: it.qty,
+        totalAmount: it.totalAmount,
         warehouseId: form.value.warehouseId,
         targetWarehouseId: form.value.targetWarehouseId,
       }
@@ -286,7 +285,7 @@ const getParams = (orderStatus) => {
   return {
     id: form.value.id,
     docNo: form.value.docNo,
-    orderStatus,
+    checkedStatus,
     remark: form.value.remark,
     totalQuantity: form.value.totalQuantity,
     totalAmount: form.value.totalAmount,
@@ -295,14 +294,14 @@ const getParams = (orderStatus) => {
     details: details
   }
 }
-const doSave = (orderStatus = 0) => {
+const doSave = (checkedStatus = 0) => {
   movementForm.value?.validate((valid) => {
     // 校验
     if (!valid) {
       return ElMessage.error('请填写必填项')
     }
 
-    const params = getParams(orderStatus)
+    const params = getParams(checkedStatus)
     loading.value = true
     if (params.id) {
       updateMovementOrder(params).then((res) => {
@@ -340,7 +339,7 @@ const doMovement = async () => {
     if (!form.value.details?.length) {
       return ElMessage.error('请选择商品')
     }
-    const invalidQuantityList = form.value.details.filter(it => !it.quantity)
+    const invalidQuantityList = form.value.details.filter(it => !it.qty)
     if (invalidQuantityList?.length) {
       return ElMessage.error('请选择调拨数量')
     }
@@ -415,8 +414,8 @@ const handleChangeTargetWarehouse = (e) => {
 const handleChangeQuantity = () => {
   let sum = 0
   form.value.details.forEach(it => {
-    if (it.quantity) {
-      sum += Number(it.quantity)
+    if (it.qty) {
+      sum += Number(it.qty)
     }
   })
   form.value.totalQuantity = sum
