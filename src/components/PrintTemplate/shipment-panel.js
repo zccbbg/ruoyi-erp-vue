@@ -18,14 +18,14 @@ export default {
         "textType": "barcode",
         "fields": [{
           "text": "出库单号",
-          "field": "orderNo"
+          "field": "docNo"
         },
           {
             "text": "业务订单号",
             "field": "bizOrderNo"
           }
         ],
-        "field": "orderNo",
+        "field": "docNo",
         "coordinateSync": false,
         "widthHeightSync": false
       },
@@ -42,7 +42,7 @@ export default {
           "width": 350,
           "fields": [{
             "text": "出库单号",
-            "field": "orderNo"
+            "field": "docNo"
           },
             {
               "text": "客户",
@@ -74,7 +74,7 @@ export default {
             }
           ],
           "title": "出库单",
-          "field": "orderNo",
+          "field": "docNo",
           "coordinateSync": false,
           "widthHeightSync": false,
           "fontSize": 18,
@@ -95,7 +95,7 @@ export default {
           "width": 200,
           "fields": [{
             "text": "入库单号",
-            "field": "orderNo"
+            "field": "docNo"
           },
             {
               "text": "客户",
@@ -145,7 +145,7 @@ export default {
           "width": 200,
           "fields": [{
             "text": "入库单号",
-            "field": "orderNo"
+            "field": "docNo"
           },
             {
               "text": "客户",
@@ -191,7 +191,7 @@ export default {
           "width": 200,
           "fields": [{
             "text": "入库单号",
-            "field": "orderNo"
+            "field": "docNo"
           },
             {
               "text": "客户",
@@ -237,7 +237,7 @@ export default {
           "width": 150,
           "fields": [{
             "text": "入库单号",
-            "field": "orderNo"
+            "field": "docNo"
           },
             {
               "text": "客户",
@@ -287,7 +287,7 @@ export default {
           "width": 200,
           "fields": [{
             "text": "入库单号",
-            "field": "orderNo"
+            "field": "docNo"
           },
             {
               "text": "客户",
@@ -333,7 +333,7 @@ export default {
           "width": 200,
           "fields": [{
             "text": "入库单号",
-            "field": "orderNo"
+            "field": "docNo"
           },
             {
               "text": "客户",
@@ -379,7 +379,7 @@ export default {
           "width": 150,
           "fields": [{
             "text": "入库单号",
-            "field": "orderNo"
+            "field": "docNo"
           },
             {
               "text": "客户",
@@ -429,7 +429,7 @@ export default {
           "width": 200,
           "fields": [{
             "text": "入库单号",
-            "field": "orderNo"
+            "field": "docNo"
           },
             {
               "text": "客户",
@@ -475,7 +475,7 @@ export default {
           "width": 150,
           "fields": [{
             "text": "入库单号",
-            "field": "orderNo"
+            "field": "docNo"
           },
             {
               "text": "客户",
@@ -525,7 +525,7 @@ export default {
           "width": 200,
           "fields": [{
             "text": "入库单号",
-            "field": "orderNo"
+            "field": "docNo"
           },
             {
               "text": "客户",
@@ -571,7 +571,7 @@ export default {
           "width": 150,
           "fields": [{
             "text": "入库单号",
-            "field": "orderNo"
+            "field": "docNo"
           },
             {
               "text": "客户",
@@ -698,7 +698,7 @@ export default {
           "width": 500,
           "fields": [{
             "text": "入库单号",
-            "field": "orderNo"
+            "field": "docNo"
           },
             {
               "text": "客户",

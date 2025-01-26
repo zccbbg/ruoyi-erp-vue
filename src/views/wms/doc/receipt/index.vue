@@ -19,7 +19,7 @@
             </el-radio-button>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="入库单号" prop="orderNo">
+        <el-form-item label="入库单号" prop="docNo">
           <el-input
             v-model="queryParams.docNo"
             placeholder="请输入入库单号"

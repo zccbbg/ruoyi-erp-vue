@@ -21,8 +21,8 @@
         <el-form label-width="108px" :model="form" ref="checkForm" :rules="rules">
           <el-row :gutter="24">
             <el-col :span="11">
-              <el-form-item label="盘库单号" prop="orderNo">
-                <el-input class="w200" v-model="form.orderNo" placeholder="盘库单号"
+              <el-form-item label="盘库单号" prop="docNo">
+                <el-input class="w200" v-model="form.docNo" placeholder="盘库单号"
                           :disabled="form.id"></el-input>
               </el-form-item>
             </el-col>
@@ -175,7 +175,7 @@ const loading = ref(false)
 const selectedSku = ref([])
 const initFormData = {
   id: undefined,
-  orderNo: undefined,
+  docNo: undefined,
   orderStatus: 0,
   remark: undefined,
   warehouseId: undefined,
@@ -185,7 +185,7 @@ const initFormData = {
 const data = reactive({
   form: {...initFormData},
   rules: {
-    orderNo: [
+    docNo: [
       {required: true, message: "盘库单号不能为空", trigger: "blur"}
     ],
     warehouseId: [
@@ -291,7 +291,7 @@ const getParams = (orderStatus) => {
   }
   return  {
     id: form.value.id,
-    orderNo: form.value.orderNo,
+    docNo: form.value.docNo,
     orderStatus,
     remark: form.value.remark,
     totalQuantity: form.value.totalQuantity,

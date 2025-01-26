@@ -3,5 +3,5 @@ export function getWarehouseAndSkuKey (row) {
 }
 
 export function getSourceWarehouseAndSkuKey (row) {
-  return row.sourceWarehouseId + '_' + row.skuId
+  return row.warehouseId + '_' + row.skuId
 }

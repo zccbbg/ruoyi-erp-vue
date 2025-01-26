@@ -5,14 +5,14 @@
         <el-form label-width="108px" :model="form" ref="movementForm" :rules="rules">
           <el-row :gutter="24">
             <el-col :span="11">
-              <el-form-item label="调拨单号" prop="orderNo">
-                <el-input class="w200" v-model="form.orderNo" placeholder="调拨单号"
+              <el-form-item label="调拨单号" prop="docNo">
+                <el-input class="w200" v-model="form.docNo" placeholder="调拨单号"
                           :disabled="form.id"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="源仓库" prop="sourceWarehouseId">
-                <el-select v-model="form.sourceWarehouseId" placeholder="请选择源仓库" @change="handleChangeSourceWarehouse"
+              <el-form-item label="源仓库" prop="warehouseId">
+                <el-select v-model="form.warehouseId" placeholder="请选择源仓库" @change="handleChangeSourceWarehouse"
                            filterable>
                   <el-option v-for="item in useBasicStore().warehouseList" :key="item.id" :label="item.warehouseName"
                              :value="item.id"/>
@@ -83,12 +83,12 @@
               title="提示"
               :width="200"
               trigger="hover"
-              :disabled="form.sourceWarehouseId && form.targetWarehouseId"
+              :disabled="form.warehouseId && form.targetWarehouseId"
               content="请先选择源仓库和目标仓库！"
             >
               <template #reference>
                 <el-button type="primary" plain="plain" size="default" @click="showAddItem" icon="Plus"
-                           :disabled="!form.sourceWarehouseId || !form.targetWarehouseId">添加商品
+                           :disabled="!form.warehouseId || !form.targetWarehouseId">添加商品
                 </el-button>
               </template>
             </el-popover>
@@ -150,7 +150,7 @@
         @handleCancelClick="inventorySelectShow = false"
         :size="'90%'"
         :select-warehouse-disable="false"
-        :warehouse-id="form.sourceWarehouseId"
+        :warehouse-id="form.warehouseId"
         :selected-inventory="selectedInventory"
       />
     </div>
@@ -186,11 +186,11 @@ const {wms_shipment_type} = proxy.useDict("wms_shipment_type");
 const loading = ref(false)
 const initFormData = {
   id: undefined,
-  orderNo: undefined,
+  docNo: undefined,
   shipmentStatus: 0,
   remark: undefined,
   totalAmount: undefined,
-  sourceWarehouseId: undefined,
+  warehouseId: undefined,
   targetWarehouseId: undefined,
   totalQuantity: 0,
   details: [],
@@ -200,10 +200,10 @@ const selectedInventory = ref([])
 const data = reactive({
   form: {...initFormData},
   rules: {
-    orderNo: [
+    docNo: [
       {required: true, message: "出库单号不能为空", trigger: "blur"}
     ],
-    sourceWarehouseId: [
+    warehouseId: [
       {required: true, message: "请选择源仓库", trigger: ['blur', 'change']}
     ],
     targetWarehouseId: [
@@ -240,7 +240,7 @@ const handleOkClick = (item) => {
           skuId: it.skuId,
           quantity: undefined,
           amount: undefined,
-          sourceWarehouseId: form.value.sourceWarehouseId
+          warehouseId: form.value.warehouseId
         })
     }
   })
@@ -278,19 +278,19 @@ const getParams = (orderStatus) => {
         skuId: it.skuId,
         quantity: it.quantity,
         amount: it.amount,
-        sourceWarehouseId: form.value.sourceWarehouseId,
+        warehouseId: form.value.warehouseId,
         targetWarehouseId: form.value.targetWarehouseId,
       }
     })
   }
   return {
     id: form.value.id,
-    orderNo: form.value.orderNo,
+    docNo: form.value.docNo,
     orderStatus,
     remark: form.value.remark,
     totalQuantity: form.value.totalQuantity,
     totalAmount: form.value.totalAmount,
-    sourceWarehouseId: form.value.sourceWarehouseId,
+    warehouseId: form.value.warehouseId,
     targetWarehouseId: form.value.targetWarehouseId,
     details: details
   }
@@ -387,12 +387,12 @@ const loadDetail = (id) => {
         return {
           id: it.id,
           skuId: it.skuId,
-          warehouseId: it.sourceWarehouseId
+          warehouseId: it.warehouseId
         }
       })
     }
     form.value = {...response.data}
-    inventorySelectRef.value.setWarehouseId(form.value.sourceWarehouseId)
+    inventorySelectRef.value.setWarehouseId(form.value.warehouseId)
     Promise.resolve();
   }).then(() => {
   }).finally(() => {
@@ -402,7 +402,7 @@ const loadDetail = (id) => {
 
 const handleChangeSourceWarehouse = (e) => {
   form.value.details = []
-  inventorySelectRef.value.setWarehouseId(form.value.sourceWarehouseId)
+  inventorySelectRef.value.setWarehouseId(form.value.warehouseId)
 }
 
 const handleChangeTargetWarehouse = (e) => {

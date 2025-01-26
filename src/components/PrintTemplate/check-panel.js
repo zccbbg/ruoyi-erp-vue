@@ -18,10 +18,10 @@ export default {
         "textType": "barcode",
         "fields": [{
           "text": "调拨单号",
-          "field": "orderNo"
+          "field": "docNo"
         }, {
           "text": "订单号",
-          "field": "orderNo"
+          "field": "docNo"
         }],
         "field": "checkOrderNo",
         "coordinateSync": false,
@@ -39,13 +39,13 @@ export default {
         "width": 350,
         "fields": [{
           "text": "盘库单号",
-          "field": "orderNo"
+          "field": "docNo"
         }, {
           "text": "客户",
           "field": "merchantName"
         }, {
           "text": "订单号",
-          "field": "orderNo"
+          "field": "docNo"
         }, {
           "text": "盘库类型",
           "field": "shipmentType"
@@ -83,13 +83,13 @@ export default {
         "width": 200,
         "fields": [{
           "text": "入库单号",
-          "field": "orderNo"
+          "field": "docNo"
         }, {
           "text": "客户",
           "field": "merchantName"
         }, {
           "text": "订单号",
-          "field": "orderNo"
+          "field": "docNo"
         }, {
           "text": "盘库类型",
           "field": "shipmentType"
@@ -125,13 +125,13 @@ export default {
         "width": 200,
         "fields": [{
           "text": "入库单号",
-          "field": "orderNo"
+          "field": "docNo"
         }, {
           "text": "客户",
           "field": "merchantName"
         }, {
           "text": "订单号",
-          "field": "orderNo"
+          "field": "docNo"
         }, {
           "text": "盘库类型",
           "field": "shipmentType"
@@ -163,13 +163,13 @@ export default {
         "width": 200,
         "fields": [{
           "text": "入库单号",
-          "field": "orderNo"
+          "field": "docNo"
         }, {
           "text": "客户",
           "field": "merchantName"
         }, {
           "text": "订单号",
-          "field": "orderNo"
+          "field": "docNo"
         }, {
           "text": "盘库类型",
           "field": "shipmentType"
@@ -201,13 +201,13 @@ export default {
         "width": 200,
         "fields": [{
           "text": "入库单号",
-          "field": "orderNo"
+          "field": "docNo"
         }, {
           "text": "客户",
           "field": "merchantName"
         }, {
           "text": "订单号",
-          "field": "orderNo"
+          "field": "docNo"
         }, {
           "text": "盘库类型",
           "field": "shipmentType"
@@ -239,13 +239,13 @@ export default {
         "width": 150,
         "fields": [{
           "text": "入库单号",
-          "field": "orderNo"
+          "field": "docNo"
         }, {
           "text": "客户",
           "field": "merchantName"
         }, {
           "text": "订单号",
-          "field": "orderNo"
+          "field": "docNo"
         }, {
           "text": "盘库类型",
           "field": "shipmentType"
@@ -281,13 +281,13 @@ export default {
         "width": 200,
         "fields": [{
           "text": "入库单号",
-          "field": "orderNo"
+          "field": "docNo"
         }, {
           "text": "客户",
           "field": "merchantName"
         }, {
           "text": "订单号",
-          "field": "orderNo"
+          "field": "docNo"
         }, {
           "text": "盘库类型",
           "field": "shipmentType"
@@ -319,13 +319,13 @@ export default {
         "width": 150,
         "fields": [{
           "text": "入库单号",
-          "field": "orderNo"
+          "field": "docNo"
         }, {
           "text": "客户",
           "field": "merchantName"
         }, {
           "text": "订单号",
-          "field": "orderNo"
+          "field": "docNo"
         }, {
           "text": "盘库类型",
           "field": "shipmentType"
@@ -361,13 +361,13 @@ export default {
         "width": 150,
         "fields": [{
           "text": "入库单号",
-          "field": "orderNo"
+          "field": "docNo"
         }, {
           "text": "客户",
           "field": "merchantName"
         }, {
           "text": "订单号",
-          "field": "orderNo"
+          "field": "docNo"
         }, {
           "text": "盘库类型",
           "field": "shipmentType"

@@ -19,9 +19,9 @@
             </el-radio-button>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="调拨单号" prop="orderNo">
+        <el-form-item label="调拨单号" prop="docNo">
           <el-input
-            v-model="queryParams.orderNo"
+            v-model="queryParams.docNo"
             placeholder="请输入调拨单号"
             clearable
             @keyup.enter="handleQuery"
@@ -86,10 +86,10 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="单号" align="left" prop="orderNo" min-width="100"/>
+        <el-table-column label="单号" align="left" prop="docNo" min-width="100"/>
         <el-table-column label="源仓库" align="left">
           <template #default="{ row }">
-            <div>{{ useBasicStore().warehouseMap.get(row.sourceWarehouseId)?.warehouseName }}</div>
+            <div>{{ useBasicStore().warehouseMap.get(row.warehouseId)?.warehouseName }}</div>
           </template>
         </el-table-column>
         <el-table-column label="目标仓库" align="left">
@@ -136,7 +136,7 @@
                 :width="300"
                 trigger="hover"
                 :disabled="scope.row.orderStatus === 0"
-                :content="'调拨单【' + scope.row.orderNo + '】已' + (scope.row.orderStatus === 1 ? '调拨' : '作废') + '，无法修改！' "
+                :content="'调拨单【' + scope.row.docNo + '】已' + (scope.row.orderStatus === 1 ? '调拨' : '作废') + '，无法修改！' "
               >
                 <template #reference>
                   <el-button link type="primary" @click="handleUpdate(scope.row)" v-hasPermi="['wms:movement:all']" :disabled="[-1, 1].includes(scope.row.orderStatus)">修改</el-button>
@@ -151,7 +151,7 @@
                 :width="300"
                 trigger="hover"
                 :disabled="[-1, 0].includes(scope.row.orderStatus)"
-                :content="'调拨单【' + scope.row.orderNo + '】已调拨，无法删除！' "
+                :content="'调拨单【' + scope.row.docNo + '】已调拨，无法删除！' "
               >
                 <template #reference>
                   <el-button link type="danger" @click="handleDelete(scope.row)" v-hasPermi="['wms:movement:all']" :disabled="scope.row.orderStatus === 1">删除</el-button>
@@ -201,7 +201,7 @@ const data = reactive({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
-    orderNo: undefined,
+    docNo: undefined,
     orderStatus: -2,
   },
 });
@@ -216,7 +216,7 @@ function getList() {
     query.orderStatus = null
   }
   if (query.sourcePlace?.length) {
-    query.sourceWarehouseId = query.sourcePlace[0]
+    query.warehouseId = query.sourcePlace[0]
   }
   if (query.targetPlace?.length) {
     query.targetWarehouseId = query.targetPlace[0]
@@ -296,7 +296,7 @@ async function handlePrint(row) {
   const printData = {
     orderNo: movement.orderNo,
     orderStatus: proxy.selectDictLabel(wms_movement_status.value, movement.orderStatus),
-    sourceWarehouseName: useBasicStore().warehouseMap.get(movement.sourceWarehouseId)?.warehouseName,
+    sourceWarehouseName: useBasicStore().warehouseMap.get(movement.warehouseId)?.warehouseName,
     targetWarehouseName: useBasicStore().warehouseMap.get(movement.targetWarehouseId)?.warehouseName,
     totalQuantity: Number(movement.totalQuantity).toFixed(0),
     createBy: movement.createBy,
@@ -333,7 +333,7 @@ function loadMovementOrderDetail(row) {
       const details = res.data.map(it => {
         return {
           ...it,
-          sourceWarehouseName: useBasicStore().warehouseMap.get(it.sourceWarehouseId)?.warehouseName,
+          sourceWarehouseName: useBasicStore().warehouseMap.get(it.warehouseId)?.warehouseName,
           targetWarehouseName: useBasicStore().warehouseMap.get(it.targetWarehouseId)?.warehouseName,
         }
       })

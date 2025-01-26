@@ -19,9 +19,9 @@
             </el-radio-button>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="盘库单号" prop="orderNo">
+        <el-form-item label="盘库单号" prop="docNo">
           <el-input
-            v-model="queryParams.orderNo"
+            v-model="queryParams.docNo"
             placeholder="请输入盘库单号"
             clearable
             @keyup.enter="handleQuery"
@@ -54,7 +54,7 @@
                 empty-text="暂无盘库单"
                 cell-class-name="vertical-top-cell"
       >
-        <el-table-column label="单号" align="left" prop="orderNo" />
+        <el-table-column label="单号" align="left" prop="docNo" />
         <el-table-column label="仓库" align="left" width="200">
           <template #default="{ row }">
             <div>{{ useBasicStore().warehouseMap.get(row.warehouseId)?.warehouseName }}</div>
@@ -93,7 +93,7 @@
                 :width="300"
                 trigger="hover"
                 :disabled="scope.row.orderStatus === 0"
-                :content="'盘库单【' + scope.row.orderNo + '】已' + (scope.row.orderStatus === 1 ? '盘库完成' : '作废') + '，无法修改！' "
+                :content="'盘库单【' + scope.row.docNo + '】已' + (scope.row.orderStatus === 1 ? '盘库完成' : '作废') + '，无法修改！' "
               >
                 <template #reference>
                   <el-button link type="primary" @click="handleUpdate(scope.row)" v-hasPermi="['wms:check:all']" :disabled="[-1, 1].includes(scope.row.orderStatus)">修改</el-button>
@@ -108,7 +108,7 @@
                 :width="300"
                 trigger="hover"
                 :disabled="[-1, 0].includes(scope.row.orderStatus)"
-                :content="'盘库单【' + scope.row.orderNo + '】已盘库完成，无法删除！' "
+                :content="'盘库单【' + scope.row.docNo + '】已盘库完成，无法删除！' "
               >
                 <template #reference>
                   <el-button link type="danger" @click="handleDelete(scope.row)" v-hasPermi="['wms:check:all']" :disabled="scope.row.orderStatus === 1">删除</el-button>
@@ -133,7 +133,7 @@
     <check-order-detail
       ref="checkOrderDetailRef"
       :model-value="watchDetailObj.show"
-      :order-no="watchDetailObj.orderNo"
+      :order-no="watchDetailObj.docNo"
       @handle-cancel-click="watchDetailObj.show = false"
     />
   </div>
@@ -160,13 +160,13 @@ const data = reactive({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
-    orderNo: undefined,
+    docNo: undefined,
     orderStatus: -2,
   },
 });
 const watchDetailObj = ref({
   show: false,
-  orderNo: null
+  docNo: null
 })
 const checkOrderDetailRef = ref(null)
 const { queryParams } = toRefs(data);
@@ -205,7 +205,7 @@ function handleAdd() {
 /** 删除按钮操作 */
 function handleDelete(row) {
   const _ids = row.id || ids.value;
-  proxy.$modal.confirm('确认删除【盘库单【' + row.orderNo + '】吗？').then(function() {
+  proxy.$modal.confirm('确认删除【盘库单【' + row.docNo + '】吗？').then(function() {
     loading.value = true;
     return delCheckOrder(_ids);
   }).then(() => {
@@ -221,7 +221,7 @@ function handleUpdate(row) {
 }
 
 function handleGoDetail(row) {
-  watchDetailObj.value.orderNo = row.orderNo
+  watchDetailObj.value.docNo = row.docNo
   checkOrderDetailRef.value.setCheckOrderId(row.id)
   watchDetailObj.value.show = true
   checkOrderDetailRef.value.handleQuery()
