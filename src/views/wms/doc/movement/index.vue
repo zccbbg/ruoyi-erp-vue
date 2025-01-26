@@ -256,7 +256,7 @@ function resetQuery() {
 
 /** 新增按钮操作 */
 function handleAdd() {
-  proxy.$router.push({ path: "/movementEdit" });
+  proxy.$router.push({ path: "/wms/movementEdit" });
 }
 
 /** 删除按钮操作 */
@@ -274,7 +274,7 @@ function handleDelete(row) {
 }
 
 function handleUpdate(row) {
-  proxy.$router.push({ path: "/movementEdit",  query: { id: row.id } });
+  proxy.$router.push({ path: "/wms/movementEdit",  query: { id: row.id } });
 }
 
 function handleGoDetail(row) {

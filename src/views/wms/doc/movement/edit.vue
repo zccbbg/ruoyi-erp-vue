@@ -11,21 +11,9 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="源仓库" prop="warehouseId">
-                <el-select v-model="form.warehouseId" placeholder="请选择源仓库" @change="handleChangeSourceWarehouse"
-                           filterable>
-                  <el-option v-for="item in useBasicStore().warehouseList" :key="item.id" :label="item.warehouseName"
-                             :value="item.id"/>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="目标仓库" prop="targetWarehouseId">
-                <el-select v-model="form.targetWarehouseId" placeholder="请选择目标仓库" @change="handleChangeTargetWarehouse"
-                           filterable style="width: 100%">
-                  <el-option v-for="item in useBasicStore().warehouseList" :key="item.id" :label="item.warehouseName"
-                             :value="item.id"/>
-                </el-select>
+              <el-form-item label="总数量" prop="totalQuantity" >
+                <el-input-number v-model="form.totalQuantity" :controls="false" :precision="0"
+                                 :disabled="true" style="width: 100%"></el-input-number>
               </el-form-item>
             </el-col>
           </el-row>
@@ -42,7 +30,6 @@
                 ></el-input>
               </el-form-item>
             </el-col>
-
             <el-col :span="6">
               <div style="display: flex;align-items: start">
                 <el-form-item label="总金额" prop="totalAmount">
@@ -51,12 +38,6 @@
                 <el-button link type="primary" @click="handleAutoCalc" style="line-height: 32px">自动计算
                 </el-button>
               </div>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="总数量" prop="totalQuantity" >
-                <el-input-number v-model="form.totalQuantity" :controls="false" :precision="0"
-                                 :disabled="true" style="width: 100%"></el-input-number>
-              </el-form-item>
             </el-col>
           </el-row>
         </el-form>
@@ -71,7 +52,6 @@
                 class="mr10 ml10"
                 inline-prompt
                 size="large"
-                v-model="mode"
                 :active-value="true"
                 :inactive-value="false"
                 active-text="开启"
@@ -87,8 +67,7 @@
               content="请先选择源仓库和目标仓库！"
             >
               <template #reference>
-                <el-button type="primary" plain="plain" size="default" @click="showAddItem" icon="Plus"
-                           :disabled="!form.warehouseId || !form.targetWarehouseId">添加商品
+                <el-button type="primary" plain="plain" size="default" @click="showAddItem" icon="Plus">添加商品
                 </el-button>
               </template>
             </el-popover>
