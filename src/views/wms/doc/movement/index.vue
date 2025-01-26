@@ -252,7 +252,7 @@ function handleAdd() {
 /** 删除按钮操作 */
 function handleDelete(row) {
   const _ids = row.id || ids.value;
-  proxy.$modal.confirm('确认删除调拨单【' + row.orderNo + '】吗？').then(function() {
+  proxy.$modal.confirm('确认删除调拨单【' + row.docNo + '】吗？').then(function() {
     loading.value = true;
     return delMovementOrder(_ids);
   }).then(() => {
@@ -294,7 +294,7 @@ async function handlePrint(row) {
     })
   }
   const printData = {
-    orderNo: movement.orderNo,
+    docNo: movement.docNo,
     orderStatus: proxy.selectDictLabel(wms_movement_status.value, movement.orderStatus),
     sourceWarehouseName: useBasicStore().warehouseMap.get(movement.warehouseId)?.warehouseName,
     targetWarehouseName: useBasicStore().warehouseMap.get(movement.targetWarehouseId)?.warehouseName,

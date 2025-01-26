@@ -372,7 +372,7 @@ onMounted(() => {
   if (id) {
     loadDetail(id)
   } else {
-    form.value.orderNo = 'YK' + generateNo()
+    form.value.docNo = 'YK' + generateNo()
   }
 })
 

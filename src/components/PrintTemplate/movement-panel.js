@@ -339,7 +339,7 @@ export default {
             "fields": [
               {
                 "text": "入库单号",
-                "field": "orderNo"
+                "field": "docNo"
               },
               {
                 "text": "客户",
@@ -347,7 +347,7 @@ export default {
               },
               {
                 "text": "订单号",
-                "field": "orderNo"
+                "field": "docNo"
               },
               {
                 "text": "调拨类型",
@@ -390,7 +390,7 @@ export default {
             "fields": [
               {
                 "text": "入库单号",
-                "field": "orderNo"
+                "field": "docNo"
               },
               {
                 "text": "客户",
@@ -398,7 +398,7 @@ export default {
               },
               {
                 "text": "订单号",
-                "field": "orderNo"
+                "field": "docNo"
               },
               {
                 "text": "调拨类型",
@@ -437,7 +437,7 @@ export default {
             "fields": [
               {
                 "text": "入库单号",
-                "field": "orderNo"
+                "field": "docNo"
               },
               {
                 "text": "客户",
@@ -445,7 +445,7 @@ export default {
               },
               {
                 "text": "订单号",
-                "field": "orderNo"
+                "field": "docNo"
               },
               {
                 "text": "调拨类型",
@@ -553,7 +553,7 @@ export default {
             "fields": [
               {
                 "text": "入库单号",
-                "field": "orderNo"
+                "field": "docNo"
               },
               {
                 "text": "客户",
@@ -561,7 +561,7 @@ export default {
               },
               {
                 "text": "订单号",
-                "field": "orderNo"
+                "field": "docNo"
               },
               {
                 "text": "调拨类型",

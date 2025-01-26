@@ -244,7 +244,7 @@ async function handlePrint(row) {
     })
   }
   const printData = {
-    orderNo: checkOrder.orderNo,
+    docNo: checkOrder.docNo,
     orderStatus: proxy.selectDictLabel(wms_check_status.value, checkOrder.orderStatus),
     warehouseName: useBasicStore().warehouseMap.get(checkOrder.warehouseId)?.warehouseName,
     totalQuantity: Number(checkOrder.totalQuantity).toFixed(0),
