@@ -63,12 +63,22 @@
               <el-table :data="props.row.details" v-loading="detailLoading[props.$index]" empty-text="暂无商品明细">
                 <el-table-column label="商品名称">
                   <template #default="{ row }">
-                    <div>{{ row?.item?.goodsName }}</div>
+                    <div>{{ row?.goods?.goodsName }}</div>
                   </template>
                 </el-table-column>
                 <el-table-column label="规格名称">
                   <template #default="{ row }">
                     <div>{{ row?.sku?.skuName }}</div>
+                  </template>
+                </el-table-column>
+                <el-table-column label="源仓库" align="left">
+                  <template #default="{ row }">
+                    <div>{{ useBasicStore().warehouseMap.get(row.warehouseId)?.warehouseName }}</div>
+                  </template>
+                </el-table-column>
+                <el-table-column label="目标仓库" align="left">
+                  <template #default="{ row }">
+                    <div>{{ useBasicStore().warehouseMap.get(row.targetWarehouseId)?.warehouseName }}</div>
                   </template>
                 </el-table-column>
                 <el-table-column label="数量" prop="qty" align="right">
@@ -78,7 +88,7 @@
                 </el-table-column>
                 <el-table-column label="金额(元)" align="right">
                   <template #default="{ row }">
-                    <el-statistic v-if="row.amount || row.amount === 0" :precision="2" :value="Number(row.amount)"/>
+                    <el-statistic v-if="row.totalAmount || row.totalAmount === 0" :precision="2" :value="Number(row.totalAmount)"/>
                     <div v-else>-</div>
                   </template>
                 </el-table-column>
@@ -106,7 +116,7 @@
           <template #default="{ row }">
             <div class="flex-space-between">
               <span>数量：</span>
-              <el-statistic :value="Number(row.goodsQuantity)" :precision="0"/>
+              <el-statistic :value="Number(row.goodsQty)" :precision="0"/>
             </div>
             <div class="flex-space-between" v-if="row.goodsAmount || row.goodsAmount === 0">
               <span>金额：</span>
@@ -296,9 +306,9 @@ async function handlePrint(row) {
   const printData = {
     docNo: movement.docNo,
     checkedStatus: proxy.selectDictLabel(wms_movement_status.value, movement.checkedStatus),
-    sourceWarehouseName: useBasicStore().warehouseMap.get(movement.warehouseId)?.warehouseName,
+    warehouseName: useBasicStore().warehouseMap.get(movement.warehouseId)?.warehouseName,
     targetWarehouseName: useBasicStore().warehouseMap.get(movement.targetWarehouseId)?.warehouseName,
-    goodsQuantity: Number(movement.goodsQuantity).toFixed(0),
+    goodsQty: Number(movement.goodsQty).toFixed(0),
     createBy: movement.createBy,
     createTime: proxy.parseTime(movement.createTime, '{mm}-{dd} {hh}:{ii}'),
     updateBy: movement.updateBy,
@@ -333,7 +343,7 @@ function loadMovementOrderDetail(row) {
       const details = res.data.map(it => {
         return {
           ...it,
-          sourceWarehouseName: useBasicStore().warehouseMap.get(it.warehouseId)?.warehouseName,
+          warehouseName: useBasicStore().warehouseMap.get(it.warehouseId)?.warehouseName,
           targetWarehouseName: useBasicStore().warehouseMap.get(it.targetWarehouseId)?.warehouseName,
         }
       })
