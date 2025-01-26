@@ -171,8 +171,8 @@
 
 <script setup name="MovementOrderEdit">
 import {computed, getCurrentInstance, onMounted, reactive, ref, toRef, toRefs, watch} from "vue";
-import {addMovementOrder, getMovementOrder, updateMovementOrder, movement} from "@/api/wms/movementOrder";
-import {delMovementOrderDetail} from "@/api/wms/movementOrderDetail";
+import {addMovementOrder, getMovementOrder, updateMovementOrder, movement} from "@/api/wms/movement";
+import {delMovementOrderDetail} from "@/api/wms/movementDetail";
 import {ElMessage, ElMessageBox} from "element-plus";
 import {useRoute} from "vue-router";
 import {useBasicStore} from '@/store/modules/basic'
@@ -217,7 +217,7 @@ const cancel = async () => {
   close()
 }
 const close = () => {
-  const obj = {path: "/movementOrder"};
+  const obj = {path: "/movement"};
   proxy?.$tab.closeOpenPage(obj);
 }
 const inventorySelectShow = ref(false)
@@ -274,7 +274,7 @@ const getParams = (orderStatus) => {
     details = form.value.details.map(it => {
       return {
         id: it.id,
-        movementOrderId: form.value.id,
+        movementId: form.value.id,
         skuId: it.skuId,
         quantity: it.quantity,
         amount: it.amount,

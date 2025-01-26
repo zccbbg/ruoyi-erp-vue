@@ -49,7 +49,7 @@
         </el-col>
       </el-row>
 
-      <el-table v-loading="loading" :data="movementOrderList" border class="mt20"
+      <el-table v-loading="loading" :data="movementList" border class="mt20"
                 @expand-change="handleExpandExchange"
                 :row-key="getRowKey"
                 :expand-row-keys="expandedRowKeys"
@@ -177,8 +177,8 @@
 </template>
 
 <script setup name="MovementOrder">
-import {listMovementOrder, delMovementOrder, getMovementOrder} from "@/api/wms/movementOrder";
-import {listByMovementOrderId} from "@/api/wms/movementOrderDetail";
+import {listMovementOrder, delMovementOrder, getMovementOrder} from "@/api/wms/movement";
+import {listByMovementOrderId} from "@/api/wms/movementDetail";
 import {getCurrentInstance, reactive, ref, toRefs} from "vue";
 import {useBasicStore} from "../../../../store/modules/basic";
 import {ElMessageBox} from "element-plus";
@@ -186,7 +186,7 @@ import movementPanel from "@/components/PrintTemplate/movement-panel";
 
 const { proxy } = getCurrentInstance();
 const { wms_movement_status } = proxy.useDict("wms_movement_status");
-const movementOrderList = ref([]);
+const movementList = ref([]);
 const open = ref(false);
 const buttonLoading = ref(false);
 const loading = ref(true);
@@ -222,7 +222,7 @@ function getList() {
     query.targetWarehouseId = query.targetPlace[0]
   }
   listMovementOrder(query).then(response => {
-    movementOrderList.value = response.rows;
+    movementList.value = response.rows;
     total.value = response.total;
     for (let i = 0; i < total; i++) {
       detailLoading.value.push(false)
@@ -246,7 +246,7 @@ function resetQuery() {
 
 /** 新增按钮操作 */
 function handleAdd() {
-  proxy.$router.push({ path: "/movementOrderEdit" });
+  proxy.$router.push({ path: "/movementEdit" });
 }
 
 /** 删除按钮操作 */
@@ -264,7 +264,7 @@ function handleDelete(row) {
 }
 
 function handleUpdate(row) {
-  proxy.$router.push({ path: "/movementOrderEdit",  query: { id: row.id } });
+  proxy.$router.push({ path: "/movementEdit",  query: { id: row.id } });
 }
 
 function handleGoDetail(row) {
@@ -282,10 +282,10 @@ function handleGoDetail(row) {
 /** 导出按钮操作 */
 async function handlePrint(row) {
   const res = await getMovementOrder(row.id)
-  const movementOrder = res.data
+  const movement = res.data
   let table = []
-  if (movementOrder.details?.length) {
-    table = movementOrder.details.map(detail => {
+  if (movement.details?.length) {
+    table = movement.details.map(detail => {
       return {
         itemName: detail.item.itemName,
         skuName: detail.itemSku.skuName,
@@ -294,16 +294,16 @@ async function handlePrint(row) {
     })
   }
   const printData = {
-    orderNo: movementOrder.orderNo,
-    orderStatus: proxy.selectDictLabel(wms_movement_status.value, movementOrder.orderStatus),
-    sourceWarehouseName: useBasicStore().warehouseMap.get(movementOrder.sourceWarehouseId)?.warehouseName,
-    targetWarehouseName: useBasicStore().warehouseMap.get(movementOrder.targetWarehouseId)?.warehouseName,
-    totalQuantity: Number(movementOrder.totalQuantity).toFixed(0),
-    createBy: movementOrder.createBy,
-    createTime: proxy.parseTime(movementOrder.createTime, '{mm}-{dd} {hh}:{ii}'),
-    updateBy: movementOrder.updateBy,
-    updateTime: proxy.parseTime(movementOrder.updateTime, '{mm}-{dd} {hh}:{ii}'),
-    remark: movementOrder.remark,
+    orderNo: movement.orderNo,
+    orderStatus: proxy.selectDictLabel(wms_movement_status.value, movement.orderStatus),
+    sourceWarehouseName: useBasicStore().warehouseMap.get(movement.sourceWarehouseId)?.warehouseName,
+    targetWarehouseName: useBasicStore().warehouseMap.get(movement.targetWarehouseId)?.warehouseName,
+    totalQuantity: Number(movement.totalQuantity).toFixed(0),
+    createBy: movement.createBy,
+    createTime: proxy.parseTime(movement.createTime, '{mm}-{dd} {hh}:{ii}'),
+    updateBy: movement.updateBy,
+    updateTime: proxy.parseTime(movement.updateTime, '{mm}-{dd} {hh}:{ii}'),
+    remark: movement.remark,
     table
   }
   let printTemplate = new proxy.$hiprint.PrintTemplate({template: movementPanel})
@@ -326,7 +326,7 @@ function handleExpandExchange(value, expandedRows) {
 }
 
 function loadMovementOrderDetail(row) {
-  const index = movementOrderList.value.findIndex(it => it.id === row.id)
+  const index = movementList.value.findIndex(it => it.id === row.id)
   detailLoading.value[index] = true
   listByMovementOrderId(row.id).then(res => {
     if (res.data?.length) {
@@ -337,7 +337,7 @@ function loadMovementOrderDetail(row) {
           targetWarehouseName: useBasicStore().warehouseMap.get(it.targetWarehouseId)?.warehouseName,
         }
       })
-      movementOrderList.value[index].details = details
+      movementList.value[index].details = details
     }
   }).finally(() => {
     detailLoading.value[index] = false

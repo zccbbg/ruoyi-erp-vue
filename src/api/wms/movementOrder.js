@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 查询调拨单列表
 export function listMovementOrder(query) {
   return request({
-    url: '/wms/movementOrder/list',
+    url: '/wms/movement/list',
     method: 'get',
     params: query
   })
@@ -12,7 +12,7 @@ export function listMovementOrder(query) {
 // 查询调拨单详细
 export function getMovementOrder(id) {
   return request({
-    url: '/wms/movementOrder/' + id,
+    url: '/wms/movement/' + id,
     method: 'get'
   })
 }
@@ -20,7 +20,7 @@ export function getMovementOrder(id) {
 // 新增调拨单
 export function addMovementOrder(data) {
   return request({
-    url: '/wms/movementOrder',
+    url: '/wms/movement',
     method: 'post',
     data: data
   })
@@ -29,7 +29,7 @@ export function addMovementOrder(data) {
 // 修改调拨单
 export function updateMovementOrder(data) {
   return request({
-    url: '/wms/movementOrder',
+    url: '/wms/movement',
     method: 'put',
     data: data
   })
@@ -38,7 +38,7 @@ export function updateMovementOrder(data) {
 // 删除调拨单
 export function delMovementOrder(id) {
   return request({
-    url: '/wms/movementOrder/' + id,
+    url: '/wms/movement/' + id,
     method: 'delete'
   })
 }
@@ -46,7 +46,7 @@ export function delMovementOrder(id) {
 // 调拨
 export function movement(data) {
   return request({
-    url: '/wms/movementOrder/move',
+    url: '/wms/movement/move',
     method: 'post',
     data: data
   })
