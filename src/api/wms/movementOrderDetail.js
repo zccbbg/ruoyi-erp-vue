@@ -35,7 +35,7 @@ export function updateMovementOrderDetail(data) {
   })
 }
 
-// 查询移库单详情列表
+// 查询调拨单详情列表
 export function listByMovementOrderId(movementOrderId) {
   return request({
     url: '/wms/movementOrderDetail/list/' + movementOrderId,

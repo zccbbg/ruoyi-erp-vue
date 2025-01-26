@@ -110,7 +110,7 @@
         </el-col>
         <el-col :span="6">
           <el-card class="box-card" shadow="never">
-            <div class="card-title">近7日移库</div>
+            <div class="card-title">近7日调拨</div>
             <div style="height: calc(100% - 30px);">
               <StationLine height="100%"  :chartData="lineDataThree" yName="件"
                            itemColor="#c58bea"

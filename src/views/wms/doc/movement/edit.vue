@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="receipt-order-edit-wrapper app-container" style="margin-bottom: 60px" v-loading="loading">
-      <el-card header="移库单基本信息">
+      <el-card header="调拨单基本信息">
         <el-form label-width="108px" :model="form" ref="movementForm" :rules="rules">
           <el-row :gutter="24">
             <el-col :span="11">
-              <el-form-item label="移库单号" prop="orderNo">
-                <el-input class="w200" v-model="form.orderNo" placeholder="移库单号"
+              <el-form-item label="调拨单号" prop="orderNo">
+                <el-input class="w200" v-model="form.orderNo" placeholder="调拨单号"
                           :disabled="form.id"></el-input>
               </el-form-item>
             </el-col>
@@ -111,11 +111,11 @@
                 <div v-if="row.itemSku.barcode">条码：{{ row.itemSku.barcode }}</div>
               </template>
             </el-table-column>
-            <el-table-column label="移库数量" prop="quantity" width="180" align="center">
+            <el-table-column label="调拨数量" prop="quantity" width="180" align="center">
               <template #default="scope">
                 <el-input-number
                   v-model="scope.row.quantity"
-                  placeholder="移库数量"
+                  placeholder="调拨数量"
                   :min="1"
                   :precision="0"
                   @change="handleChangeQuantity"
@@ -157,7 +157,7 @@
     <div class="footer-global">
       <div class="btn-box">
         <div>
-          <el-button @click="doMovement" type="primary" class="ml10">完成移库</el-button>
+          <el-button @click="doMovement" type="primary" class="ml10">完成调拨</el-button>
           <el-button @click="updateToInvalid" type="danger" v-if="form.id">作废</el-button>
         </div>
         <div>
@@ -213,7 +213,7 @@ const data = reactive({
 });
 const {form, rules} = toRefs(data);
 const cancel = async () => {
-  await proxy?.$modal.confirm('确认取消编辑移库单吗？');
+  await proxy?.$modal.confirm('确认取消编辑调拨单吗？');
   close()
 }
 const close = () => {
@@ -264,7 +264,7 @@ const handleAutoCalc = () => {
 }
 
 const save = async () => {
-  await proxy?.$modal.confirm('确认暂存移库单吗？');
+  await proxy?.$modal.confirm('确认暂存调拨单吗？');
   doSave()
 }
 const getParams = (orderStatus) => {
@@ -331,7 +331,7 @@ const doSave = (orderStatus = 0) => {
 }
 
 const doMovement = async () => {
-  await proxy?.$modal.confirm('确认移库吗？');
+  await proxy?.$modal.confirm('确认调拨吗？');
   movementForm.value?.validate((valid) => {
     // 校验
     if (!valid) {
@@ -342,7 +342,7 @@ const doMovement = async () => {
     }
     const invalidQuantityList = form.value.details.filter(it => !it.quantity)
     if (invalidQuantityList?.length) {
-      return ElMessage.error('请选择移库数量')
+      return ElMessage.error('请选择调拨数量')
     }
 
     //('提交前校验',form.value)
@@ -350,7 +350,7 @@ const doMovement = async () => {
     loading.value = true
     movement(params).then((res) => {
       if (res.code === 200) {
-        ElMessage.success('移库成功')
+        ElMessage.success('调拨成功')
         close()
       } else {
         ElMessage.error(res.msg)
@@ -362,7 +362,7 @@ const doMovement = async () => {
 }
 
 const updateToInvalid = async () => {
-  await proxy?.$modal.confirm('确认作废移库单吗？');
+  await proxy?.$modal.confirm('确认作废调拨单吗？');
   doSave(-1)
 }
 
@@ -377,7 +377,7 @@ onMounted(() => {
 })
 
 
-// 获取移库单详情
+// 获取调拨单详情
 const loadDetail = (id) => {
   loading.value = true
   getMovementOrder(id).then((response) => {

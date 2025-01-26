@@ -17,7 +17,7 @@ export default {
         "testData": "barcode",
         "textType": "barcode",
         "fields": [{
-          "text": "移库单号",
+          "text": "调拨单号",
           "field": "orderNo"
         }, {
           "text": "订单号",

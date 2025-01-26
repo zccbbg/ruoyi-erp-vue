@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-// 查询移库单列表
+// 查询调拨单列表
 export function listMovementOrder(query) {
   return request({
     url: '/wms/movementOrder/list',
@@ -9,7 +9,7 @@ export function listMovementOrder(query) {
   })
 }
 
-// 查询移库单详细
+// 查询调拨单详细
 export function getMovementOrder(id) {
   return request({
     url: '/wms/movementOrder/' + id,
@@ -17,7 +17,7 @@ export function getMovementOrder(id) {
   })
 }
 
-// 新增移库单
+// 新增调拨单
 export function addMovementOrder(data) {
   return request({
     url: '/wms/movementOrder',
@@ -26,7 +26,7 @@ export function addMovementOrder(data) {
   })
 }
 
-// 修改移库单
+// 修改调拨单
 export function updateMovementOrder(data) {
   return request({
     url: '/wms/movementOrder',
@@ -35,7 +35,7 @@ export function updateMovementOrder(data) {
   })
 }
 
-// 删除移库单
+// 删除调拨单
 export function delMovementOrder(id) {
   return request({
     url: '/wms/movementOrder/' + id,
@@ -43,7 +43,7 @@ export function delMovementOrder(id) {
   })
 }
 
-// 移库
+// 调拨
 export function movement(data) {
   return request({
     url: '/wms/movementOrder/move',

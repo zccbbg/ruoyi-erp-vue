@@ -20,7 +20,7 @@ export default {
             "textType": "barcode",
             "fields": [
               {
-                "text": "移库单号",
+                "text": "调拨单号",
                 "field": "orderNo"
               },
               {
@@ -45,7 +45,7 @@ export default {
             "width": 350,
             "fields": [
               {
-                "text": "移库单号",
+                "text": "调拨单号",
                 "field": "orderNo"
               },
               {
@@ -57,11 +57,11 @@ export default {
                 "field": "orderNo"
               },
               {
-                "text": "移库类型",
+                "text": "调拨类型",
                 "field": "optType"
               },
               {
-                "text": "移库状态",
+                "text": "调拨状态",
                 "field": "orderStatus"
               },
               {
@@ -77,7 +77,7 @@ export default {
                 "field": "warehouse"
               }
             ],
-            "title": "移库单",
+            "title": "调拨单",
             "field": "orderNo",
             "coordinateSync": false,
             "widthHeightSync": false,
@@ -111,11 +111,11 @@ export default {
                 "field": "orderNo"
               },
               {
-                "text": "移库类型",
+                "text": "调拨类型",
                 "field": "optType"
               },
               {
-                "text": "移库状态",
+                "text": "调拨状态",
                 "field": "orderStatus"
               },
               {
@@ -127,7 +127,7 @@ export default {
                 "field": "remark"
               }
             ],
-            "title": "移库状态",
+            "title": "调拨状态",
             "field": "orderStatus",
             "coordinateSync": false,
             "widthHeightSync": false,
@@ -162,11 +162,11 @@ export default {
                 "field": "orderNo"
               },
               {
-                "text": "移库类型",
+                "text": "调拨类型",
                 "field": "optType"
               },
               {
-                "text": "移库状态",
+                "text": "调拨状态",
                 "field": "orderStatus"
               },
               {
@@ -209,11 +209,11 @@ export default {
                 "field": "orderNo"
               },
               {
-                "text": "移库类型",
+                "text": "调拨类型",
                 "field": "optType"
               },
               {
-                "text": "移库状态",
+                "text": "调拨状态",
                 "field": "orderStatus"
               },
               {
@@ -256,11 +256,11 @@ export default {
                 "field": "orderNo"
               },
               {
-                "text": "移库类型",
+                "text": "调拨类型",
                 "field": "optType"
               },
               {
-                "text": "移库状态",
+                "text": "调拨状态",
                 "field": "orderStatus"
               },
               {
@@ -303,11 +303,11 @@ export default {
                 "field": "orderNo"
               },
               {
-                "text": "移库类型",
+                "text": "调拨类型",
                 "field": "optType"
               },
               {
-                "text": "移库状态",
+                "text": "调拨状态",
                 "field": "orderStatus"
               },
               {
@@ -350,11 +350,11 @@ export default {
                 "field": "orderNo"
               },
               {
-                "text": "移库类型",
+                "text": "调拨类型",
                 "field": "optType"
               },
               {
-                "text": "移库状态",
+                "text": "调拨状态",
                 "field": "orderStatus"
               },
               {
@@ -401,11 +401,11 @@ export default {
                 "field": "orderNo"
               },
               {
-                "text": "移库类型",
+                "text": "调拨类型",
                 "field": "optType"
               },
               {
-                "text": "移库状态",
+                "text": "调拨状态",
                 "field": "orderStatus"
               },
               {
@@ -448,11 +448,11 @@ export default {
                 "field": "orderNo"
               },
               {
-                "text": "移库类型",
+                "text": "调拨类型",
                 "field": "optType"
               },
               {
-                "text": "移库状态",
+                "text": "调拨状态",
                 "field": "orderStatus"
               },
               {
@@ -564,11 +564,11 @@ export default {
                 "field": "orderNo"
               },
               {
-                "text": "移库类型",
+                "text": "调拨类型",
                 "field": "optType"
               },
               {
-                "text": "移库状态",
+                "text": "调拨状态",
                 "field": "orderStatus"
               },
               {
