@@ -196,7 +196,7 @@ const cancel = async () => {
   close()
 }
 const close = () => {
-  const obj = {path: "/wms/outbound"};
+  const obj = {path: "/wms/shipment"};
   proxy?.$tab.closeOpenPage(obj);
 }
 const inventorySelectShow = ref(false)
