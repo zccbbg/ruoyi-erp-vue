@@ -154,7 +154,7 @@
 
 <script setup name="ShipmentDocEdit">
 import {computed, getCurrentInstance, onMounted, reactive, ref, toRef, toRefs, watch} from "vue";
-import {addShipmentOrder, getShipmentOrder, updateShipmentOrder, shipment} from "@/api/wms/shipmentDoc";
+import {addShipmentOrder, getShipmentOrder, updateShipmentOrder, outbound} from "@/api/wms/shipmentDoc";
 import {delShipmentOrderDetail} from "@/api/wms/shipmentDocDetail";
 import {ElMessage, ElMessageBox} from "element-plus";
 import {useRoute} from "vue-router";
@@ -196,7 +196,7 @@ const cancel = async () => {
   close()
 }
 const close = () => {
-  const obj = {path: "/wms/shipment"};
+  const obj = {path: "/wms/outbound"};
   proxy?.$tab.closeOpenPage(obj);
 }
 const inventorySelectShow = ref(false)
@@ -317,7 +317,7 @@ const doShipment = async () => {
     const params = getParamsBeforeSave(1)
 
     loading.value = true
-    shipment(params).then((res) => {
+    outbound(params).then((res) => {
       if (res.code === 200) {
         ElMessage.success('出库成功')
         close()

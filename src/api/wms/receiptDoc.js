@@ -44,9 +44,9 @@ export function delReceiptDoc(id) {
 }
 
 // 执行入库
-export function warehousing(data) {
+export function inbound(data) {
   return request({
-    url: '/wms/receipt/warehousing',
+    url: '/wms/receipt/inbound',
     method: 'post',
     data: data
   })

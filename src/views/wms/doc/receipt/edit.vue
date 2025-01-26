@@ -153,7 +153,7 @@
 
 <script setup name="ReceiptDocEdit">
 import {computed, getCurrentInstance, onMounted, reactive, ref, toRef, toRefs, watch} from "vue";
-import {addReceiptDoc, getReceiptDoc, updateReceiptDoc, warehousing} from "@/api/wms/receiptDoc";
+import {addReceiptDoc, getReceiptDoc, updateReceiptDoc, inbound} from "@/api/wms/receiptDoc";
 import {ElMessage, ElMessageBox} from "element-plus";
 import SkuSelect from "../../../components/SkuSelect.vue";
 import {useRoute} from "vue-router";
@@ -362,7 +362,7 @@ const doWarehousing = async () => {
 
     const params = getParamsBeforeSave(1);
     loading.value = true
-    warehousing(params).then((res) => {
+    inbound(params).then((res) => {
       if (res.code === 200) {
         ElMessage.success('入库成功')
         close()

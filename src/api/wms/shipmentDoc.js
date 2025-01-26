@@ -36,9 +36,9 @@ export function updateShipmentOrder(data) {
 }
 
 // 出库
-export function shipment(data) {
+export function outbound(data) {
   return request({
-    url: '/wms/shipment/shipment',
+    url: '/wms/shipment/outbound',
     method: 'put',
     data: data
   })
