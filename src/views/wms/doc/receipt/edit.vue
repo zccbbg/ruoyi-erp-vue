@@ -222,13 +222,13 @@ const setWarehouseDialogVisible = () => {
   }
 }
 const handleConfirmSetWarehouse = () => {
-  if (!batchSetWarehouseId) {
+  if (!batchSetWarehouseId.value) {
     ElMessage.error("请选择仓库后再确定");
     return;
   }
   form.value.details.forEach(item => {
     if (item && typeof item === "object") {
-      item.warehouseId = batchSetWarehouseId;
+      item.warehouseId = batchSetWarehouseId.value;
     }
   });
   batchSetWarehouseVisible.value =false;

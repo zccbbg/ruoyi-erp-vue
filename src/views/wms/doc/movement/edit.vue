@@ -58,19 +58,9 @@
                 inactive-text="关闭"
               />
             </div>
-            <el-popover
-              placement="left"
-              title="提示"
-              :width="200"
-              trigger="hover"
-              :disabled="form.warehouseId && form.targetWarehouseId"
-              content="请先选择源仓库和目标仓库！"
-            >
-              <template #reference>
-                <el-button type="primary" plain="plain" size="default" @click="showAddItem" icon="Plus">添加商品
-                </el-button>
-              </template>
-            </el-popover>
+
+            <el-button type="primary" plain="plain" size="default" @click="showAddItem" icon="Plus">添加商品
+            </el-button>
           </div>
           <el-table :data="form.details" border empty-text="暂无商品明细">
             <el-table-column label="商品信息" prop="sku.goodsName">
@@ -88,6 +78,36 @@
               <template #default="{ row }">
                 <div>{{ row.sku.skuName}}</div>
                 <div v-if="row.sku.barcode">条码：{{ row.sku.barcode }}</div>
+              </template>
+            </el-table-column>
+            <el-table-column>
+              <template #header>
+                <div style="display: flex; align-items: center;">
+                  <div>源仓库</div>
+                  <el-button style="margin-left: 10px" @click="setWarehouseDialogVisible">批量</el-button>
+                </div>
+              </template>
+              <template #default="scope">
+                <el-select v-model="scope.row.warehouseId" placeholder="请选择源仓库"
+                           filterable>
+                  <el-option v-for="item in useBasicStore().warehouseList" :key="item.id" :label="item.warehouseName"
+                             :value="item.id"/>
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column>
+              <template #header>
+                <div style="display: flex; align-items: center;">
+                  <div>目标仓库</div>
+                  <el-button style="margin-left: 10px" @click="setWarehouseDialogVisible('target')">批量</el-button>
+                </div>
+              </template>
+              <template #default="scope">
+                <el-select v-model="scope.row.targetWarehouseId" placeholder="请选择目标仓库"
+                           filterable>
+                  <el-option v-for="item in useBasicStore().warehouseList" :key="item.id" :label="item.warehouseName"
+                             :value="item.id"/>
+                </el-select>
               </template>
             </el-table-column>
             <el-table-column label="调拨数量" prop="qty" width="180" align="center">
@@ -146,6 +166,17 @@
       </div>
     </div>
   </div>
+  <el-dialog v-model="batchSetWarehouseVisible" title="批量设置仓库" width="400" append-to-body>
+    <el-select v-model="batchSetWarehouseId" placeholder="请选择仓库"
+               filterable>
+      <el-option v-for="item in useBasicStore().warehouseList" :key="item.id" :label="item.warehouseName"
+                 :value="item.id"/>
+    </el-select>
+    <template #footer>
+      <el-button @click="batchSetWarehouseVisible = false">取消</el-button>
+      <el-button type="primary" @click="handleConfirmSetWarehouse">确定</el-button>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup name="MovementOrderEdit">
@@ -163,6 +194,9 @@ const {proxy} = getCurrentInstance();
 const {wms_shipment_type} = proxy.useDict("wms_shipment_type");
 
 const loading = ref(false)
+const batchSetWarehouseVisible = ref(false)
+const batchSetWarehouseId = ref(null)
+const batchSetWarehouseType= ref(null)
 const initFormData = {
   id: undefined,
   docNo: undefined,
@@ -172,6 +206,38 @@ const initFormData = {
   targetWarehouseId: undefined,
   totalQuantity: 0,
   details: [],
+}
+const setWarehouseDialogVisible = (type) => {
+  if(form.value.details?.length == 0){
+    ElMessage.error("请先添加商品！");
+  }else {
+    batchSetWarehouseVisible.value = true;
+    batchSetWarehouseType.value = type;
+  }
+}
+const handleConfirmSetWarehouse = () => {
+  if (!batchSetWarehouseId.value) {
+    ElMessage.error("请选择仓库后再确定");
+    return;
+  }
+  if(batchSetWarehouseType.value === "target"){
+    form.value.details.forEach(item => {
+      if (item && typeof item === "object") {
+        item.targetWarehouseId = batchSetWarehouseId.value;
+      }
+    });
+  }else {
+    form.value.details.forEach(item => {
+      if (item && typeof item === "object") {
+        item.warehouseId = batchSetWarehouseId.value;
+      }
+    });
+  }
+  batchSetWarehouseId.value = null;
+  batchSetWarehouseVisible.value =false;
+  batchSetWarehouseType.value = null;
+  // 提示操作成功
+  ElMessage.success("仓库批量设置成功");
 }
 const inventorySelectRef = ref(null)
 const selectedInventory = ref([])
@@ -195,7 +261,7 @@ const cancel = async () => {
   close()
 }
 const close = () => {
-  const obj = {path: "/movement"};
+  const obj = {path: "/wms/movement"};
   proxy?.$tab.closeOpenPage(obj);
 }
 const inventorySelectShow = ref(false)

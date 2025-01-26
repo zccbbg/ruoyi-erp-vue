@@ -96,7 +96,7 @@ const query = reactive({
   goodsNo: '',
   skuName: '',
   skuCode: '',
-  minQuantity: 1,
+  minQty: 1,
   warehouseId: null
 });
 const selectInventoryVoCheck = ref([])
