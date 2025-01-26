@@ -11,8 +11,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="总数量" prop="totalQuantity" >
-                <el-input-number v-model="form.totalQuantity" :controls="false" :precision="0"
+              <el-form-item label="总数量" prop="goodsQty" >
+                <el-input-number v-model="form.goodsQty" :controls="false" :precision="0"
                                  :disabled="true" style="width: 100%"></el-input-number>
               </el-form-item>
             </el-col>
@@ -32,8 +32,8 @@
             </el-col>
             <el-col :span="6">
               <div style="display: flex;align-items: start">
-                <el-form-item label="总金额" prop="totalAmount">
-                  <el-input-number style="width: 100%;" v-model="form.totalAmount" :precision="2" :min="0"></el-input-number>
+                <el-form-item label="总金额" prop="goodsAmount">
+                  <el-input-number style="width: 100%;" v-model="form.goodsAmount" :precision="2" :min="0"></el-input-number>
                 </el-form-item>
                 <el-button link type="primary" @click="handleAutoCalc" style="line-height: 32px">自动计算
                 </el-button>
@@ -66,11 +66,11 @@
             <el-table-column label="商品信息" prop="sku.goodsName">
               <template #default="{ row }">
                 <div>{{
-                    row.goods.goodsName + (row.goods.itemCode ? ('(' + row.goods.itemCode + ')') : '')
+                    row.goods.goodsName + (row.goods.goodsNo ? ('(' + row.goods.goodsNo + ')') : '')
                   }}
                 </div>
-                <div v-if="row.goods.itemBrand">
-                  品牌：{{ useBasicStore().itemBrandMap.get(row.goods.itemBrand).brandName }}
+                <div v-if="row.goods.brand">
+                  品牌：{{ useBasicStore().brandMap.get(row.goods.brand).brandName }}
                 </div>
               </template>
             </el-table-column>
@@ -80,30 +80,20 @@
                 <div v-if="row.sku.barcode">条码：{{ row.sku.barcode }}</div>
               </template>
             </el-table-column>
-            <el-table-column>
-              <template #header>
-                <div style="display: flex; align-items: center;">
-                  <div>源仓库</div>
-                  <el-button style="margin-left: 10px" @click="setWarehouseDialogVisible">批量</el-button>
-                </div>
-              </template>
-              <template #default="scope">
-                <el-select v-model="scope.row.warehouseId" placeholder="请选择源仓库"
-                           filterable>
-                  <el-option v-for="item in useBasicStore().warehouseList" :key="item.id" :label="item.warehouseName"
-                             :value="item.id"/>
-                </el-select>
+            <el-table-column label="源仓库" align="left">
+              <template #default="{ row }">
+                <div>{{ useBasicStore().warehouseMap.get(row.warehouseId)?.warehouseName }}</div>
               </template>
             </el-table-column>
             <el-table-column>
               <template #header>
                 <div style="display: flex; align-items: center;">
                   <div>目标仓库</div>
-                  <el-button style="margin-left: 10px" @click="setWarehouseDialogVisible('target')">批量</el-button>
+                  <el-button style="margin-left: 10px" @click="setWarehouseDialogVisible()">批量</el-button>
                 </div>
               </template>
-              <template #default="scope">
-                <el-select v-model="scope.row.targetWarehouseId" placeholder="请选择目标仓库"
+              <template #default="{ row }">
+                <el-select :model-value="row.targetWarehouseId" placeholder="请选择目标仓库" @change="(newValue) => checkTargetWarehouseId(row, newValue)"
                            filterable>
                   <el-option v-for="item in useBasicStore().warehouseList" :key="item.id" :label="item.warehouseName"
                              :value="item.id"/>
@@ -157,7 +147,6 @@
       <div class="btn-box">
         <div>
           <el-button @click="doMovement" type="primary" class="ml10">完成调拨</el-button>
-          <el-button @click="updateToInvalid" type="danger" v-if="form.id">作废</el-button>
         </div>
         <div>
           <el-button @click="save" type="primary">暂存</el-button>
@@ -196,23 +185,19 @@ const {wms_shipment_type} = proxy.useDict("wms_shipment_type");
 const loading = ref(false)
 const batchSetWarehouseVisible = ref(false)
 const batchSetWarehouseId = ref(null)
-const batchSetWarehouseType= ref(null)
 const initFormData = {
   id: undefined,
   docNo: undefined,
   remark: undefined,
-  totalAmount: undefined,
-  warehouseId: undefined,
-  targetWarehouseId: undefined,
-  totalQuantity: 0,
+  goodsAmount: undefined,
+  goodsQty: 0,
   details: [],
 }
-const setWarehouseDialogVisible = (type) => {
+const setWarehouseDialogVisible = () => {
   if(form.value.details?.length == 0){
     ElMessage.error("请先添加商品！");
   }else {
     batchSetWarehouseVisible.value = true;
-    batchSetWarehouseType.value = type;
   }
 }
 const handleConfirmSetWarehouse = () => {
@@ -220,24 +205,19 @@ const handleConfirmSetWarehouse = () => {
     ElMessage.error("请选择仓库后再确定");
     return;
   }
-  if(batchSetWarehouseType.value === "target"){
+  if (form.value.details.some(item => item.warehouseId === batchSetWarehouseId.value)) {
+    ElMessage.error("源仓库和目标仓库不能相同！");
+  }else {
     form.value.details.forEach(item => {
       if (item && typeof item === "object") {
         item.targetWarehouseId = batchSetWarehouseId.value;
       }
     });
-  }else {
-    form.value.details.forEach(item => {
-      if (item && typeof item === "object") {
-        item.warehouseId = batchSetWarehouseId.value;
-      }
-    });
+    ElMessage.success("仓库批量设置成功");
   }
   batchSetWarehouseId.value = null;
   batchSetWarehouseVisible.value =false;
-  batchSetWarehouseType.value = null;
   // 提示操作成功
-  ElMessage.success("仓库批量设置成功");
 }
 const inventorySelectRef = ref(null)
 const selectedInventory = ref([])
@@ -271,6 +251,13 @@ const showAddItem = () => {
   inventorySelectRef.value.getList()
   inventorySelectShow.value = true
 }
+const checkTargetWarehouseId = (row, newValue)=>{
+  if(newValue == row.warehouseId){
+    ElMessage.error("目标仓库和源仓库不能相同")
+  }else {
+    row.targetWarehouseId = newValue
+  }
+}
 // 选择成功
 const handleOkClick = (item) => {
   inventorySelectShow.value = false
@@ -282,9 +269,9 @@ const handleOkClick = (item) => {
           sku: it.sku,
           goods: it.goods,
           skuId: it.skuId,
-          qty: undefined,
-          totalAmount: undefined,
-          warehouseId: form.value.warehouseId
+          goodsQty: undefined,
+          goodsAmount: undefined,
+          warehouseId: it.warehouseId
         })
     }
   })
@@ -304,7 +291,7 @@ const handleAutoCalc = () => {
       sum = numSub(sum, -Number(it.totalAmount))
     }
   })
-  form.value.totalAmount = sum
+  form.value.goodsAmount = sum
 }
 
 const save = async () => {
@@ -318,12 +305,12 @@ const getParams = (checkedStatus) => {
     details = form.value.details.map(it => {
       return {
         id: it.id,
+        warehouseId: it.warehouseId,
+        targetWarehouseId: it.targetWarehouseId,
         movementId: form.value.id,
         skuId: it.skuId,
         qty: it.qty,
-        totalAmount: it.totalAmount,
-        warehouseId: form.value.warehouseId,
-        targetWarehouseId: form.value.targetWarehouseId,
+        goodsAmount: it.goodsAmount
       }
     })
   }
@@ -332,10 +319,8 @@ const getParams = (checkedStatus) => {
     docNo: form.value.docNo,
     checkedStatus,
     remark: form.value.remark,
-    totalQuantity: form.value.totalQuantity,
-    totalAmount: form.value.totalAmount,
-    warehouseId: form.value.warehouseId,
-    targetWarehouseId: form.value.targetWarehouseId,
+    goodsQty: form.value.goodsQty,
+    goodsAmount: form.value.goodsAmount,
     details: details
   }
 }
@@ -405,11 +390,6 @@ const doMovement = async () => {
   })
 }
 
-const updateToInvalid = async () => {
-  await proxy?.$modal.confirm('确认作废调拨单吗？');
-  doSave(-1)
-}
-
 const route = useRoute();
 onMounted(() => {
   const id = route.query && route.query.id;
@@ -463,7 +443,7 @@ const handleChangeQuantity = () => {
       sum += Number(it.qty)
     }
   })
-  form.value.totalQuantity = sum
+  form.value.goodsQty = sum
 }
 
 const handleDeleteDetail = (row, index) => {
