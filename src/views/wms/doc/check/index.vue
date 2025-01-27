@@ -2,8 +2,8 @@
   <div class="app-container">
     <el-card>
       <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="68px">
-        <el-form-item label="盘库状态" prop="orderStatus">
-          <el-radio-group v-model="queryParams.orderStatus" @change="handleQuery">
+        <el-form-item label="盘库状态" prop="checkedStatus">
+          <el-radio-group v-model="queryParams.checkedStatus" @change="handleQuery">
             <el-radio-button
               :key="-2"
               :label="-2"
@@ -49,7 +49,7 @@
         </el-col>
       </el-row>
 
-      <el-table v-loading="loading" :data="checkOrderList" border class="mt20"
+      <el-table v-loading="loading" :data="checkDocList" border class="mt20"
                 :row-key="getRowKey"
                 empty-text="暂无盘库单"
                 cell-class-name="vertical-top-cell"
@@ -60,14 +60,14 @@
             <div>{{ useBasicStore().warehouseMap.get(row.warehouseId)?.warehouseName }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="盘库状态" align="center" prop="orderStatus" width="120">
+        <el-table-column label="盘库状态" align="center" prop="checkedStatus" width="120">
           <template #default="{ row }">
-            <dict-tag :options="wms_check_status" :value="row.orderStatus" />
+            <dict-tag :options="wms_check_status" :value="row.checkedStatus" />
           </template>
         </el-table-column>
         <el-table-column label="盈亏数" align="right">
           <template #default="{ row }">
-            <el-statistic :value="Number(row.totalQuantity)" :precision="0"/>
+            <el-statistic :value="Number(row.goodsQty)" :precision="0"/>
           </template>
         </el-table-column>
         <el-table-column label="操作时间" align="left" width="200">
@@ -92,11 +92,11 @@
                 title="提示"
                 :width="300"
                 trigger="hover"
-                :disabled="scope.row.orderStatus === 0"
-                :content="'盘库单【' + scope.row.docNo + '】已' + (scope.row.orderStatus === 1 ? '盘库完成' : '作废') + '，无法修改！' "
+                :disabled="scope.row.checkedStatus === 0"
+                :content="'盘库单【' + scope.row.docNo + '】已' + (scope.row.checkedStatus === 1 ? '盘库完成' : '作废') + '，无法修改！' "
               >
                 <template #reference>
-                  <el-button link type="primary" @click="handleUpdate(scope.row)" v-hasPermi="['wms:check:all']" :disabled="[-1, 1].includes(scope.row.orderStatus)">修改</el-button>
+                  <el-button link type="primary" @click="handleUpdate(scope.row)" v-hasPermi="['wms:check:all']" :disabled="[-1, 1].includes(scope.row.checkedStatus)">修改</el-button>
                 </template>
               </el-popover>
               <el-button link type="primary" @click="handleGoDetail(scope.row)" v-hasPermi="['wms:check:all']">查看</el-button>
@@ -107,11 +107,11 @@
                 title="提示"
                 :width="300"
                 trigger="hover"
-                :disabled="[-1, 0].includes(scope.row.orderStatus)"
+                :disabled="[-1, 0].includes(scope.row.checkedStatus)"
                 :content="'盘库单【' + scope.row.docNo + '】已盘库完成，无法删除！' "
               >
                 <template #reference>
-                  <el-button link type="danger" @click="handleDelete(scope.row)" v-hasPermi="['wms:check:all']" :disabled="scope.row.orderStatus === 1">删除</el-button>
+                  <el-button link type="danger" @click="handleDelete(scope.row)" v-hasPermi="['wms:check:all']" :disabled="scope.row.checkedStatus === 1">删除</el-button>
                 </template>
               </el-popover>
               <el-button link type="primary" @click="handlePrint(scope.row)" v-hasPermi="['wms:check:all']">打印</el-button>
@@ -130,10 +130,10 @@
         />
       </el-row>
     </el-card>
-    <check-order-detail
-      ref="checkOrderDetailRef"
+    <check-doc-detail
+      ref="checkDocDetailRef"
       :model-value="watchDetailObj.show"
-      :order-no="watchDetailObj.docNo"
+      :doc-no="watchDetailObj.docNo"
       @handle-cancel-click="watchDetailObj.show = false"
     />
   </div>
@@ -149,7 +149,7 @@ import checkPanel from "@/components/PrintTemplate/check-panel";
 import CheckDocDetail from "@/views/wms/doc/check/CheckDocDetail.vue";
 const { proxy } = getCurrentInstance();
 const {wms_check_status} = proxy.useDict("wms_check_status");
-const checkOrderList = ref([]);
+const checkDocList = ref([]);
 const open = ref(false);
 const buttonLoading = ref(false);
 const loading = ref(true);
@@ -161,25 +161,25 @@ const data = reactive({
     pageNum: 1,
     pageSize: 10,
     docNo: undefined,
-    orderStatus: -2,
+    checkedStatus: -2,
   },
 });
 const watchDetailObj = ref({
   show: false,
   docNo: null
 })
-const checkOrderDetailRef = ref(null)
+const checkDocDetailRef = ref(null)
 const { queryParams } = toRefs(data);
 
 /** 查询入库单列表 */
 function getList() {
   loading.value = true;
   const query = {...queryParams.value}
-  if (query.orderStatus === -2) {
-    query.orderStatus = null
+  if (query.checkedStatus === -2) {
+    query.checkedStatus = null
   }
   listCheckDoc(query).then(response => {
-    checkOrderList.value = response.rows;
+    checkDocList.value = response.rows;
     total.value = response.total;
     loading.value = false;
   });
@@ -217,42 +217,42 @@ function handleDelete(row) {
 }
 
 function handleUpdate(row) {
-  proxy.$router.push({ path: "/wms/checkOrderEdit",  query: { id: row.id } });
+  proxy.$router.push({ path: "/wms/checkEdit",  query: { id: row.id } });
 }
 
 function handleGoDetail(row) {
   watchDetailObj.value.docNo = row.docNo
-  checkOrderDetailRef.value.setCheckDocId(row.id)
+  checkDocDetailRef.value.setCheckDocId(row.id)
   watchDetailObj.value.show = true
-  checkOrderDetailRef.value.handleQuery()
+  checkDocDetailRef.value.handleQuery()
 }
 
 /** 导出按钮操作 */
 async function handlePrint(row) {
   const res = await getCheckDoc(row.id)
-  const checkOrder = res.data
+  const checkDoc = res.data
   let table = []
-  if (checkOrder.details?.length) {
-    table = checkOrder.details.map(detail => {
+  if (checkDoc.details?.length) {
+    table = checkDoc.details.map(detail => {
       return {
         itemName: detail.item.itemName,
         skuName: detail.itemSku.skuName,
-        quantity: Number(detail.quantity).toFixed(0),
-        profitAndLoss: Number(detail.checkQuantity - detail.quantity).toFixed(0),
+        goodsQty: Number(detail.goodsQty).toFixed(0),
+        profitAndLoss: Number(detail.checkQuantity - detail.goodsQty).toFixed(0),
         checkQuantity: Number(detail.checkQuantity).toFixed(0)
       }
     })
   }
   const printData = {
-    docNo: checkOrder.docNo,
-    orderStatus: proxy.selectDictLabel(wms_check_status.value, checkOrder.orderStatus),
-    warehouseName: useBasicStore().warehouseMap.get(checkOrder.warehouseId)?.warehouseName,
-    totalQuantity: Number(checkOrder.totalQuantity).toFixed(0),
-    createBy: checkOrder.createBy,
-    createTime: proxy.parseTime(checkOrder.createTime, '{mm}-{dd} {hh}:{ii}'),
-    updateBy: checkOrder.updateBy,
-    updateTime: proxy.parseTime(checkOrder.updateTime, '{mm}-{dd} {hh}:{ii}'),
-    remark: checkOrder.remark,
+    docNo: checkDoc.docNo,
+    checkedStatus: proxy.selectDictLabel(wms_check_status.value, checkDoc.checkedStatus),
+    warehouseName: useBasicStore().warehouseMap.get(checkDoc.warehouseId)?.warehouseName,
+    goodsQty: Number(checkDoc.goodsQty).toFixed(0),
+    createBy: checkDoc.createBy,
+    createTime: proxy.parseTime(checkDoc.createTime, '{mm}-{dd} {hh}:{ii}'),
+    updateBy: checkDoc.updateBy,
+    updateTime: proxy.parseTime(checkDoc.updateTime, '{mm}-{dd} {hh}:{ii}'),
+    remark: checkDoc.remark,
     table
   }
   let printTemplate = new proxy.$hiprint.PrintTemplate({template: checkPanel})

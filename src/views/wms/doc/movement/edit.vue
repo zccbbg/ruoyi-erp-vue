@@ -69,8 +69,8 @@
                     row.goods.goodsName + (row.goods.goodsNo ? ('(' + row.goods.goodsNo + ')') : '')
                   }}
                 </div>
-                <div v-if="row.goods.brand">
-                  品牌：{{ useBasicStore().brandMap.get(row.goods.brand).brandName }}
+                <div v-if="row.goods.brandId">
+                  品牌：{{ useBasicStore().brandMap.get(row.goods.brandId).brandName }}
                 </div>
               </template>
             </el-table-column>

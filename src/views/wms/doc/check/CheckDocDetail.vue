@@ -9,27 +9,27 @@
               cell-class-name="my-cell" class="mt20">
       <el-table-column label="商品名称">
         <template #default="{ row }">
-          <div>{{ row?.item?.itemName }}</div>
+          <div>{{ row?.goods?.goodsName }}</div>
         </template>
       </el-table-column>
       <el-table-column label="规格名称">
         <template #default="{ row }">
-          <div>{{ row?.itemSku?.skuName }}</div>
+          <div>{{ row?.sku?.skuName }}</div>
         </template>
       </el-table-column>
-      <el-table-column label="账面库存" prop="quantity" align="right">
+      <el-table-column label="账面库存" prop="qty" align="right">
         <template #default="{ row }">
-          <el-statistic :value="Number(row.quantity)" :precision="0"/>
+          <el-statistic :value="Number(row.qty)" :precision="0"/>
         </template>
       </el-table-column>
       <el-table-column label="盈亏数" align="right">
         <template #default="{ row }">
-          <el-statistic :value="Number(row.checkQuantity) - Number(row.quantity)" :precision="0"/>
+          <el-statistic :value="Number(row.checkQty) - Number(row.qty)" :precision="0"/>
         </template>
       </el-table-column>
-      <el-table-column label="实际库存" prop="checkQuantity" align="right">
+      <el-table-column label="实际库存" prop="checkQty" align="right">
         <template #default="{ row }">
-          <el-statistic :value="Number(row.checkQuantity)" :precision="0"/>
+          <el-statistic :value="Number(row.checkQty)" :precision="0"/>
         </template>
       </el-table-column>
     </el-table>
@@ -69,7 +69,7 @@ const props = defineProps({
 const queryParams = ref({
   pageNum: 1,
   pageSize: 10,
-  orderId: null,
+  docId: null,
   haveProfitAndLoss: false,
 });
 const total = ref(0)
@@ -79,8 +79,8 @@ const show = computed(() => {
 })
 const emit = defineEmits(["handleCancelClick"]);
 
-function setCheckDocId(orderId) {
-  queryParams.value.orderId = orderId
+function setCheckDocId(docId) {
+  queryParams.value.docId = docId
 }
 
 defineExpose({

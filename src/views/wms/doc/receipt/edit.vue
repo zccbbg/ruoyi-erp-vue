@@ -63,7 +63,7 @@
             <el-table-column label="商品信息" prop="sku.goodsName">
               <template #default="{ row }">
                 <div>{{ row.goods.goodsName + (row.goods.itemCode ? ('(' + row.goods.itemCode + ')') : '') }}</div>
-                <div v-if="row.goods.brand">品牌：{{ useBasicStore().brandMap.get(row.goods.brand).brandName }}</div>
+                <div v-if="row.goods.brandId">品牌：{{ useBasicStore().brandMap.get(row.goods.brandId).brandName }}</div>
               </template>
             </el-table-column>
             <el-table-column label="规格信息">

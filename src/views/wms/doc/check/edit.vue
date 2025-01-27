@@ -50,8 +50,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item label="盈亏数" prop="totalQuantity">
-                <el-input-number v-model="form.totalQuantity" :controls="false" :precision="0"
+              <el-form-item label="盈亏数" prop="goodsQty">
+                <el-input-number v-model="form.goodsQty" :controls="false" :precision="0"
                                  :disabled="true"></el-input-number>
               </el-form-item>
             </el-col>
@@ -79,46 +79,46 @@
                   </el-button>
           </div>
           <el-table :data="form.details" border empty-text="暂无商品明细">
-            <el-table-column label="商品信息" prop="itemSku.itemName">
+            <el-table-column label="商品信息" prop="sku.goodsName">
               <template #default="scope">
                   <div>{{
-                      scope.row.item.itemName + (scope.row.item.itemCode ? ('(' + scope.row.item.itemCode + ')') : '')
+                      scope.row.goods.goodsName + (scope.row.goods.goodsNo ? ('(' + scope.row.goods.goodsNo + ')') : '')
                     }}
                   </div>
-                  <div v-if="scope.row.item.itemBrand">
-                    品牌：{{ useBasicStore().itemBrandMap.get(scope.row.item.itemBrand).brandName }}
+                  <div v-if="scope.row.goods.brandId">
+                    品牌：{{ useBasicStore().brandMap.get(scope.row.goods.brandId).brandName }}
                   </div>
                 </template>
             </el-table-column>
             <el-table-column label="规格信息">
               <template #default="{ row }">
                 <template v-if="row.newInventoryDetail">
-                  <div v-if="row.itemSku">{{ row.itemSku.skuName + (row.itemSku.barcode ? ('(' + row.itemSku.barcode + ')') : '') }}</div>
+                  <div v-if="row.sku">{{ row.sku.skuName + (row.sku.barcode ? ('(' + row.sku.barcode + ')') : '') }}</div>
                   <div v-else>请选择商品</div>
                 </template>
                 <template v-else>
-                  <div>{{ row.itemSku.skuName + (row.itemSku.barcode ? ('(' + row.itemSku.barcode + ')') : '') }}</div>
+                  <div>{{ row.sku.skuName + (row.sku.barcode ? ('(' + row.sku.barcode + ')') : '') }}</div>
                 </template>
               </template>
             </el-table-column>
             <el-table-column label="账面库存" align="right" width="150">
               <template #default="{ row }">
-                <el-statistic :value="Number(row.quantity)" :precision="0"/>
+                <el-statistic :value="Number(row.qty)" :precision="0"/>
               </template>
             </el-table-column>
-            <el-table-column label="盈亏数" prop="remainQuantity" align="right" width="150">
+            <el-table-column label="盈亏数" prop="remainQty" align="right" width="150">
               <template #default="{ row }">
-                <el-statistic :value="Number(row.checkQuantity) - Number(row.quantity)" :precision="0"/>
+                <el-statistic :value="Number(row.checkQty) - Number(row.qty)" :precision="0"/>
               </template>
             </el-table-column>
-            <el-table-column label="实际库存" prop="checkQuantity" width="180">
+            <el-table-column label="实际库存" prop="checkQty" width="180">
               <template #default="scope">
                 <el-input-number
-                  v-model="scope.row.checkQuantity"
+                  v-model="scope.row.checkQty"
                   placeholder="实际库存"
                   :min="0"
                   :precision="0"
-                  @change="handleChangeQuantity"
+                  @change="handleChangeQty"
                 ></el-input-number>
               </template>
             </el-table-column>
@@ -157,11 +157,11 @@
   </div>
 </template>
 
-<script setup name="CheckOrderEdit">
+<script setup name="CheckDocEdit">
 import {computed, getCurrentInstance, onMounted, reactive, ref, toRef, toRefs, watch} from "vue";
 const skuSelectRef = ref(null)
-import {addCheckOrder, getCheckOrder, updateCheckOrder, check} from "@/api/wms/checkOrder";
-import {delCheckOrderDetail} from "@/api/wms/checkOrderDetail";
+import {addCheckDoc, getCheckDoc, updateCheckDoc, check} from "@/api/wms/checkDoc";
+import {delCheckDocDetail} from "@/api/wms/checkDocDetail";
 import {listInventoryNoPage} from "@/api/wms/inventory";
 import {ElMessage, ElMessageBox} from "element-plus";
 import {useRoute} from "vue-router";
@@ -176,10 +176,10 @@ const selectedSku = ref([])
 const initFormData = {
   id: undefined,
   docNo: undefined,
-  orderStatus: 0,
+  checkedStatus: 0,
   remark: undefined,
   warehouseId: undefined,
-  totalQuantity: 0,
+  goodsQty: 0,
   details: [],
 }
 const data = reactive({
@@ -199,7 +199,7 @@ const cancel = async () => {
   close()
 }
 const close = () => {
-  const obj = {path: "/checkOrder"};
+  const obj = {path: "/wms/check"};
   proxy?.$tab.closeOpenPage(obj);
 }
 const inventorySelectShow = ref(false)
@@ -226,13 +226,13 @@ const startCheck = () => {
     })
     res.data.forEach(it => {
         form.value.details.push({
-            itemSku: it.itemSku,
-            item: it.item,
+            sku: it.sku,
+            goods: it.goods,
             inventoryId: it.id,
-            skuId: it.itemSku.id,
+            skuId: it.sku.id,
             warehouseId: it.warehouseId,
-            quantity: Number(it.quantity),
-            checkQuantity: Number(it.quantity),
+            qty: Number(it.qty),
+            checkQty: Number(it.qty),
             newInventory: false
           }
         )
@@ -244,16 +244,16 @@ const handleOkClick = (item) => {
   skuSelectShow.value = false
   selectedSku.value = [...item]
   item.forEach(it => {
-    if (!form.value.details.find(detail => detail.itemSku.id === it.id)) {
+    if (!form.value.details.find(detail => detail.sku.id === it.id)) {
       form.value.details.push(
         {
-          itemSku: it.itemSku,
+          sku: it.sku,
           item: it.item,
           skuId: it.id,
           warehouseId: form.value.warehouseId,
           inventoryId: null,
-          quantity: 0,
-          checkQuantity: 0,
+          qty: 0,
+          checkQty: 0,
           newInventory: true
         })
     }
@@ -273,7 +273,7 @@ const save = async () => {
   await proxy?.$modal.confirm('确认暂存盘库单吗？');
   doSave()
 }
-const getParams = (orderStatus) => {
+const getParams = (checkedStatus) => {
   let details = []
   if (form.value.details?.length) {
     // 构建参数
@@ -282,8 +282,8 @@ const getParams = (orderStatus) => {
         id: it.id,
         orderId: form.value.id,
         skuId: it.skuId,
-        quantity: it.quantity,
-        checkQuantity: it.checkQuantity,
+        qty: it.qty,
+        checkQty: it.checkQty,
         inventoryId: it.inventoryId,
         warehouseId: form.value.warehouseId,
       }
@@ -292,24 +292,24 @@ const getParams = (orderStatus) => {
   return  {
     id: form.value.id,
     docNo: form.value.docNo,
-    orderStatus,
+    checkedStatus,
     remark: form.value.remark,
-    totalQuantity: form.value.totalQuantity,
+    goodsQty: form.value.goodsQty,
     warehouseId: form.value.warehouseId,
     details: details
   }
 }
-const doSave = (orderStatus = 0) => {
+const doSave = (checkedStatus = 0) => {
   //验证shipmentForm表单
   checkForm.value?.validate((valid) => {
     // 校验
     if (!valid) {
       return ElMessage.error('请填写必填项')
     }
-    const params = getParams(orderStatus);
+    const params = getParams(checkedStatus);
     loading.value = true
     if (params.id) {
-      updateCheckOrder(params).then((res) => {
+      updateCheckDoc(params).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.msg)
           close()
@@ -320,7 +320,7 @@ const doSave = (orderStatus = 0) => {
         loading.value = false
       })
     } else {
-      addCheckOrder(params).then((res) => {
+      addCheckDoc(params).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.msg)
           close()
@@ -377,7 +377,7 @@ onMounted(() => {
 // 获取入库单详情
 const loadDetail = (id) => {
   loading.value = true
-  getCheckOrder(id).then((response) => {
+  getCheckDoc(id).then((response) => {
     if (response.data.details?.length) {
       response.data.details.forEach(detail => {
         detail.newInventory = !detail.inventoryId
@@ -399,7 +399,7 @@ const loadDetail = (id) => {
 const handleDeleteDetail = (row, index) => {
   if (row.id) {
     proxy.$modal.confirm('确认删除本条商品明细吗？如确认会立即执行！').then(function () {
-      return delCheckOrderDetail(row.id);
+      return delCheckDocDetail(row.id);
     }).then(() => {
       form.value.details.splice(index, 1)
       proxy.$modal.msgSuccess("删除成功");
@@ -407,18 +407,18 @@ const handleDeleteDetail = (row, index) => {
   } else {
     form.value.details.splice(index, 1)
   }
-  const indexOfSelected = selectedSku.value.findIndex(it => row.itemSku.id=== it.id)
+  const indexOfSelected = selectedSku.value.findIndex(it => row.sku.id=== it.id)
   selectedSku.value.splice(indexOfSelected, 1)
 }
 
-const handleChangeQuantity = () => {
-  let totalQuantity = 0
+const handleChangeQty = () => {
+  let goodsQty = 0
   form.value.details.forEach(it => {
-    if (it.quantity !== it.checkQuantity) {
-      totalQuantity += (it.checkQuantity - it.quantity)
+    if (it.qty !== it.checkQty) {
+      goodsQty += (it.checkQty - it.qty)
     }
   })
-  form.value.totalQuantity = totalQuantity
+  form.value.goodsQty = goodsQty
 }
 
 const goSaasTip = () => {
