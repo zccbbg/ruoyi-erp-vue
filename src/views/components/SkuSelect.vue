@@ -35,7 +35,7 @@
                 <template #default="{ row }">
                   <div>{{ row.goods.goodsName }}</div>
                   <div v-if="row.goods.goodsNo">编号：{{ row.goods.goodsNo }}</div>
-                  <div v-if="row.goods.itemBrand">品牌：{{ useBasicStore().brandMap.get(row.goods.itemBrand).brandName }}</div>
+                  <div v-if="row.goods.bandId">品牌：{{ useBasicStore().brandMap.get(row.goods.bandId).brandName }}</div>
                 </template>
               </el-table-column>
               <el-table-column label="规格信息">

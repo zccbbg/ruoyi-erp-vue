@@ -146,7 +146,6 @@
       <div class="btn-box">
         <div>
           <el-button @click="doCheck" type="primary" class="ml10">完成盘库</el-button>
-          <el-button @click="updateToInvalid" type="danger" v-if="form.id">作废</el-button>
         </div>
         <div>
           <el-button @click="save" type="primary">暂存</el-button>
@@ -248,7 +247,7 @@ const handleOkClick = (item) => {
       form.value.details.push(
         {
           sku: it.sku,
-          item: it.item,
+          goods: it.goods,
           skuId: it.id,
           warehouseId: form.value.warehouseId,
           inventoryId: null,
@@ -332,12 +331,6 @@ const doSave = (checkedStatus = 0) => {
       })
     }
   })
-}
-
-
-const updateToInvalid = async () => {
-  await proxy?.$modal.confirm('确认作废盘库单吗？');
-  doSave(-1)
 }
 
 const doCheck = async () => {

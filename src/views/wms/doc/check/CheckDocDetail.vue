@@ -69,7 +69,7 @@ const props = defineProps({
 const queryParams = ref({
   pageNum: 1,
   pageSize: 10,
-  docId: null,
+  pid: null,
   haveProfitAndLoss: false,
 });
 const total = ref(0)
@@ -80,7 +80,7 @@ const show = computed(() => {
 const emit = defineEmits(["handleCancelClick"]);
 
 function setCheckDocId(docId) {
-  queryParams.value.docId = docId
+  queryParams.value.pid = docId
 }
 
 defineExpose({
