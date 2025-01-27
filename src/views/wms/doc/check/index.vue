@@ -139,14 +139,14 @@
   </div>
 </template>
 
-<script setup name="CheckOrder">
-import {listCheckOrder, delCheckOrder, getCheckOrder} from "@/api/wms/checkOrder";
-import {listByCheckOrderId} from "@/api/wms/checkOrderDetail";
+<script setup name="CheckDoc">
+import {listCheckDoc, delCheckDoc, getCheckDoc} from "@/api/wms/checkDoc";
+import {listByCheckDocId} from "@/api/wms/checkDocDetail";
 import {getCurrentInstance, reactive, ref, toRefs} from "vue";
 import {useBasicStore} from "../../../../store/modules/basic";
 import {ElMessageBox} from "element-plus";
 import checkPanel from "@/components/PrintTemplate/check-panel";
-import CheckOrderDetail from "@/views/wms/order/check/CheckOrderDetail.vue";
+import CheckDocDetail from "@/views/wms/doc/check/CheckDocDetail.vue";
 const { proxy } = getCurrentInstance();
 const {wms_check_status} = proxy.useDict("wms_check_status");
 const checkOrderList = ref([]);
@@ -178,7 +178,7 @@ function getList() {
   if (query.orderStatus === -2) {
     query.orderStatus = null
   }
-  listCheckOrder(query).then(response => {
+  listCheckDoc(query).then(response => {
     checkOrderList.value = response.rows;
     total.value = response.total;
     loading.value = false;
@@ -199,7 +199,7 @@ function resetQuery() {
 
 /** 新增按钮操作 */
 function handleAdd() {
-  proxy.$router.push({ path: "/checkOrderEdit" });
+  proxy.$router.push({ path: "/wms/checkEdit" });
 }
 
 /** 删除按钮操作 */
@@ -207,7 +207,7 @@ function handleDelete(row) {
   const _ids = row.id || ids.value;
   proxy.$modal.confirm('确认删除【盘库单【' + row.docNo + '】吗？').then(function() {
     loading.value = true;
-    return delCheckOrder(_ids);
+    return delCheckDoc(_ids);
   }).then(() => {
     proxy.$modal.msgSuccess("删除成功");
   }).finally(() => {
@@ -217,19 +217,19 @@ function handleDelete(row) {
 }
 
 function handleUpdate(row) {
-  proxy.$router.push({ path: "/checkOrderEdit",  query: { id: row.id } });
+  proxy.$router.push({ path: "/wms/checkOrderEdit",  query: { id: row.id } });
 }
 
 function handleGoDetail(row) {
   watchDetailObj.value.docNo = row.docNo
-  checkOrderDetailRef.value.setCheckOrderId(row.id)
+  checkOrderDetailRef.value.setCheckDocId(row.id)
   watchDetailObj.value.show = true
   checkOrderDetailRef.value.handleQuery()
 }
 
 /** 导出按钮操作 */
 async function handlePrint(row) {
-  const res = await getCheckOrder(row.id)
+  const res = await getCheckDoc(row.id)
   const checkOrder = res.data
   let table = []
   if (checkOrder.details?.length) {

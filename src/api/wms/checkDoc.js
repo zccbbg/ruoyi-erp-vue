@@ -1,44 +1,44 @@
 import request from '@/utils/request'
 
 // 查询库存盘点单据列表
-export function listCheckOrder(query) {
+export function listCheckDoc(query) {
   return request({
-    url: '/wms/checkOrder/list',
+    url: '/wms/check/list',
     method: 'get',
     params: query
   })
 }
 
 // 查询库存盘点单据详细
-export function getCheckOrder(id) {
+export function getCheckDoc(id) {
   return request({
-    url: '/wms/checkOrder/' + id,
+    url: '/wms/check/' + id,
     method: 'get'
   })
 }
 
 // 新增库存盘点单据
-export function addCheckOrder(data) {
+export function addCheckDoc(data) {
   return request({
-    url: '/wms/checkOrder',
+    url: '/wms/check',
     method: 'post',
     data: data
   })
 }
 
 // 修改库存盘点单据
-export function updateCheckOrder(data) {
+export function updateCheckDoc(data) {
   return request({
-    url: '/wms/checkOrder',
+    url: '/wms/check',
     method: 'put',
     data: data
   })
 }
 
 // 删除库存盘点单据
-export function delCheckOrder(id) {
+export function delCheckDoc(id) {
   return request({
-    url: '/wms/checkOrder/' + id,
+    url: '/wms/check/' + id,
     method: 'delete'
   })
 }
@@ -46,7 +46,7 @@ export function delCheckOrder(id) {
 // 盘库结束
 export function check(data) {
   return request({
-    url: '/wms/checkOrder/check',
+    url: '/wms/check/check',
     method: 'post',
     data: data
   })

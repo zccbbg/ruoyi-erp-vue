@@ -49,7 +49,7 @@
 
 <script setup>
 import {computed, reactive, ref} from "vue";
-import {listCheckOrderDetail} from "@/api/wms/checkOrderDetail";
+import {listCheckDocDetail} from "@/api/wms/checkDocDetail";
 
 const list = ref([]);
 const props = defineProps({
@@ -79,13 +79,13 @@ const show = computed(() => {
 })
 const emit = defineEmits(["handleCancelClick"]);
 
-function setCheckOrderId(orderId) {
+function setCheckDocId(orderId) {
   queryParams.value.orderId = orderId
 }
 
 defineExpose({
   handleQuery,
-  setCheckOrderId
+  setCheckDocId
 })
 function handleCancelClick() {
   emit('handleCancelClick');
@@ -96,7 +96,7 @@ function handleCancelClick() {
 function getList() {
   loading.value = true;
   const query = {...queryParams.value}
-  listCheckOrderDetail(query).then(response => {
+  listCheckDocDetail(query).then(response => {
     list.value = response.rows;
     total.value = response.total;
   }).finally(() => loading.value = false);
