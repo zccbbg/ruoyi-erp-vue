@@ -30,6 +30,16 @@
                   :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]"
                 ></el-date-picker>
               </el-form-item>
+              <el-form-item label="审核状态" prop="checkedStatus">
+                <el-select v-model="queryParams.checkedStatus" placeholder="请选择审核状态" clearable>
+                  <el-option
+                    v-for="dict in doc_checked_status"
+                    :key="dict.value"
+                    :label="dict.label"
+                    :value="dict.value"
+                  />
+                </el-select>
+              </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
             <el-button icon="Refresh" @click="resetQuery">重置</el-button>
@@ -49,18 +59,18 @@
             @click="handleAdd"
             v-hasPermi="['purchase:order:add']"
           >新增</el-button>
-          <el-button
-            type="warning"
-            plain
-            icon="Download"
-            @click="handleExport"
-            v-hasPermi="['purchase:order:export']"
-          >导出</el-button>
+<!--          <el-button-->
+<!--            type="warning"-->
+<!--            plain-->
+<!--            icon="Download"-->
+<!--            @click="handleExport"-->
+<!--            v-hasPermi="['purchase:order:export']"-->
+<!--          >导出</el-button>-->
         </el-col>
       </el-row>
 
       <el-table v-loading="loading" :data="orderList" border class="mt20">
-            <el-table-column label="" prop="id" v-if="true"/>
+            <el-table-column label="" prop="id" v-if="false"/>
             <el-table-column label="单据编号" prop="billNo" />
             <el-table-column label="单据日期" align="center" prop="billDate" width="180">
               <template #default="scope">
@@ -72,7 +82,11 @@
                 <span>{{ parseTime(scope.row.deliveryDate, '{y}-{m}-{d}') }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="审核状态" prop="checkedStatus" />
+            <el-table-column label="审核状态" prop="checkedStatus">
+              <template #default="scope">
+                  <dict-tag :options="doc_checked_status" :value="scope.row.checkedStatus"/>
+              </template>
+            </el-table-column>
             <el-table-column label="审核人" prop="checkedBy" />
             <el-table-column label="库存状态" prop="stockStatus" />
             <el-table-column label="供应商id" prop="merchantId" />
@@ -125,6 +139,15 @@
                                 placeholder="请选择交货日期">
                 </el-date-picker>
               </el-form-item>
+              <el-form-item label="审核状态" prop="checkedStatus">
+                <el-radio-group v-model="form.checkedStatus">
+                  <el-radio
+                    v-for="dict in doc_checked_status"
+                    :key="dict.value"
+                    :label="parseInt(dict.value)"
+                  >{{dict.label}}</el-radio>
+                </el-radio-group>
+              </el-form-item>
               <el-form-item label="审核人" prop="checkedBy">
                 <el-input v-model="form.checkedBy" placeholder="请输入审核人" />
               </el-form-item>
@@ -170,6 +193,7 @@
   import { listOrder, getOrder, delOrder, addOrder, updateOrder } from "@/api/purchase/order";
 
 const { proxy } = getCurrentInstance();
+    const { doc_checked_status } = proxy.useDict('doc_checked_status');
 
   const orderList = ref([]);
   const open = ref(false);
@@ -193,9 +217,6 @@ const { proxy } = getCurrentInstance();
     stockStatus: undefined,
   },
   rules: {
-    id: [
-      { required: true, message: "不能为空", trigger: "blur" }
-    ],
     billNo: [
       { required: true, message: "单据编号不能为空", trigger: "blur" }
     ],
@@ -236,7 +257,7 @@ function reset() {
     billNo: null,
     billDate: null,
     deliveryDate: null,
-    checkedStatus: [],
+    checkedStatus: null,
     checkedBy: null,
     stockStatus: [],
     merchantId: null,
@@ -272,9 +293,7 @@ function handleQuery() {
 
   /** 新增按钮操作 */
   function handleAdd() {
-    reset();
-    open.value = true;
-    title.value = "添加采购订单";
+    proxy.$router.push({ path: "/purchase/orderEdit" });
 }
 
 /** 修改按钮操作 */
@@ -283,7 +302,6 @@ function handleUpdate(row) {
   const _id = row.id || ids.value
   getOrder(_id).then(response => {
     form.value = response.data;
-    form.value.checkedStatus = form.value.checkedStatus.split(",");
     form.value.stockStatus = form.value.stockStatus.split(",");
   open.value = true;
   title.value = "修改采购订单";
@@ -295,7 +313,6 @@ function submitForm() {
   proxy.$refs["orderRef"].validate(valid => {
     if (valid) {
       buttonLoading.value = true;
-      form.value.checkedStatus = form.value.checkedStatus.join(",");
       form.value.stockStatus = form.value.stockStatus.join(",");
       if (form.value.id != null) {
         updateOrder(form.value).then(response => {
