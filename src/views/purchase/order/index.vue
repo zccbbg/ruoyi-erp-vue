@@ -2,106 +2,38 @@
   <div class="app-container">
     <el-card>
       <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="68px">
-        <el-form-goods label="单据编号" prop="billNo">
-          <el-input
-            v-model="queryParams.billNo"
-            placeholder="请输入单据编号"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-goods>
-        <el-form-goods label="单据日期" prop="billDate">
-          <el-date-picker clearable
-            v-model="queryParams.billDate"
-            type="date"
-            value-format="YYYY-MM-DD"
-            placeholder="请选择单据日期">
-          </el-date-picker>
-        </el-form-goods>
-        <el-form-goods label="交货日期" prop="deliveryDate">
-          <el-date-picker clearable
-            v-model="queryParams.deliveryDate"
-            type="date"
-            value-format="YYYY-MM-DD"
-            placeholder="请选择交货日期">
-          </el-date-picker>
-        </el-form-goods>
-        <el-form-goods label="审核人" prop="checkedBy">
-          <el-input
-            v-model="queryParams.checkedBy"
-            placeholder="请输入审核人"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-goods>
-        <el-form-goods label="供应商id" prop="merchantId">
-          <el-input
-            v-model="queryParams.merchantId"
-            placeholder="请输入供应商id"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-goods>
-        <el-form-goods label="商品数量" prop="goodsQty">
-          <el-input
-            v-model="queryParams.goodsQty"
-            placeholder="请输入商品数量"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-goods>
-        <el-form-goods label="已处理数量" prop="processedQty">
-          <el-input
-            v-model="queryParams.processedQty"
-            placeholder="请输入已处理数量"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-goods>
-        <el-form-goods label="商品金额" prop="goodsAmount">
-          <el-input
-            v-model="queryParams.goodsAmount"
-            placeholder="请输入商品金额"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-goods>
-        <el-form-goods label="其他费用" prop="otherExpensesAmount">
-          <el-input
-            v-model="queryParams.otherExpensesAmount"
-            placeholder="请输入其他费用"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-goods>
-        <el-form-goods label="优惠金额" prop="discountAmount">
-          <el-input
-            v-model="queryParams.discountAmount"
-            placeholder="请输入优惠金额"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-goods>
-        <el-form-goods label="实际金额" prop="actualAmount">
-          <el-input
-            v-model="queryParams.actualAmount"
-            placeholder="请输入实际金额"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-goods>
-        <el-form-goods label="预付金额" prop="prepayAmount">
-          <el-input
-            v-model="queryParams.prepayAmount"
-            placeholder="请输入预付金额"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-goods>
-        <el-form-goods>
+              <el-form-item label="单据编号" prop="billNo">
+                <el-input
+                  v-model="queryParams.billNo"
+                  placeholder="请输入单据编号"
+                  clearable
+                  @keyup.enter="handleQuery"
+                />
+              </el-form-item>
+              <el-form-item label="单据日期" style="width: 308px">
+                <el-date-picker
+                  v-model="daterangeBillDate"
+                  value-format="YYYY-MM-DD HH:mm:ss"
+                  type="daterange"
+                  range-separator="-"
+                  start-placeholder="开始日期"
+                  :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]"
+                ></el-date-picker>
+              </el-form-item>
+              <el-form-item label="交货日期" style="width: 308px">
+                <el-date-picker
+                  v-model="daterangeDeliveryDate"
+                  value-format="YYYY-MM-DD HH:mm:ss"
+                  type="daterange"
+                  range-separator="-"
+                  start-placeholder="开始日期"
+                  :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]"
+                ></el-date-picker>
+              </el-form-item>
+        <el-form-item>
           <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
-          <el-button icon="Refresh" @click="resetQuery">重置</el-button>
-        </el-form-goods>
+            <el-button icon="Refresh" @click="resetQuery">重置</el-button>
+        </el-form-item>
       </el-form>
     </el-card>
 
@@ -128,35 +60,35 @@
       </el-row>
 
       <el-table v-loading="loading" :data="orderList" border class="mt20">
-        <el-table-column label="" prop="id" v-if="true"/>
-        <el-table-column label="单据编号" prop="billNo" />
-        <el-table-column label="单据日期" align="center" prop="billDate" width="180">
-          <template #default="scope">
-            <span>{{ parseTime(scope.row.billDate, '{y}-{m}-{d}') }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="交货日期" align="center" prop="deliveryDate" width="180">
-          <template #default="scope">
-            <span>{{ parseTime(scope.row.deliveryDate, '{y}-{m}-{d}') }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="审核状态" prop="checkedStatus" />
-        <el-table-column label="审核人" prop="checkedBy" />
-        <el-table-column label="库存状态" prop="stockStatus" />
-        <el-table-column label="供应商id" prop="merchantId" />
-        <el-table-column label="商品数量" prop="goodsQty" />
-        <el-table-column label="已处理数量" prop="processedQty" />
-        <el-table-column label="商品金额" prop="goodsAmount" />
-        <el-table-column label="其他费用" prop="otherExpensesAmount" />
-        <el-table-column label="优惠金额" prop="discountAmount" />
-        <el-table-column label="实际金额" prop="actualAmount" />
-        <el-table-column label="预付金额" prop="prepayAmount" />
-        <el-table-column label="备注" prop="remark" />
+            <el-table-column label="" prop="id" v-if="true"/>
+            <el-table-column label="单据编号" prop="billNo" />
+            <el-table-column label="单据日期" align="center" prop="billDate" width="180">
+              <template #default="scope">
+                <span>{{ parseTime(scope.row.billDate, '{y}-{m}-{d}') }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="交货日期" align="center" prop="deliveryDate" width="180">
+              <template #default="scope">
+                <span>{{ parseTime(scope.row.deliveryDate, '{y}-{m}-{d}') }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="审核状态" prop="checkedStatus" />
+            <el-table-column label="审核人" prop="checkedBy" />
+            <el-table-column label="库存状态" prop="stockStatus" />
+            <el-table-column label="供应商id" prop="merchantId" />
+            <el-table-column label="商品数量" prop="goodsQty" />
+            <el-table-column label="已处理数量" prop="processedQty" />
+            <el-table-column label="商品金额" prop="goodsAmount" />
+            <el-table-column label="其他费用" prop="otherExpensesAmount" />
+            <el-table-column label="优惠金额" prop="discountAmount" />
+            <el-table-column label="实际金额" prop="actualAmount" />
+            <el-table-column label="预付金额" prop="prepayAmount" />
+            <el-table-column label="备注" prop="remark" />
         <el-table-column label="操作" align="right" class-name="small-padding fixed-width">
-            <template #default="scope">
-                <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['purchase:order:edit']">修改</el-button>
-                <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['purchase:order:remove']">删除</el-button>
-            </template>
+          <template #default="scope">
+            <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['purchase:order:edit']">修改</el-button>
+            <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['purchase:order:remove']">删除</el-button>
+          </template>
         </el-table-column>
       </el-table>
 
@@ -174,55 +106,55 @@
     <!-- 添加或修改采购订单对话框 -->
     <el-drawer :title="title" v-model="open" size="50%" append-to-body>
       <el-form ref="orderRef" :model="form" :rules="rules" label-width="80px">
-        <el-form-goods label="单据编号" prop="billNo">
-          <el-input v-model="form.billNo" placeholder="请输入单据编号" />
-        </el-form-goods>
-        <el-form-goods label="单据日期" prop="billDate">
-          <el-date-picker clearable
-            v-model="form.billDate"
-            type="datetime"
-            value-format="YYYY-MM-DD HH:mm:ss"
-            placeholder="请选择单据日期">
-          </el-date-picker>
-        </el-form-goods>
-        <el-form-goods label="交货日期" prop="deliveryDate">
-          <el-date-picker clearable
-            v-model="form.deliveryDate"
-            type="datetime"
-            value-format="YYYY-MM-DD HH:mm:ss"
-            placeholder="请选择交货日期">
-          </el-date-picker>
-        </el-form-goods>
-        <el-form-goods label="审核人" prop="checkedBy">
-          <el-input v-model="form.checkedBy" placeholder="请输入审核人" />
-        </el-form-goods>
-        <el-form-goods label="供应商id" prop="merchantId">
-          <el-input v-model="form.merchantId" placeholder="请输入供应商id" />
-        </el-form-goods>
-        <el-form-goods label="商品数量" prop="goodsQty">
-          <el-input v-model="form.goodsQty" placeholder="请输入商品数量" />
-        </el-form-goods>
-        <el-form-goods label="已处理数量" prop="processedQty">
-          <el-input v-model="form.processedQty" placeholder="请输入已处理数量" />
-        </el-form-goods>
-        <el-form-goods label="商品金额" prop="goodsAmount">
-          <el-input v-model="form.goodsAmount" placeholder="请输入商品金额" />
-        </el-form-goods>
-        <el-form-goods label="其他费用" prop="otherExpensesAmount">
-          <el-input v-model="form.otherExpensesAmount" placeholder="请输入其他费用" />
-        </el-form-goods>
-        <el-form-goods label="优惠金额" prop="discountAmount">
-          <el-input v-model="form.discountAmount" placeholder="请输入优惠金额" />
-        </el-form-goods>
-        <el-form-goods label="实际金额" prop="actualAmount">
-          <el-input v-model="form.actualAmount" placeholder="请输入实际金额" />
-        </el-form-goods>
-        <el-form-goods label="预付金额" prop="prepayAmount">
-          <el-input v-model="form.prepayAmount" placeholder="请输入预付金额" />
-        </el-form-goods>
-        <el-form-goods label="备注" prop="remark">
-          <el-input v-model="form.remark" placeholder="请输入备注" />
-        </el-form-goods>
+              <el-form-item label="单据编号" prop="billNo">
+                <el-input v-model="form.billNo" placeholder="请输入单据编号" />
+              </el-form-item>
+              <el-form-item label="单据日期" prop="billDate">
+                <el-date-picker clearable
+                                v-model="form.billDate"
+                                type="datetime"
+                                value-format="YYYY-MM-DD HH:mm:ss"
+                                placeholder="请选择单据日期">
+                </el-date-picker>
+              </el-form-item>
+              <el-form-item label="交货日期" prop="deliveryDate">
+                <el-date-picker clearable
+                                v-model="form.deliveryDate"
+                                type="datetime"
+                                value-format="YYYY-MM-DD HH:mm:ss"
+                                placeholder="请选择交货日期">
+                </el-date-picker>
+              </el-form-item>
+              <el-form-item label="审核人" prop="checkedBy">
+                <el-input v-model="form.checkedBy" placeholder="请输入审核人" />
+              </el-form-item>
+              <el-form-item label="供应商id" prop="merchantId">
+                <el-input v-model="form.merchantId" placeholder="请输入供应商id" />
+              </el-form-item>
+              <el-form-item label="商品数量" prop="goodsQty">
+                <el-input v-model="form.goodsQty" placeholder="请输入商品数量" />
+              </el-form-item>
+              <el-form-item label="已处理数量" prop="processedQty">
+                <el-input v-model="form.processedQty" placeholder="请输入已处理数量" />
+              </el-form-item>
+              <el-form-item label="商品金额" prop="goodsAmount">
+                <el-input v-model="form.goodsAmount" placeholder="请输入商品金额" />
+              </el-form-item>
+              <el-form-item label="其他费用" prop="otherExpensesAmount">
+                <el-input v-model="form.otherExpensesAmount" placeholder="请输入其他费用" />
+              </el-form-item>
+              <el-form-item label="优惠金额" prop="discountAmount">
+                <el-input v-model="form.discountAmount" placeholder="请输入优惠金额" />
+              </el-form-item>
+              <el-form-item label="实际金额" prop="actualAmount">
+                <el-input v-model="form.actualAmount" placeholder="请输入实际金额" />
+              </el-form-item>
+              <el-form-item label="预付金额" prop="prepayAmount">
+                <el-input v-model="form.prepayAmount" placeholder="请输入预付金额" />
+              </el-form-item>
+              <el-form-item label="备注" prop="remark">
+                <el-input v-model="form.remark" placeholder="请输入备注" />
+              </el-form-item>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
@@ -235,37 +167,30 @@
 </template>
 
 <script setup name="Order">
-import { listOrder, getOrder, delOrder, addOrder, updateOrder } from "@/api/purchase/order";
+  import { listOrder, getOrder, delOrder, addOrder, updateOrder } from "@/api/purchase/order";
 
 const { proxy } = getCurrentInstance();
 
-const orderList = ref([]);
-const open = ref(false);
-const buttonLoading = ref(false);
-const loading = ref(true);
-const ids = ref([]);
-const total = ref(0);
-const title = ref("");
+  const orderList = ref([]);
+  const open = ref(false);
+  const buttonLoading = ref(false);
+  const loading = ref(true);
+  const ids = ref([]);
+  const total = ref(0);
+  const title = ref("");
+    const daterangeBillDate = ref([]);
+    const daterangeDeliveryDate = ref([]);
 
-const data = reactive({
-  form: {},
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
+  const data = reactive({
+    form: {},
+    queryParams: {
+      pageNum: 1,
+      pageSize: 10,
     billNo: undefined,
     billDate: undefined,
     deliveryDate: undefined,
     checkedStatus: undefined,
-    checkedBy: undefined,
     stockStatus: undefined,
-    merchantId: undefined,
-    goodsQty: undefined,
-    processedQty: undefined,
-    goodsAmount: undefined,
-    otherExpensesAmount: undefined,
-    discountAmount: undefined,
-    actualAmount: undefined,
-    prepayAmount: undefined,
   },
   rules: {
     id: [
@@ -273,48 +198,6 @@ const data = reactive({
     ],
     billNo: [
       { required: true, message: "单据编号不能为空", trigger: "blur" }
-    ],
-    billDate: [
-      { required: true, message: "单据日期不能为空", trigger: "blur" }
-    ],
-    deliveryDate: [
-      { required: true, message: "交货日期不能为空", trigger: "blur" }
-    ],
-    checkedStatus: [
-      { required: true, message: "审核状态不能为空", trigger: "change" }
-    ],
-    checkedBy: [
-      { required: true, message: "审核人不能为空", trigger: "blur" }
-    ],
-    stockStatus: [
-      { required: true, message: "库存状态不能为空", trigger: "change" }
-    ],
-    merchantId: [
-      { required: true, message: "供应商id不能为空", trigger: "blur" }
-    ],
-    goodsQty: [
-      { required: true, message: "商品数量不能为空", trigger: "blur" }
-    ],
-    processedQty: [
-      { required: true, message: "已处理数量不能为空", trigger: "blur" }
-    ],
-    goodsAmount: [
-      { required: true, message: "商品金额不能为空", trigger: "blur" }
-    ],
-    otherExpensesAmount: [
-      { required: true, message: "其他费用不能为空", trigger: "blur" }
-    ],
-    discountAmount: [
-      { required: true, message: "优惠金额不能为空", trigger: "blur" }
-    ],
-    actualAmount: [
-      { required: true, message: "实际金额不能为空", trigger: "blur" }
-    ],
-    prepayAmount: [
-      { required: true, message: "预付金额不能为空", trigger: "blur" }
-    ],
-    remark: [
-      { required: true, message: "备注不能为空", trigger: "blur" }
     ],
   }
 });
@@ -324,8 +207,17 @@ const { queryParams, form, rules } = toRefs(data);
 /** 查询采购订单列表 */
 function getList() {
   loading.value = true;
+    queryParams.value.params = {};
+  if (null != daterangeBillDate && '' != daterangeBillDate) {
+    queryParams.value.params["beginBillDate"] = daterangeBillDate.value[0];
+    queryParams.value.params["endBillDate"] = daterangeBillDate.value[1];
+  }
+  if (null != daterangeDeliveryDate && '' != daterangeDeliveryDate) {
+    queryParams.value.params["beginDeliveryDate"] = daterangeDeliveryDate.value[0];
+    queryParams.value.params["endDeliveryDate"] = daterangeDeliveryDate.value[1];
+  }
   listOrder(queryParams.value).then(response => {
-    orderList.value = response.rows;
+  orderList.value = response.rows;
     total.value = response.total;
     loading.value = false;
   });
@@ -344,9 +236,9 @@ function reset() {
     billNo: null,
     billDate: null,
     deliveryDate: null,
-    checkedStatus: null,
+    checkedStatus: [],
     checkedBy: null,
-    stockStatus: null,
+    stockStatus: [],
     merchantId: null,
     goodsQty: null,
     processedQty: null,
@@ -370,17 +262,19 @@ function handleQuery() {
   getList();
 }
 
-/** 重置按钮操作 */
-function resetQuery() {
-  proxy.resetForm("queryRef");
-  handleQuery();
-}
+    /** 重置按钮操作 */
+    function resetQuery() {
+      daterangeBillDate.value = [];
+      daterangeDeliveryDate.value = [];
+    proxy.resetForm("queryRef");
+    handleQuery();
+  }
 
-/** 新增按钮操作 */
-function handleAdd() {
-  reset();
-  open.value = true;
-  title.value = "添加采购订单";
+  /** 新增按钮操作 */
+  function handleAdd() {
+    reset();
+    open.value = true;
+    title.value = "添加采购订单";
 }
 
 /** 修改按钮操作 */
@@ -389,8 +283,10 @@ function handleUpdate(row) {
   const _id = row.id || ids.value
   getOrder(_id).then(response => {
     form.value = response.data;
-    open.value = true;
-    title.value = "修改采购订单";
+    form.value.checkedStatus = form.value.checkedStatus.split(",");
+    form.value.stockStatus = form.value.stockStatus.split(",");
+  open.value = true;
+  title.value = "修改采购订单";
   });
 }
 
@@ -399,6 +295,8 @@ function submitForm() {
   proxy.$refs["orderRef"].validate(valid => {
     if (valid) {
       buttonLoading.value = true;
+      form.value.checkedStatus = form.value.checkedStatus.join(",");
+      form.value.stockStatus = form.value.stockStatus.join(",");
       if (form.value.id != null) {
         updateOrder(form.value).then(response => {
           proxy.$modal.msgSuccess("修改成功");
