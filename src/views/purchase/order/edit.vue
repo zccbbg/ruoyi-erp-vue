@@ -5,81 +5,93 @@
         <el-form label-width="108px" :model="form" ref="receiptForm" :rules="rules">
           <el-row :gutter="24">
             <el-col :span="6">
-              <el-form-item label="订单编号" prop="docNo">
-                <el-input class="w200" v-model="form.billNo" placeholder="订单编号" :disabled="form.id"></el-input>
-              </el-form-item>
+              <el-row>
+                <el-col :span="24">
+                  <el-form-item label="订单编号" prop="docNo">
+                    <el-input class="w200" v-model="form.billNo" placeholder="订单编号" :disabled="form.id"></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="24">
+                  <el-form-item label="备注" prop="remark">
+                    <el-input
+                      v-model="form.remark"
+                      placeholder="备注...100个字符以内"
+                      rows="4"
+                      maxlength="100"
+                      type="textarea"
+                      show-word-limit="show-word-limit"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
             </el-col>
-            <el-col :span="3">
-              <el-form-item label="单据日期" prop="billDate">
-                <el-date-picker clearable
-                                v-model="form.billDate"
-                                type="datetime"
-                                value-format="YYYY-MM-DD HH:mm:ss"
-                                placeholder="请选择单据日期">
-                </el-date-picker>
-              </el-form-item>
-            </el-col>
-            <el-col :span="3">
-              <el-form-item label="交货日期" prop="deliveryDate">
-                <el-date-picker clearable
-                                v-model="form.deliveryDate"
-                                type="datetime"
-                                value-format="YYYY-MM-DD HH:mm:ss"
-                                placeholder="请选择交货日期">
-                </el-date-picker>
-              </el-form-item>
-            </el-col>
-            <el-col :span="3">
-              <el-form-item label="供应商" prop="merchantId">
-                <el-input v-model="form.merchantId" placeholder="请输入供应商id" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="3">
-              <el-form-item label="其他费用" prop="otherExpensesAmount">
-                <el-input v-model="form.otherExpensesAmount" placeholder="请输入其他费用" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="3">
-              <el-form-item label="优惠金额" prop="discountAmount">
-                <el-input v-model="form.discountAmount" placeholder="请输入优惠金额" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row :gutter="24">
-            <el-col :span="6">
-              <el-form-item label="备注" prop="remark">
-                <el-input
-                  v-model="form.remark"
-                  placeholder="备注...100个字符以内"
-                  rows="4"
-                  maxlength="100"
-                  type="textarea"
-                  show-word-limit="show-word-limit"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="3">
-              <div style="display: flex;align-items: start">
-                <el-form-item label="总金额" prop="goodsAmount">
-                  <el-input-number style="width:100%" v-model="form.goodsAmount" :precision="2" :min="0"></el-input-number>
-                </el-form-item>
-                <el-button link type="primary" @click="handleAutoCalc" style="line-height: 32px">自动计算</el-button>
-              </div>
-            </el-col>
-            <el-col :span="3">
-              <el-form-item label="实际金额" prop="actualAmount">
-                <el-input v-model="form.actualAmount" placeholder="请输入实际金额" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="3">
-              <el-form-item label="预付金额" prop="prepayAmount">
-                <el-input v-model="form.prepayAmount" placeholder="请输入预付金额" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="3">
-              <el-form-item label="总数量" prop="goodsQty">
-                <el-input-number style="width:100%" v-model="form.goodsQty" :controls="false" :precision="0" :disabled="true"></el-input-number>
-              </el-form-item>
+            <el-col :span="18">
+              <el-row>
+                <el-col :span="8">
+                  <el-form-item label="单据日期" prop="billDate">
+                    <el-date-picker clearable
+                                    v-model="form.billDate"
+                                    type="datetime"
+                                    value-format="YYYY-MM-DD HH:mm:ss"
+                                    placeholder="请选择单据日期">
+                    </el-date-picker>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="交货日期" prop="deliveryDate">
+                    <el-date-picker clearable
+                                    v-model="form.deliveryDate"
+                                    type="datetime"
+                                    value-format="YYYY-MM-DD HH:mm:ss"
+                                    placeholder="请选择交货日期">
+                    </el-date-picker>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="供应商" prop="merchantId">
+                    <el-input v-model="form.merchantId" placeholder="请输入供应商id" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="8">
+                  <el-form-item label="其他费用" prop="otherExpensesAmount">
+                    <el-input v-model="form.otherExpensesAmount" placeholder="请输入其他费用" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="预付金额" prop="prepayAmount">
+                    <el-input v-model="form.prepayAmount" placeholder="请输入预付金额" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="总数量" prop="goodsQty">
+                    <el-input-number style="width:100%" v-model="form.goodsQty" :controls="false" :precision="0" :disabled="true"></el-input-number>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="8">
+                  <el-form-item label="优惠金额" prop="discountAmount">
+                    <el-input v-model="form.discountAmount" placeholder="请输入优惠金额" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <div style="display: flex;align-items: start">
+                    <el-form-item label="总金额" prop="goodsAmount">
+                      <el-input-number style="width:100%" v-model="form.goodsAmount" :precision="2" :min="0"></el-input-number>
+                    </el-form-item>
+                    <el-button link type="primary" @click="handleAutoCalc" style="line-height: 32px">自动计算</el-button>
+                  </div>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="实际金额" prop="actualAmount">
+                    <el-input v-model="form.actualAmount" placeholder="请输入实际金额" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
             </el-col>
           </el-row>
         </el-form>
