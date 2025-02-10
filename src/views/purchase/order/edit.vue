@@ -150,20 +150,36 @@
                 <el-input-number
                   v-model="scope.row.qty"
                   placeholder="数量"
+                  @change="handleChangeQty(scope.row)"
+                  :controls="false"
                   :min="1"
                   :precision="0"
-                  @change="handleChangeQty"
                 ></el-input-number>
               </template>
             </el-table-column>
-            <el-table-column label="金额(合计)" prop="totalAmount" width="180">
+            <el-table-column label="单价" prop="price" width="180">
+              <template #default="scope">
+                <el-input-number
+                  v-model="scope.row.price"
+                  @change="handleChangePrice(scope.row)"
+                  placeholder="单价"
+                  :precision="2"
+                  :controls="false"
+                  :min="0"
+                  :max="2147483647"
+                ></el-input-number>
+              </template>
+            </el-table-column>
+            <el-table-column label="合计金额" prop="totalAmount" width="180">
               <template #default="scope">
                 <el-input-number
                   v-model="scope.row.totalAmount"
-                  placeholder="金额"
+                  :controls="false"
+                  placeholder="合计金额"
                   :precision="2"
                   :min="0"
                   :max="2147483647"
+                  @change="handleChangeTotalAmount(scope.row)"
                 ></el-input-number>
               </template>
             </el-table-column>
@@ -270,7 +286,6 @@ const close = () => {
 }
 const skuSelectShow = ref(false)
 
-
 const setWarehouseDialogVisible = () => {
   if(form.value.details?.length == 0){
     ElMessage.error("请先添加商品！");
@@ -305,13 +320,7 @@ const handleOkClick = (item) => {
   item.forEach((it) => {
     if (!form.value.details.find(detail => detail.sku.id === it.id)) {
       form.value.details.push(
-        {
-          sku: it.sku,
-          goods: it.goods,
-          totalAmount: undefined,
-          qty: it.qty,
-          warehouseId: form.value.warehouseId
-        }
+        {...it}
       )
     }
   })
@@ -326,16 +335,38 @@ const save = async () => {
   doSave()
 }
 
+const handleChangeTotalAmount = (row) => {
+  if(row.qty>0 && row.price){
+    row.price = parseFloat((row.totalAmount / row.qty).toFixed(2));
+  }
+}
+
+const handleChangePrice = (row) => {
+  if(row.qty && row.price){
+    row.totalAmount = parseFloat((row.qty * row.price).toFixed(2));
+  }
+}
+
+const handleChangeQty = (row) => {
+  let sum = 0
+  form.value.details.forEach(it => {
+    if (it.qty) {
+      sum += Number(it.qty)
+    }
+  })
+  form.value.goodsQty = sum
+
+  if(row.qty && row.price){
+    row.totalAmount = parseFloat((row.qty * row.price).toFixed(2));
+  }
+}
+
 const getParamsBeforeSave = (orderStatus) => {
   let details = []
   if (form.value.details?.length) {
     details = form.value.details.map(it => {
       return {
-        id: it.id,
-        skuId: it.sku.id,
-        totalAmount: it.totalAmount,
-        qty: it.qty,
-        warehouseId: it.warehouseId
+        ...it
       }
     })
   }
@@ -454,16 +485,6 @@ const loadDetail = (id) => {
   }).finally(() => {
     loading.value = false
   })
-}
-
-const handleChangeQty = () => {
-  let sum = 0
-  form.value.details.forEach(it => {
-    if (it.qty) {
-      sum += Number(it.qty)
-    }
-  })
-  form.value.goodsQty = sum
 }
 
 const handleAutoCalc = () => {
