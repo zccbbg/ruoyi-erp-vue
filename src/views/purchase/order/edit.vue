@@ -62,7 +62,7 @@
               <el-row>
                 <el-col :span="8">
                   <el-form-item label="其他费用" prop="otherExpensesAmount">
-                    <el-input v-model="form.otherExpensesAmount" placeholder="请输入其他费用" />
+                    <el-input-number :controls="false" style="width:100%;" :precision="2" v-model="form.otherExpensesAmount" placeholder="请输入其他费用" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
@@ -79,7 +79,7 @@
               <el-row>
                 <el-col :span="8">
                   <el-form-item label="优惠金额" prop="discountAmount">
-                    <el-input v-model="form.discountAmount" placeholder="请输入优惠金额" />
+                    <el-input-number :controls="false" style="width:100%;" :precision="2" v-model="form.discountAmount" placeholder="请输入优惠金额" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
@@ -89,7 +89,7 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="预付金额" prop="prepayAmount">
-                    <el-input v-model="form.prepayAmount" placeholder="请输入预付金额" />
+                    <el-input-number :controls="false" style="width:100%;" :precision="2" v-model="form.prepayAmount" placeholder="请输入预付金额" />
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -506,6 +506,13 @@ const goSaasTip = () => {
 
 <style lang="scss" scoped>
 @import "@/assets/styles/variables.module";
+
+:deep(.el-input-number .el-input__inner){
+  text-align: left;
+  line-height: 1;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
 
 .btn-box {
   width: calc(100% - #{$base-sidebar-width});
