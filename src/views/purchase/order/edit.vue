@@ -53,7 +53,9 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="供应商" prop="merchantId">
-                    <el-input v-model="form.merchantId" placeholder="请输入供应商id" />
+                    <el-select v-model="form.merchantId" placeholder="请选择供应商" clearable filterable style="width:100%">
+                      <el-option v-for="item in useBasicStore().supplierList" :key="item.id" :label="item.merchantName" :value="item.id"/>
+                    </el-select>
                   </el-form-item>
                 </el-col>
               </el-row>

@@ -24,11 +24,15 @@ export const useBasicStore = defineStore('wms', () => {
 
   // 企业管理
   const merchantList = ref([]);
+  const supplierList = ref([]);
+  const customerList = ref([]);
   const merchantMap = ref(new Map());
 
   const getMerchantList = () => {
     listMerchantNoPage({}).then((res) => {
       merchantList.value = res.data;
+      supplierList.value = res.data.filter(item => item.merchantTypeSupplier === 1);
+      customerList.value = res.data.filter(item => item.merchantTypeCustomer === 1);
       const map = new Map();
       merchantList.value.forEach((supplier) => {
         map.set(supplier.id, supplier);
@@ -90,6 +94,8 @@ export const useBasicStore = defineStore('wms', () => {
     getWarehouseList,
     // 企业管理
     merchantList,
+    supplierList,
+    customerList,
     merchantMap,
     getMerchantList,
     // 商品分类管理
