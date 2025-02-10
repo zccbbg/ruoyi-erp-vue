@@ -57,14 +57,14 @@
             plain
             icon="Plus"
             @click="handleAdd"
-            v-hasPermi="['purchase:order:add']"
+            v-hasPermi="['purchase:order:all']"
           >新增</el-button>
 <!--          <el-button-->
 <!--            type="warning"-->
 <!--            plain-->
 <!--            icon="Download"-->
 <!--            @click="handleExport"-->
-<!--            v-hasPermi="['purchase:order:export']"-->
+<!--            v-hasPermi="['purchase:order:all']"-->
 <!--          >导出</el-button>-->
         </el-col>
       </el-row>
@@ -100,8 +100,8 @@
             <el-table-column label="备注" prop="remark" />
         <el-table-column label="操作" align="right" class-name="small-padding fixed-width">
           <template #default="scope">
-            <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['purchase:order:edit']">修改</el-button>
-            <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['purchase:order:remove']">删除</el-button>
+            <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['purchase:order:all']">修改</el-button>
+            <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['purchase:order:all']">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -298,14 +298,7 @@ function handleQuery() {
 
 /** 修改按钮操作 */
 function handleUpdate(row) {
-  reset();
-  const _id = row.id || ids.value
-  getOrder(_id).then(response => {
-    form.value = response.data;
-    form.value.stockStatus = form.value.stockStatus.split(",");
-  open.value = true;
-  title.value = "修改采购订单";
-  });
+  proxy.$router.push({ path: "/purchase/orderEdit",  query: { id: row.id } });
 }
 
 /** 提交按钮 */

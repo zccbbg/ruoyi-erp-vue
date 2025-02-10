@@ -2,7 +2,7 @@
   <div>
     <div class="receipt-order-edit-wrapper app-container" style="margin-bottom: 60px" v-loading="loading">
       <el-card header="采购订单基本信息">
-        <el-form label-width="108px" :model="form" ref="receiptForm" :rules="rules">
+        <el-form label-width="108px" :model="form" ref="purchaseOrderForm" :rules="rules">
           <el-row :gutter="24">
             <el-col :span="6">
               <el-row>
@@ -211,7 +211,7 @@
 
 <script setup name="ReceiptDocEdit">
 import {computed, getCurrentInstance, onMounted, reactive, ref, toRef, toRefs, watch} from "vue";
-import {addReceiptDoc, getReceiptDoc, updateReceiptDoc, inbound} from "@/api/wms/receiptDoc";
+import {addOrder, getOrder, updateOrder} from "@/api/purchase/order";
 import {ElMessage, ElMessageBox} from "element-plus";
 import SkuSelect from "../../components/SkuSelect.vue";
 import {useRoute} from "vue-router";
@@ -221,7 +221,6 @@ import { delReceiptDocDetail } from '@/api/wms/receiptDocDetail'
 import {getWarehouseAndSkuKey} from "@/utils/wmsUtil";
 
 const {proxy} = getCurrentInstance();
-const { wms_receipt_type } = proxy.useDict("wms_receipt_type");
 const selectedSku = ref([])
 const mode = ref(false)
 const loading = ref(false)
@@ -262,11 +261,11 @@ const data = reactive({
 const { form, rules} = toRefs(data);
 
 const cancel = async () => {
-  await proxy?.$modal.confirm('确认取消编辑入库单吗？');
+  await proxy?.$modal.confirm('确认取消编辑采购订单吗？');
   close()
 }
 const close = () => {
-  const obj = {path: "/wms/receipt"};
+  const obj = {path: "/purchase/order"};
   proxy?.$tab.closeOpenPage(obj);
 }
 const skuSelectShow = ref(false)
@@ -320,10 +319,10 @@ const handleOkClick = (item) => {
 // 选择商品 end
 
 // 初始化receipt-order-form ref
-const receiptForm = ref()
+const purchaseOrderForm = ref()
 
 const save = async () => {
-  await proxy?.$modal.confirm('确认暂存入库单吗？');
+  await proxy?.$modal.confirm('确认暂存采购订单吗？');
   doSave()
 }
 
@@ -355,8 +354,8 @@ const getParamsBeforeSave = (orderStatus) => {
 }
 
 const doSave = async (orderStatus = 0) => {
-  //验证receiptForm表单
-  receiptForm.value?.validate((valid) => {
+  //验证purchaseOrderForm表单
+  purchaseOrderForm.value?.validate((valid) => {
     // 校验
     if (!valid) {
       return ElMessage.error('请填写必填项')
@@ -364,7 +363,7 @@ const doSave = async (orderStatus = 0) => {
     const params = getParamsBeforeSave(orderStatus)
     loading.value = true
     if (params.id) {
-      updateReceiptDoc(params).then((res) => {
+      updateOrder(params).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.msg)
           close()
@@ -375,7 +374,7 @@ const doSave = async (orderStatus = 0) => {
         loading.value = false
       })
     } else {
-      addReceiptDoc(params).then((res) => {
+      addOrder(params).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.msg)
           close()
@@ -390,7 +389,7 @@ const doSave = async (orderStatus = 0) => {
 }
 
 const doWarehousing = async () => {
-  receiptForm.value?.validate(async (valid) => {
+  purchaseOrderForm.value?.validate(async (valid) => {
     // 校验
     if (!valid) {
       return ElMessage.error('请填写必填项')
@@ -447,7 +446,7 @@ onMounted(() => {
 // 获取入库单详情
 const loadDetail = (id) => {
   loading.value = true
-  getReceiptDoc(id).then((response) => {
+  getOrder(id).then((response) => {
     form.value = {...response.data}
     if (response.data.details?.length) {
       selectedSku.value = response.data.details.map(it => {
