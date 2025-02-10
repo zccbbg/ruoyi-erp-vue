@@ -7,7 +7,7 @@
             <el-col :span="6">
               <el-row>
                 <el-col :span="24">
-                  <el-form-item label="订单编号" prop="docNo">
+                  <el-form-item label="订单编号" prop="billNo">
                     <el-input class="w200" v-model="form.billNo" placeholder="订单编号" :disabled="form.id"></el-input>
                   </el-form-item>
                 </el-col>
@@ -66,30 +66,30 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="预付金额" prop="prepayAmount">
-                    <el-input v-model="form.prepayAmount" placeholder="请输入预付金额" />
+                  <el-form-item label="总金额" prop="goodsAmount">
+                    <el-input-number style="width:100%" v-model="form.goodsAmount" :controls="false" :precision="2" :disabled="true"></el-input-number>
                   </el-form-item>
                 </el-col>
-                <el-col :span="8">
-                  <el-form-item label="优惠金额" prop="discountAmount">
-                    <el-input v-model="form.discountAmount" placeholder="请输入优惠金额" />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-row>
                 <el-col :span="8">
                   <el-form-item label="总数量" prop="goodsQty">
                     <el-input-number style="width:100%" v-model="form.goodsQty" :controls="false" :precision="0" :disabled="true"></el-input-number>
                   </el-form-item>
                 </el-col>
+              </el-row>
+              <el-row>
                 <el-col :span="8">
-                    <el-form-item label="总金额" prop="goodsAmount">
-                      <el-input-number style="width:100%" v-model="form.goodsAmount" :controls="false" :precision="2" :disabled="true"></el-input-number>
-                    </el-form-item>
+                  <el-form-item label="优惠金额" prop="discountAmount">
+                    <el-input v-model="form.discountAmount" placeholder="请输入优惠金额" />
+                  </el-form-item>
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="实际金额" prop="actualAmount">
                     <el-input-number style="width:100%" v-model="form.actualAmount" :controls="false" :precision="2" :disabled="true"/>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="预付金额" prop="prepayAmount">
+                    <el-input v-model="form.prepayAmount" placeholder="请输入预付金额" />
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -230,7 +230,7 @@ const skuSelectRef = ref(null)
 const batchSetWarehouseId = ref(null)
 const initFormData = {
   id: undefined,
-  docNo: undefined,
+  billNo: undefined,
   optType: "2",
   merchantId: undefined,
   goodsAmount: undefined,
@@ -245,13 +245,13 @@ const data = reactive({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
-    docNo: undefined,
+    billNo: undefined,
     optType: undefined,
     goodsAmount: undefined,
     orderStatus: undefined,
   },
   rules: {
-    docNo: [
+    billNo: [
       {required: true, message: "入库单号不能为空", trigger: "blur"}
     ],
     warehouseId: [
@@ -343,7 +343,7 @@ const getParamsBeforeSave = (orderStatus) => {
 
   return {
     id: form.value.id,
-    docNo: form.value.docNo,
+    billNo: form.value.billNo,
     orderStatus,
     optType: form.value.optType,
     merchantId: form.value.merchantId,
@@ -439,7 +439,7 @@ onMounted(() => {
   if (id) {
     loadDetail(id)
   } else {
-    form.value.docNo = 'RK' + generateNo()
+    form.value.billNo = 'PO' + generateNo()
   }
 })
 
