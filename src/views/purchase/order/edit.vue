@@ -66,12 +66,12 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="总金额" prop="goodsAmount">
+                  <el-form-item label="商品金额" prop="goodsAmount">
                     <el-input-number style="width:100%" v-model="form.goodsAmount" :controls="false" :precision="2" :disabled="true"></el-input-number>
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="总数量" prop="goodsQty">
+                  <el-form-item label="商品数量" prop="goodsQty">
                     <el-input-number style="width:100%" v-model="form.goodsQty" :controls="false" :precision="0" :disabled="true"></el-input-number>
                   </el-form-item>
                 </el-col>

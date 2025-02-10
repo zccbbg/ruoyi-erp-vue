@@ -71,15 +71,16 @@
 
       <el-table v-loading="loading" :data="orderList" border class="mt20">
             <el-table-column label="" prop="id" v-if="false"/>
-            <el-table-column label="单据编号" prop="billNo" />
-            <el-table-column label="单据日期" align="center" prop="billDate" width="180">
+            <el-table-column label="单据编号" prop="billNo" min-width="120"/>
+            <el-table-column label="单据日期/交货日期" prop="billDate" width="160">
               <template #default="scope">
-                <span>{{ parseTime(scope.row.billDate, '{y}-{m}-{d}') }}</span>
+                <div v-if="scope.row.billDate">单据：{{ parseTime(scope.row.billDate, '{y}-{m}-{d}') }}</div>
+                <div v-if="scope.row.deliveryDate">交货：{{ parseTime(scope.row.deliveryDate, '{y}-{m}-{d}') }}</div>
               </template>
             </el-table-column>
-            <el-table-column label="交货日期" align="center" prop="deliveryDate" width="180">
-              <template #default="scope">
-                <span>{{ parseTime(scope.row.deliveryDate, '{y}-{m}-{d}') }}</span>
+            <el-table-column label="供应商" prop="merchantId" min-width="120">
+              <template #default="{ row }">
+                <div>{{ useBasicStore().merchantMap.get(row.merchantId)?.merchantName }}</div>
               </template>
             </el-table-column>
             <el-table-column label="审核状态" prop="checkedStatus">
@@ -87,21 +88,25 @@
                   <dict-tag :options="doc_checked_status" :value="scope.row.checkedStatus"/>
               </template>
             </el-table-column>
-            <el-table-column label="审核人" prop="checkedBy" />
-            <el-table-column label="库存状态" prop="stockStatus" />
-            <el-table-column label="供应商id" prop="merchantId" />
+            <el-table-column label="订单状态" prop="stockStatus" />
+
             <el-table-column label="商品数量" prop="goodsQty" />
-            <el-table-column label="已处理数量" prop="processedQty" />
             <el-table-column label="商品金额" prop="goodsAmount" />
             <el-table-column label="其他费用" prop="otherExpensesAmount" />
             <el-table-column label="优惠金额" prop="discountAmount" />
             <el-table-column label="实际金额" prop="actualAmount" />
             <el-table-column label="预付金额" prop="prepayAmount" />
-            <el-table-column label="备注" prop="remark" />
-        <el-table-column label="操作" align="right" class-name="small-padding fixed-width">
+        <el-table-column label="操作" align="right" class-name="small-padding fixed-width" width="120">
           <template #default="scope">
-            <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['purchase:order:all']">修改</el-button>
-            <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['purchase:order:all']">删除</el-button>
+            <div>
+              <el-button link type="primary" @click="handleUpdate(scope.row)" v-hasPermi="['purchase:order:all']">修改</el-button>
+              <el-button link type="primary"  v-hasPermi="['purchase:order:all']">查看</el-button>
+            </div>
+            <div>
+              <el-button link type="danger" @click="handleDelete(scope.row)" v-hasPermi="['purchase:order:all']">删除</el-button>
+              <el-button link type="primary" @click="alert('打印功能暂未开发！')" v-hasPermi="['wms:check:all']">打印</el-button>
+            </div>
+
           </template>
         </el-table-column>
       </el-table>
@@ -191,6 +196,7 @@
 
 <script setup name="Order">
   import { listOrder, getOrder, delOrder, addOrder, updateOrder } from "@/api/purchase/order";
+  import {useBasicStore} from "../../../store/modules/basic";
 
 const { proxy } = getCurrentInstance();
     const { doc_checked_status } = proxy.useDict('doc_checked_status');
