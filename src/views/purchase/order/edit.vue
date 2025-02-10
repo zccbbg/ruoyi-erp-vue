@@ -341,14 +341,8 @@ const getParamsBeforeSave = (orderStatus) => {
   }
 
   return {
-    id: form.value.id,
-    billNo: form.value.billNo,
+    ...form.value,
     orderStatus,
-    optType: form.value.optType,
-    merchantId: form.value.merchantId,
-    remark: form.value.remark,
-    goodsAmount: form.value.goodsAmount,
-    goodsQty: form.value.goodsQty,
     details: details
   }
 }

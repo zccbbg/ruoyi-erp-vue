@@ -210,12 +210,12 @@ const { proxy } = getCurrentInstance();
     queryParams: {
       pageNum: 1,
       pageSize: 10,
-    billNo: undefined,
-    billDate: undefined,
-    deliveryDate: undefined,
-    checkedStatus: undefined,
-    stockStatus: undefined,
-  },
+      billNo: undefined,
+      billDate: undefined,
+      deliveryDate: undefined,
+      checkedStatus: undefined,
+      stockStatus: undefined,
+    },
   rules: {
     billNo: [
       { required: true, message: "单据编号不能为空", trigger: "blur" }
