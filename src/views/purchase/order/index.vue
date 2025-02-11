@@ -2,9 +2,9 @@
   <div class="app-container">
     <el-card>
       <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="68px">
-              <el-form-item label="单据编号" prop="billNo">
+              <el-form-item label="单据编号" prop="docNo">
                 <el-input
-                  v-model="queryParams.billNo"
+                  v-model="queryParams.docNo"
                   placeholder="请输入单据编号"
                   clearable
                   @keyup.enter="handleQuery"
@@ -71,10 +71,10 @@
 
       <el-table v-loading="loading" :data="orderList" border class="mt20">
             <el-table-column label="" prop="id" v-if="false"/>
-            <el-table-column label="单据编号" prop="billNo" min-width="120"/>
-            <el-table-column label="单据日期/交货日期" prop="billDate" width="160">
+            <el-table-column label="单据编号" prop="docNo" min-width="120"/>
+            <el-table-column label="单据日期/交货日期" prop="docDate" width="160">
               <template #default="scope">
-                <div v-if="scope.row.billDate">单据：{{ parseTime(scope.row.billDate, '{y}-{m}-{d}') }}</div>
+                <div v-if="scope.row.docDate">单据：{{ parseTime(scope.row.docDate, '{y}-{m}-{d}') }}</div>
                 <div v-if="scope.row.deliveryDate">交货：{{ parseTime(scope.row.deliveryDate, '{y}-{m}-{d}') }}</div>
               </template>
             </el-table-column>
@@ -125,12 +125,12 @@
     <!-- 添加或修改采购订单对话框 -->
     <el-drawer :title="title" v-model="open" size="50%" append-to-body>
       <el-form ref="orderRef" :model="form" :rules="rules" label-width="80px">
-              <el-form-item label="单据编号" prop="billNo">
-                <el-input v-model="form.billNo" placeholder="请输入单据编号" />
+              <el-form-item label="单据编号" prop="docNo">
+                <el-input v-model="form.docNo" placeholder="请输入单据编号" />
               </el-form-item>
-              <el-form-item label="单据日期" prop="billDate">
+              <el-form-item label="单据日期" prop="docDate">
                 <el-date-picker clearable
-                                v-model="form.billDate"
+                                v-model="form.docDate"
                                 type="datetime"
                                 value-format="YYYY-MM-DD HH:mm:ss"
                                 placeholder="请选择单据日期">
@@ -216,14 +216,14 @@ const { proxy } = getCurrentInstance();
     queryParams: {
       pageNum: 1,
       pageSize: 10,
-      billNo: undefined,
-      billDate: undefined,
+      docNo: undefined,
+      docDate: undefined,
       deliveryDate: undefined,
       checkedStatus: undefined,
       stockStatus: undefined,
     },
   rules: {
-    billNo: [
+    docNo: [
       { required: true, message: "单据编号不能为空", trigger: "blur" }
     ],
   }
@@ -260,8 +260,8 @@ function cancel() {
 function reset() {
   form.value = {
     id: null,
-    billNo: null,
-    billDate: null,
+    docNo: null,
+    docDate: null,
     deliveryDate: null,
     checkedStatus: null,
     checkedBy: null,

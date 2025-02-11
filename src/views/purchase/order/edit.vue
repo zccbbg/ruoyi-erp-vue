@@ -7,8 +7,8 @@
             <el-col :span="6">
               <el-row>
                 <el-col :span="24">
-                  <el-form-item label="订单编号" prop="billNo">
-                    <el-input class="w200" v-model="form.billNo" placeholder="订单编号" :disabled="form.id"></el-input>
+                  <el-form-item label="订单编号" prop="docNo">
+                    <el-input class="w200" v-model="form.docNo" placeholder="订单编号" :disabled="form.id"></el-input>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -157,10 +157,10 @@
                 ></el-input-number>
               </template>
             </el-table-column>
-            <el-table-column label="单价" prop="price" width="180">
+            <el-table-column label="单价" prop="priceWithTax" width="180">
               <template #default="scope">
                 <el-input-number
-                  v-model="scope.row.price"
+                  v-model="scope.row.priceWithTax"
                   @change="handleChangePrice(scope.row)"
                   placeholder="单价"
                   :precision="2"
@@ -245,7 +245,7 @@ const skuSelectRef = ref(null)
 const batchSetWarehouseId = ref(null)
 const initFormData = {
   id: undefined,
-  billNo: undefined,
+  docNo: undefined,
   optType: "2",
   merchantId: undefined,
   goodsAmount: undefined,
@@ -260,14 +260,14 @@ const data = reactive({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
-    billNo: undefined,
+    docNo: undefined,
     optType: undefined,
     goodsAmount: undefined,
     orderStatus: undefined,
   },
   rules: {
-    billNo: [
-      {required: true, message: "入库单号不能为空", trigger: "blur"}
+    docNo: [
+      {required: true, message: "订单编号不能为空", trigger: "blur"}
     ],
     warehouseId: [
       {required: true, message: "请选择仓库", trigger: ['blur', 'change']}
@@ -336,14 +336,14 @@ const save = async () => {
 }
 
 const handleChangeTotalAmount = (row) => {
-  if(row.qty>0 && row.price){
-    row.price = parseFloat((row.totalAmount / row.qty).toFixed(2));
+  if(row.qty>0 && row.priceWithTax){
+    row.priceWithTax = parseFloat((row.totalAmount / row.qty).toFixed(2));
   }
 }
 
 const handleChangePrice = (row) => {
-  if(row.qty && row.price){
-    row.totalAmount = parseFloat((row.qty * row.price).toFixed(2));
+  if(row.qty && row.priceWithTax){
+    row.totalAmount = parseFloat((row.qty * row.priceWithTax).toFixed(2));
   }
 }
 
@@ -356,8 +356,8 @@ const handleChangeQty = (row) => {
   })
   form.value.goodsQty = sum
 
-  if(row.qty && row.price){
-    row.totalAmount = parseFloat((row.qty * row.price).toFixed(2));
+  if(row.qty && row.priceWithTax){
+    row.totalAmount = parseFloat((row.qty * row.priceWithTax).toFixed(2));
   }
 }
 
@@ -463,7 +463,7 @@ onMounted(() => {
   if (id) {
     loadDetail(id)
   } else {
-    form.value.billNo = 'PO' + generateNo()
+    form.value.docNo = 'PO' + generateNo()
   }
 })
 
