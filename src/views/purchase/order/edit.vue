@@ -30,9 +30,9 @@
             <el-col :span="18">
               <el-row>
                 <el-col :span="8">
-                  <el-form-item label="单据日期" prop="billDate" >
+                  <el-form-item label="单据日期" prop="docDate" >
                     <el-date-picker clearable
-                                    v-model="form.billDate"
+                                    v-model="form.docDate"
                                     type="date"
                                     value-format="YYYY-MM-DD"
                                     style="width:100%"
@@ -233,7 +233,7 @@ import SkuSelect from "../../components/SkuSelect.vue";
 import {useRoute} from "vue-router";
 import {useBasicStore} from '@/store/modules/basic'
 import { numSub, generateNo } from '@/utils/ruoyi'
-import { delReceiptDocDetail } from '@/api/wms/receiptDocDetail'
+import { delOrderDetail } from '@/api/purchase/orderDetail'
 import {getWarehouseAndSkuKey} from "@/utils/wmsUtil";
 
 const {proxy} = getCurrentInstance();
@@ -275,6 +275,39 @@ const data = reactive({
   }
 });
 const { form, rules} = toRefs(data);
+
+
+// 计算商品总数量
+const goodsQty = computed(() => {
+  return form.value.details.reduce((sum, row) => sum + (row.qty || 0), 0);
+});
+
+// 计算商品总数量
+const goodsAmount = computed(() => {
+  return form.value.details.reduce((sum, row) => sum + (row.totalAmount || 0), 0);
+});
+
+// 计算商品实际金额
+const actualAmount = computed(() =>
+  (Number(goodsAmount.value) || 0) +
+  (Number(form.value?.otherExpensesAmount) || 0) -
+  (Number(form.value?.discountAmount) || 0)
+);
+
+// 监听 goodsAmount 变化，自动更新 form.goodsAmount
+watch(goodsAmount, (newVal) => {
+  form.value.goodsAmount = newVal;
+});
+
+// 监听 goodsQty 变化，自动更新 form.goodsQty
+watch(goodsQty, (newVal) => {
+  form.value.goodsQty = newVal;
+});
+
+// 监听 actualAmount 变化，自动更新 form.actualAmount
+watch(actualAmount, (newVal) => {
+  form.value.actualAmount = newVal;
+});
 
 const cancel = async () => {
   await proxy?.$modal.confirm('确认取消编辑采购订单吗？');
@@ -348,14 +381,6 @@ const handleChangePrice = (row) => {
 }
 
 const handleChangeQty = (row) => {
-  let sum = 0
-  form.value.details.forEach(it => {
-    if (it.qty) {
-      sum += Number(it.qty)
-    }
-  })
-  form.value.goodsQty = sum
-
   if(row.qty && row.priceWithTax){
     row.totalAmount = parseFloat((row.qty * row.priceWithTax).toFixed(2));
   }
@@ -370,6 +395,8 @@ const getParamsBeforeSave = (orderStatus) => {
       }
     })
   }
+
+  form.goodsQty = goodsQty
 
   return {
     ...form.value,
@@ -504,7 +531,7 @@ const handleDeleteDetail = (row, index) => {
   if (row.id) {
     proxy.$modal.confirm('确认删除本条商品明细吗？如确认会立即执行！').then(function () {
       loading.value = true
-      return delReceiptDocDetail(row.id);
+      return delOrderDetail(row.id);
     }).then(() => {
       form.value.details.splice(index, 1)
       proxy.$modal.msgSuccess("删除成功");
