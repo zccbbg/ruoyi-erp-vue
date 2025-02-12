@@ -61,8 +61,25 @@
               </el-row>
               <el-row>
                 <el-col :span="8">
+                  <el-form-item label="优惠金额" prop="discountAmount">
+                    <el-input-number :controls="false" style="width:100%;" :precision="2" v-model="form.discountAmount" placeholder="请输入优惠金额" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
                   <el-form-item label="其他费用" prop="otherExpensesAmount">
                     <el-input-number :controls="false" style="width:100%;" :precision="2" v-model="form.otherExpensesAmount" placeholder="请输入其他费用" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="预付金额" prop="prepayAmount">
+                    <el-input-number :controls="false" style="width:100%;" :precision="2" v-model="form.prepayAmount" placeholder="请输入预付金额" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="8">
+                  <el-form-item label="商品数量" prop="goodsQty">
+                    <el-input-number style="width:100%" v-model="form.goodsQty" :controls="false" :precision="0" :disabled="true"></el-input-number>
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
@@ -71,25 +88,8 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="商品数量" prop="goodsQty">
-                    <el-input-number style="width:100%" v-model="form.goodsQty" :controls="false" :precision="0" :disabled="true"></el-input-number>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col :span="8">
-                  <el-form-item label="优惠金额" prop="discountAmount">
-                    <el-input-number :controls="false" style="width:100%;" :precision="2" v-model="form.discountAmount" placeholder="请输入优惠金额" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
                   <el-form-item label="实际金额" prop="actualAmount">
                     <el-input-number style="width:100%" v-model="form.actualAmount" :controls="false" :precision="2" :disabled="true"/>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item label="预付金额" prop="prepayAmount">
-                    <el-input-number :controls="false" style="width:100%;" :precision="2" v-model="form.prepayAmount" placeholder="请输入预付金额" />
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -225,7 +225,7 @@
   </el-dialog>
 </template>
 
-<script setup name="ReceiptDocEdit">
+<script setup>
 import {computed, getCurrentInstance, onMounted, reactive, ref, toRef, toRefs, watch} from "vue";
 import {addOrder, getOrder, updateOrder} from "@/api/purchase/order";
 import {ElMessage, ElMessageBox} from "element-plus";
@@ -257,14 +257,6 @@ const initFormData = {
 }
 const data = reactive({
   form: {...initFormData},
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-    docNo: undefined,
-    optType: undefined,
-    goodsAmount: undefined,
-    orderStatus: undefined,
-  },
   rules: {
     docNo: [
       {required: true, message: "订单编号不能为空", trigger: "blur"}
@@ -304,7 +296,7 @@ watch(goodsQty, (newVal) => {
   form.value.goodsQty = newVal;
 });
 
-// 监听 actualAmount 变化，自动更新 form.actualAmount
+//监听 actualAmount 变化，自动更新 form.actualAmount
 watch(actualAmount, (newVal) => {
   form.value.actualAmount = newVal;
 });
