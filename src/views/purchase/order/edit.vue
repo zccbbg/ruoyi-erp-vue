@@ -216,7 +216,7 @@
     <div class="footer-global">
       <div class="btn-box">
         <div>
-          <el-button @click="doWarehousing" type="primary" class="ml10">完成入库</el-button>
+          <el-button @click="doWarehousing" type="primary" class="ml10">完成编辑</el-button>
         </div>
         <div>
           <el-button @click="save" type="primary">暂存</el-button>
@@ -468,7 +468,7 @@ const doWarehousing = async () => {
 
     // 弹出确认框
     try {
-      await proxy?.$modal.confirm('确认入库吗？');
+      await proxy?.$modal.confirm('完成编辑后订单将不可再次编辑，如设置了预付金额，将从账户扣除!');
     } catch (error) {
       // 用户取消操作
       return;
