@@ -89,7 +89,20 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="实际金额" prop="actualAmount">
-                    <el-input-number style="width:100%" v-model="form.actualAmount" :controls="false" :precision="2" :disabled="true"/>
+                    <div style="display: flex; align-items: center; width: 100%;">
+                      <el-input-number
+                        style="flex: 1;"
+                        v-model="form.actualAmount"
+                        :controls="false"
+                        :precision="2"
+                        :disabled="true"
+                      />
+                      <el-tooltip content="实际金额 = 商品金额 + 其他费用 - 优惠金额" placement="top">
+                        <el-icon style="margin-left: 8px; cursor: pointer; color: #409EFF;">
+                          <QuestionFilled />
+                        </el-icon>
+                      </el-tooltip>
+                    </div>
                   </el-form-item>
                 </el-col>
               </el-row>
