@@ -9,6 +9,14 @@ export function listBankAccount(query) {
   })
 }
 
+export function listBankAccountNoPage(query) {
+  return request({
+    url: '/basic/bankAccount/listNoPage',
+    method: 'get',
+    params: query
+  })
+}
+
 // 查询银行账户详细
 export function getBankAccount(id) {
   return request({

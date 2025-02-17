@@ -20,21 +20,15 @@
                   :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]"
                 ></el-date-picker>
               </el-form-item>
-              <el-form-item label="往来单位id" prop="merchantId">
-                <el-input
-                  v-model="queryParams.merchantId"
-                  placeholder="请输入往来单位id"
-                  clearable
-                  @keyup.enter="handleQuery"
-                />
+              <el-form-item label="往来单位" prop="merchantId">
+                <el-select v-model="form.merchantId" placeholder="请选择供应商" clearable filterable style="width:100%">
+                  <el-option v-for="item in useBasicStore().merchantList" :key="item.id" :label="item.merchantName" :value="item.id"/>
+                </el-select>
               </el-form-item>
-              <el-form-item label="银行账户id" prop="bankAccountId">
-                <el-input
-                  v-model="queryParams.bankAccountId"
-                  placeholder="请输入银行账户id"
-                  clearable
-                  @keyup.enter="handleQuery"
-                />
+              <el-form-item label="银行账户" prop="bankAccountId">
+                <el-select v-model="form.bankAccountId" placeholder="请选择银行账户" clearable filterable style="width:100%">
+                  <el-option v-for="item in useBasicStore().bankAccountList" :key="item.id" :label="item.accountName" :value="item.id"/>
+                </el-select>
               </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
@@ -155,6 +149,7 @@
 
 <script setup name="ReceiptVoucher">
   import { listReceiptVoucher, getReceiptVoucher, delReceiptVoucher, addReceiptVoucher, updateReceiptVoucher } from "@/api/financial/receiptVoucher";
+  import {useBasicStore} from "@/store/modules/basic";
 
 const { proxy } = getCurrentInstance();
 

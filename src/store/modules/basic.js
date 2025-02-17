@@ -4,6 +4,7 @@ import { listCategory, treeSelectCategory } from "@/api/basic/category";
 import { listBrand } from "@/api/basic/brand";
 import {defineStore} from "pinia";
 import {ref} from "vue";
+import {listBankAccountNoPage} from "@/api/basic/bankAccount";
 
 export const useBasicStore = defineStore('wms', () => {
 
@@ -41,6 +42,12 @@ export const useBasicStore = defineStore('wms', () => {
     });
   }
 
+  const getBankAccountList = () => {
+    listBankAccountNoPage({}).then((res) => {
+      bankAccountList.value = res.data;
+    });
+  }
+
   // 商品分类管理
   const categoryList = ref([])
   const categoryTreeList = ref([])
@@ -69,6 +76,7 @@ export const useBasicStore = defineStore('wms', () => {
     })
   }
 
+  const bankAccountList = ref([])
   // 商品品牌管理
   const brandList = ref([])
   const brandMap = ref(new Map())
@@ -94,10 +102,12 @@ export const useBasicStore = defineStore('wms', () => {
     getWarehouseList,
     // 企业管理
     merchantList,
+    bankAccountList,
     supplierList,
     customerList,
     merchantMap,
     getMerchantList,
+    getBankAccountList,
     // 商品分类管理
     categoryList,
     categoryTreeList,
