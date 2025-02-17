@@ -45,6 +45,11 @@ export const useBasicStore = defineStore('wms', () => {
   const getBankAccountList = () => {
     listBankAccountNoPage({}).then((res) => {
       bankAccountList.value = res.data;
+      const map = new Map()
+      bankAccountList.value.forEach(item => {
+        map.set(item.id, supplier)
+      })
+      bankAccountMap.value = map
     });
   }
 
@@ -77,6 +82,7 @@ export const useBasicStore = defineStore('wms', () => {
   }
 
   const bankAccountList = ref([])
+  const bankAccountMap= ref(new Map())
   // 商品品牌管理
   const brandList = ref([])
   const brandMap = ref(new Map())

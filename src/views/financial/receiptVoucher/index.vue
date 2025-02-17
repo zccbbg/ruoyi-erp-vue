@@ -49,13 +49,13 @@
             @click="handleAdd"
             v-hasPermi="['financial:receiptVoucher:add']"
           >新增</el-button>
-          <el-button
-            type="warning"
-            plain
-            icon="Download"
-            @click="handleExport"
-            v-hasPermi="['financial:receiptVoucher:export']"
-          >导出</el-button>
+<!--          <el-button-->
+<!--            type="warning"-->
+<!--            plain-->
+<!--            icon="Download"-->
+<!--            @click="handleExport"-->
+<!--            v-hasPermi="['financial:receiptVoucher:export']"-->
+<!--          >导出</el-button>-->
         </el-col>
       </el-row>
 
@@ -67,8 +67,16 @@
                 <span>{{ parseTime(scope.row.transDate, '{y}-{m}-{d}') }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="往来单位id" prop="merchantId" />
-            <el-table-column label="银行账户id" prop="bankAccountId" />
+            <el-table-column label="往来单位" prop="merchantId" >
+              <template #default="{ row }">
+                <div>{{ useBasicStore().merchantMap.get(row.merchantId)?.merchantName }}</div>
+              </template>
+            </el-table-column>
+            <el-table-column label="银行账户" prop="bankAccountId">
+              <template #default="{ row }">
+                <div>{{ useBasicStore().bankAccountMap.get(row.bankAccountId)?.accountName }}</div>
+              </template>
+            </el-table-column>
             <el-table-column label="支付金额" prop="paidAmount" />
             <el-table-column label="优惠金额" prop="discountAmount" />
             <el-table-column label="余额变动" prop="balanceChange" />
