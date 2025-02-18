@@ -109,6 +109,7 @@ export const useBasicStore = defineStore('wms', () => {
     // 企业管理
     merchantList,
     bankAccountList,
+    bankAccountMap,
     supplierList,
     customerList,
     merchantMap,

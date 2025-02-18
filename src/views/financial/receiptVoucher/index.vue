@@ -77,11 +77,9 @@
                 <div>{{ useBasicStore().bankAccountMap.get(row.bankAccountId)?.accountName }}</div>
               </template>
             </el-table-column>
-            <el-table-column label="支付金额" prop="paidAmount" />
+            <el-table-column label="总金额" prop="totalAmount" />
             <el-table-column label="优惠金额" prop="discountAmount" />
-            <el-table-column label="余额变动" prop="balanceChange" />
-            <el-table-column label="交易前余额" prop="beforeBalance" />
-            <el-table-column label="交易后余额" prop="afterBalance" />
+            <el-table-column label="支付金额" prop="paidAmount" />
             <el-table-column label="审核状态" prop="checkedStatus" />
             <el-table-column label="备注" prop="remark" />
         <el-table-column label="操作" align="right" class-name="small-padding fixed-width">
@@ -112,34 +110,29 @@
               <el-form-item label="收款日期" prop="transDate">
                 <el-date-picker clearable
                                 v-model="form.transDate"
-                                type="datetime"
-                                value-format="YYYY-MM-DD HH:mm:ss"
+                                type="date"
+                                value-format="YYYY-MM-DD"
                                 placeholder="请选择收款日期">
                 </el-date-picker>
               </el-form-item>
-              <el-form-item label="往来单位id" prop="merchantId">
-                <el-input v-model="form.merchantId" placeholder="请输入往来单位id" />
+              <el-form-item label="往来单位" prop="merchantId">
+                <el-select v-model="form.merchantId" placeholder="请选择供应商" clearable filterable style="width:100%">
+                  <el-option v-for="item in useBasicStore().merchantList" :key="item.id" :label="item.merchantName" :value="item.id"/>
+                </el-select>
               </el-form-item>
-              <el-form-item label="银行账户id" prop="bankAccountId">
-                <el-input v-model="form.bankAccountId" placeholder="请输入银行账户id" />
+              <el-form-item label="银行账户" prop="bankAccountId">
+                <el-select v-model="form.bankAccountId" placeholder="请选择银行账户" clearable filterable style="width:100%">
+                  <el-option v-for="item in useBasicStore().bankAccountList" :key="item.id" :label="item.accountName" :value="item.id"/>
+                </el-select>
               </el-form-item>
-              <el-form-item label="支付金额" prop="paidAmount">
-                <el-input v-model="form.paidAmount" placeholder="请输入支付金额" />
+              <el-form-item label="总金额" prop="totalAmount">
+                <el-input-number :controls="false" style="width:100%;" :precision="2" v-model="form.totalAmount" placeholder="请输入总金额" />
               </el-form-item>
               <el-form-item label="优惠金额" prop="discountAmount">
-                <el-input v-model="form.discountAmount" placeholder="请输入优惠金额" />
+                <el-input-number :controls="false" style="width:100%;" :precision="2" v-model="form.discountAmount" placeholder="请输入优惠金额" />
               </el-form-item>
-              <el-form-item label="余额变动" prop="balanceChange">
-                <el-input v-model="form.balanceChange" placeholder="请输入余额变动" />
-              </el-form-item>
-              <el-form-item label="交易前余额" prop="beforeBalance">
-                <el-input v-model="form.beforeBalance" placeholder="请输入交易前余额" />
-              </el-form-item>
-              <el-form-item label="交易后余额" prop="afterBalance">
-                <el-input v-model="form.afterBalance" placeholder="请输入交易后余额" />
-              </el-form-item>
-              <el-form-item label="审核人" prop="checkedBy">
-                <el-input v-model="form.checkedBy" placeholder="请输入审核人" />
+              <el-form-item label="支付金额" prop="paidAmount">
+                <el-input-number :controls="false" style="width:100%;" :precision="2" v-model="form.paidAmount" placeholder="请输入支付金额" />
               </el-form-item>
               <el-form-item label="备注" prop="remark">
                 <el-input v-model="form.remark" placeholder="请输入备注" />
@@ -158,6 +151,7 @@
 <script setup name="ReceiptVoucher">
   import { listReceiptVoucher, getReceiptVoucher, delReceiptVoucher, addReceiptVoucher, updateReceiptVoucher } from "@/api/financial/receiptVoucher";
   import {useBasicStore} from "@/store/modules/basic";
+  import { numSub, generateNo } from '@/utils/ruoyi'
 
 const { proxy } = getCurrentInstance();
 
@@ -198,9 +192,6 @@ const { proxy } = getCurrentInstance();
     ],
     paidAmount: [
       { required: true, message: "支付金额不能为空", trigger: "blur" }
-    ],
-    remark: [
-      { required: true, message: "备注不能为空", trigger: "blur" }
     ]
   }
 });
@@ -238,9 +229,7 @@ function reset() {
     bankAccountId: null,
     paidAmount: null,
     discountAmount: null,
-    balanceChange: null,
-    beforeBalance: null,
-    afterBalance: null,
+    totalAmount: null,
     checkedStatus: null,
     checkedBy: null,
     createBy: null,
@@ -268,6 +257,7 @@ function handleQuery() {
   /** 新增按钮操作 */
   function handleAdd() {
     reset();
+    form.value.voucherNo = 'SKD' +generateNo();
     open.value = true;
     title.value = "添加收款单";
 }
@@ -334,3 +324,11 @@ function handleExport() {
 
 getList();
 </script>
+<style scoped>
+:deep(.el-input-number .el-input__inner){
+  text-align: left;
+  line-height: 1;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
+</style>
