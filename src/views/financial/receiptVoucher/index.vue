@@ -21,12 +21,12 @@
                 ></el-date-picker>
               </el-form-item>
               <el-form-item label="往来单位" prop="merchantId">
-                <el-select v-model="form.merchantId" placeholder="请选择供应商" clearable filterable style="width:100%">
+                <el-select v-model="queryParams.merchantId" placeholder="请选择供应商" clearable filterable style="width:100%">
                   <el-option v-for="item in useBasicStore().merchantList" :key="item.id" :label="item.merchantName" :value="item.id"/>
                 </el-select>
               </el-form-item>
               <el-form-item label="银行账户" prop="bankAccountId">
-                <el-select v-model="form.bankAccountId" placeholder="请选择银行账户" clearable filterable style="width:100%">
+                <el-select v-model="queryParams.bankAccountId" placeholder="请选择银行账户" clearable filterable style="width:100%">
                   <el-option v-for="item in useBasicStore().bankAccountList" :key="item.id" :label="item.accountName" :value="item.id"/>
                 </el-select>
               </el-form-item>
@@ -61,7 +61,7 @@
 
       <el-table v-loading="loading" :data="receiptVoucherList" border class="mt20">
             <el-table-column label="编号" prop="voucherNo" />
-            <el-table-column label="收款日期" align="center" prop="transDate" width="180">
+            <el-table-column label="收款日期" prop="transDate" width="120">
               <template #default="scope">
                 <span>{{ parseTime(scope.row.transDate, '{y}-{m}-{d}') }}</span>
               </template>
@@ -76,15 +76,16 @@
                 <div>{{ useBasicStore().bankAccountMap.get(row.bankAccountId)?.accountName }}</div>
               </template>
             </el-table-column>
-            <el-table-column label="总金额" prop="totalAmount" />
-            <el-table-column label="优惠金额" prop="discountAmount" />
-            <el-table-column label="支付金额" prop="paidAmount" />
+            <el-table-column label="总金额" prop="totalAmount" align="right" width="120"/>
+            <el-table-column label="优惠金额" prop="discountAmount" align="right" width="120"/>
+            <el-table-column label="支付金额" prop="paidAmount" align="right" width="120"/>
             <el-table-column label="审核状态" prop="checkedStatus" />
             <el-table-column label="备注" prop="remark" />
         <el-table-column label="操作" align="right" class-name="small-padding fixed-width">
           <template #default="scope">
-            <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['financial:receiptVoucher:edit']">修改</el-button>
-            <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['financial:receiptVoucher:remove']">删除</el-button>
+              <el-button link type="primary" @click="handleUpdate(scope.row)" v-hasPermi="['financial:receiptVoucher:all']">修改</el-button>
+              <el-button link type="danger" @click="handleDelete(scope.row)" v-hasPermi="['financial:receiptVoucher:all']">删除</el-button>
+              <el-button link type="primary" @click="handlePrint(scope.row)" v-hasPermi="['financial:receiptVoucher:all']">打印</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -125,13 +126,13 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="总金额" prop="totalAmount">
-                <el-input-number :controls="false" style="width:100%;" :precision="2" v-model="form.totalAmount" placeholder="请输入总金额" />
+                <el-input-number :controls="false" style="width:100%;" :precision="2" v-model="form.totalAmount" placeholder="请输入总金额"/>
               </el-form-item>
               <el-form-item label="优惠金额" prop="discountAmount">
                 <el-input-number :controls="false" style="width:100%;" :precision="2" v-model="form.discountAmount" placeholder="请输入优惠金额" />
               </el-form-item>
               <el-form-item label="支付金额" prop="paidAmount">
-                <el-input-number :controls="false" style="width:100%;" :precision="2" v-model="form.paidAmount" placeholder="请输入支付金额" />
+                <el-input-number :controls="false" style="width:100%;" :precision="2" v-model="form.paidAmount" placeholder="请输入支付金额" disabled="disabled" />
               </el-form-item>
               <el-form-item label="备注" prop="remark">
                 <el-input v-model="form.remark" placeholder="请输入备注" />
@@ -139,8 +140,15 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button :loading="buttonLoading" type="primary" @click="submitForm">确 定</el-button>
-          <el-button @click="cancel">取 消</el-button>
+          <div class="btn-box">
+            <div>
+              <el-button :loading="finishBtnLoading" type="primary" @click="submitForm" class="ml10">完成收款</el-button>
+            </div>
+            <div>
+              <el-button :loading="saveBtnLoading" type="primary" @click="submitForm">暂 存</el-button>
+              <el-button @click="cancel">取 消</el-button>
+            </div>
+          </div>
         </div>
       </template>
     </el-drawer>
@@ -151,12 +159,14 @@
   import { listReceiptVoucher, getReceiptVoucher, delReceiptVoucher, addReceiptVoucher, updateReceiptVoucher } from "@/api/financial/receiptVoucher";
   import {useBasicStore} from "@/store/modules/basic";
   import { numSub, generateNo } from '@/utils/ruoyi'
+  import {computed, watch} from "vue";
 
 const { proxy } = getCurrentInstance();
 
   const receiptVoucherList = ref([]);
   const open = ref(false);
-  const buttonLoading = ref(false);
+  const saveBtnLoading = ref(false);
+  const finishBtnLoading = ref(false);
   const loading = ref(true);
   const ids = ref([]);
   const total = ref(0);
@@ -168,10 +178,10 @@ const { proxy } = getCurrentInstance();
     queryParams: {
       pageNum: 1,
       pageSize: 10,
-    voucherNo: undefined,
-    transDate: undefined,
-    merchantId: undefined,
-    bankAccountId: undefined,
+      voucherNo: undefined,
+      transDate: undefined,
+      merchantId: undefined,
+      bankAccountId: undefined,
   },
   rules: {
     id: [
@@ -191,11 +201,23 @@ const { proxy } = getCurrentInstance();
     ],
     paidAmount: [
       { required: true, message: "支付金额不能为空", trigger: "blur" }
+    ],
+    totalAmount: [
+      { required: true, message: "总金额不能为空", trigger: "blur" }
     ]
   }
 });
 
 const { queryParams, form, rules } = toRefs(data);
+
+  const paidAmount = computed(() =>
+    (Number(form.value?.totalAmount) || 0) -
+    (Number(form.value?.discountAmount) || 0)
+  );
+
+  watch(paidAmount, (newVal) => {
+    form.value.paidAmount = newVal;
+  });
 
 /** 查询收款单列表 */
 function getList() {
@@ -276,14 +298,14 @@ function handleUpdate(row) {
 function submitForm() {
   proxy.$refs["receiptVoucherRef"].validate(valid => {
     if (valid) {
-      buttonLoading.value = true;
+      saveBtnLoading.value = true;
       if (form.value.id != null) {
         updateReceiptVoucher(form.value).then(response => {
           proxy.$modal.msgSuccess("修改成功");
           open.value = false;
           getList();
         }).finally(() => {
-          buttonLoading.value = false;
+          saveBtnLoading.value = false;
         });
       } else {
         addReceiptVoucher(form.value).then(response => {
@@ -291,11 +313,29 @@ function submitForm() {
           open.value = false;
           getList();
         }).finally(() => {
-          buttonLoading.value = false;
+          saveBtnLoading.value = false;
         });
       }
     }
   });
+}
+  function finishReceipt() {
+    proxy.$refs["receiptVoucherRef"].validate(valid => {
+      if (valid) {
+        finishBtnLoading.value = true;
+        addReceiptVoucher(form.value).then(response => {
+          proxy.$modal.msgSuccess("操作成功");
+          open.value = false;
+          getList();
+        }).finally(() => {
+          finishBtnLoading.value = false;
+        });
+      }
+    });
+  }
+
+function handlePrint(row){
+  proxy.$modal.alert('打印功能暂未开发！')
 }
 
 /** 删除按钮操作 */
@@ -323,7 +363,13 @@ function handleExport() {
 
 getList();
 </script>
-<style scoped>
+<style lang="scss" scoped>
+.btn-box {
+  width: calc(100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 :deep(.el-input-number .el-input__inner){
   text-align: left;
   line-height: 1;
