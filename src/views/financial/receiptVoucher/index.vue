@@ -60,7 +60,6 @@
       </el-row>
 
       <el-table v-loading="loading" :data="receiptVoucherList" border class="mt20">
-            <el-table-column label="" prop="id" v-if="true"/>
             <el-table-column label="编号" prop="voucherNo" />
             <el-table-column label="收款日期" align="center" prop="transDate" width="180">
               <template #default="scope">

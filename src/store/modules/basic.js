@@ -47,7 +47,7 @@ export const useBasicStore = defineStore('wms', () => {
       bankAccountList.value = res.data;
       const map = new Map()
       bankAccountList.value.forEach(item => {
-        map.set(item.id, supplier)
+        map.set(item.id, item)
       })
       bankAccountMap.value = map
     });
