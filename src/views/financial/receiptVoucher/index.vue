@@ -79,12 +79,38 @@
             <el-table-column label="总金额" prop="totalAmount" align="right" width="120"/>
             <el-table-column label="优惠金额" prop="discountAmount" align="right" width="120"/>
             <el-table-column label="支付金额" prop="paidAmount" align="right" width="120"/>
-            <el-table-column label="审核状态" prop="checkedStatus" />
+            <el-table-column label="完成状态" prop="checkedStatus" width="80" align="center">
+              <template #default="{ row }">
+                <dict-tag :options="finish_status" :value="row.checkedStatus" />
+              </template>
+            </el-table-column>
             <el-table-column label="备注" prop="remark" />
         <el-table-column label="操作" align="right" class-name="small-padding fixed-width">
           <template #default="scope">
-              <el-button link type="primary" @click="handleUpdate(scope.row)" v-hasPermi="['financial:receiptVoucher:all']">修改</el-button>
-              <el-button link type="danger" @click="handleDelete(scope.row)" v-hasPermi="['financial:receiptVoucher:all']">删除</el-button>
+            <el-popover
+              placement="left"
+              title="提示"
+              :width="300"
+              trigger="hover"
+              :disabled="scope.row.checkedStatus === 0"
+              :content="'收款单【' + scope.row.voucherNo + '】已完成，无法修改！' "
+            >
+              <template #reference>
+                <el-button link type="primary" @click="handleUpdate(scope.row)" v-hasPermi="['financial:receiptVoucher:all']" disabled="[ 1].includes(scope.row.checkedStatus)">修改</el-button>
+              </template>
+            </el-popover>
+            <el-popover
+              placement="left"
+              title="提示"
+              :width="300"
+              trigger="hover"
+              :disabled="scope.row.checkedStatus === 0"
+              :content="'收款单【' + scope.row.voucherNo + '】已完成，无法删除！' "
+            >
+              <template #reference>
+                <el-button link type="danger" @click="handleDelete(scope.row)" v-hasPermi="['financial:receiptVoucher:all']" disabled="[ 1].includes(scope.row.checkedStatus)">删除</el-button>
+              </template>
+            </el-popover>
               <el-button link type="primary" @click="handlePrint(scope.row)" v-hasPermi="['financial:receiptVoucher:all']">打印</el-button>
           </template>
         </el-table-column>
@@ -169,6 +195,7 @@ import {
   import {computed, watch} from "vue";
 
 const { proxy } = getCurrentInstance();
+const { finish_status } = proxy.useDict("finish_status");
 
   const receiptVoucherList = ref([]);
   const open = ref(false);
