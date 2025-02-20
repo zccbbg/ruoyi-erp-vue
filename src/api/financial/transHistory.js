@@ -16,29 +16,3 @@ export function getTransHistory(id) {
     method: 'get'
   })
 }
-
-// 新增交易流水
-export function addTransHistory(data) {
-  return request({
-    url: '/financial/transHistory',
-    method: 'post',
-    data: data
-  })
-}
-
-// 修改交易流水
-export function updateTransHistory(data) {
-  return request({
-    url: '/financial/transHistory',
-    method: 'put',
-    data: data
-  })
-}
-
-// 删除交易流水
-export function delTransHistory(id) {
-  return request({
-    url: '/financial/transHistory/' + id,
-    method: 'delete'
-  })
-}

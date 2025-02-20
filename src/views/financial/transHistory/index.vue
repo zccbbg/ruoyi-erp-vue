@@ -142,7 +142,7 @@
 </template>
 
 <script setup name="TransHistory">
-  import { listTransHistory, getTransHistory, delTransHistory, addTransHistory, updateTransHistory } from "@/api/financial/transHistory";
+  import { listTransHistory, getTransHistory } from "@/api/financial/transHistory";
 
 const { proxy } = getCurrentInstance();
 

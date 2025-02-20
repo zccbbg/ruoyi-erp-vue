@@ -1,71 +1,16 @@
 <template>
   <div class="app-container">
-    <el-card>
-      <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="68px">
-              <el-form-item label="商家id" prop="merchantId">
-                <el-input
-                  v-model="queryParams.merchantId"
-                  placeholder="请输入商家id"
-                  clearable
-                  @keyup.enter="handleQuery"
-                />
-              </el-form-item>
-              <el-form-item label="初始余额" prop="initialBalance">
-                <el-input
-                  v-model="queryParams.initialBalance"
-                  placeholder="请输入初始余额"
-                  clearable
-                  @keyup.enter="handleQuery"
-                />
-              </el-form-item>
-              <el-form-item label="当前余额" prop="balance">
-                <el-input
-                  v-model="queryParams.balance"
-                  placeholder="请输入当前余额"
-                  clearable
-                  @keyup.enter="handleQuery"
-                />
-              </el-form-item>
-        <el-form-item>
-          <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
-            <el-button icon="Refresh" @click="resetQuery">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </el-card>
 
     <el-card class="mt20">
 
       <el-row :gutter="10" class="mb8" type="flex" justify="space-between">
-        <el-col :span="6"><span style="font-size: large">商家余额</span></el-col>
-        <el-col :span="1.5">
-          <el-button
-            type="primary"
-            plain
-            icon="Plus"
-            @click="handleAdd"
-            v-hasPermi="['financial:merchantBalance:add']"
-          >新增</el-button>
-          <el-button
-            type="warning"
-            plain
-            icon="Download"
-            @click="handleExport"
-            v-hasPermi="['financial:merchantBalance:export']"
-          >导出</el-button>
-        </el-col>
+        <el-col :span="6"><span style="font-size: large">商户余额</span></el-col>
       </el-row>
 
       <el-table v-loading="loading" :data="merchantBalanceList" border class="mt20">
-            <el-table-column label="" prop="id" v-if="true"/>
-            <el-table-column label="商家id" prop="merchantId" />
+            <el-table-column label="商户id" prop="merchantId" />
             <el-table-column label="初始余额" prop="initialBalance" />
             <el-table-column label="当前余额" prop="balance" />
-        <el-table-column label="操作" align="right" class-name="small-padding fixed-width">
-          <template #default="scope">
-            <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['financial:merchantBalance:edit']">修改</el-button>
-            <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['financial:merchantBalance:remove']">删除</el-button>
-          </template>
-        </el-table-column>
       </el-table>
 
       <el-row>
@@ -79,11 +24,11 @@
       </el-row>
 
     </el-card>
-    <!-- 添加或修改商家余额对话框 -->
+    <!-- 添加或修改商户余额对话框 -->
     <el-drawer :title="title" v-model="open" size="50%" append-to-body>
       <el-form ref="merchantBalanceRef" :model="form" :rules="rules" label-width="80px">
-              <el-form-item label="商家id" prop="merchantId">
-                <el-input v-model="form.merchantId" placeholder="请输入商家id" />
+              <el-form-item label="商户id" prop="merchantId">
+                <el-input v-model="form.merchantId" placeholder="请输入商户id" />
               </el-form-item>
               <el-form-item label="初始余额" prop="initialBalance">
                 <el-input v-model="form.initialBalance" placeholder="请输入初始余额" />
@@ -103,7 +48,7 @@
 </template>
 
 <script setup name="MerchantBalance">
-  import { listMerchantBalance, getMerchantBalance, delMerchantBalance, addMerchantBalance, updateMerchantBalance } from "@/api/financial/merchantBalance";
+  import { listMerchantBalance, getMerchantBalance, addMerchantBalance } from "@/api/financial/merchantBalance";
 
 const { proxy } = getCurrentInstance();
 
@@ -129,7 +74,7 @@ const { proxy } = getCurrentInstance();
       { required: true, message: "不能为空", trigger: "blur" }
     ],
     merchantId: [
-      { required: true, message: "商家id不能为空", trigger: "blur" }
+      { required: true, message: "商户id不能为空", trigger: "blur" }
     ],
     initialBalance: [
       { required: true, message: "初始余额不能为空", trigger: "blur" }
@@ -142,7 +87,7 @@ const { proxy } = getCurrentInstance();
 
 const { queryParams, form, rules } = toRefs(data);
 
-/** 查询商家余额列表 */
+/** 查询商户余额列表 */
 function getList() {
   loading.value = true;
   listMerchantBalance(queryParams.value).then(response => {
@@ -189,7 +134,7 @@ function handleQuery() {
   function handleAdd() {
     reset();
     open.value = true;
-    title.value = "添加商家余额";
+    title.value = "添加商户余额";
 }
 
 /** 修改按钮操作 */
@@ -199,7 +144,7 @@ function handleUpdate(row) {
   getMerchantBalance(_id).then(response => {
     form.value = response.data;
   open.value = true;
-  title.value = "修改商家余额";
+  title.value = "修改商户余额";
   });
 }
 
@@ -232,7 +177,7 @@ function submitForm() {
 /** 删除按钮操作 */
 function handleDelete(row) {
   const _ids = row.id || ids.value;
-  proxy.$modal.confirm('是否确认删除商家余额编号为"' + _ids + '"的数据项？').then(function() {
+  proxy.$modal.confirm('是否确认删除商户余额编号为"' + _ids + '"的数据项？').then(function() {
     loading.value = true;
     return delMerchantBalance(_ids);
   }).then(() => {
