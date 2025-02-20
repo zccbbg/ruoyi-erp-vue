@@ -35,6 +35,15 @@ export function updateReceiptVoucher(data) {
   })
 }
 
+// 修改收款单
+export function finishReceiptVoucher(data) {
+  return request({
+    url: '/financial/receiptVoucher/finish',
+    method: 'post',
+    data: data
+  })
+}
+
 // 删除收款单
 export function delReceiptVoucher(id) {
   return request({

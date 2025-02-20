@@ -2,23 +2,17 @@
   <div class="app-container">
     <el-card>
       <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="68px">
-              <el-form-item label="商家id" prop="merchantId">
-                <el-input
-                  v-model="queryParams.merchantId"
-                  placeholder="请输入商家id"
-                  clearable
-                  @keyup.enter="handleQuery"
-                />
+              <el-form-item label="往来单位" prop="merchantId">
+                <el-select v-model="queryParams.merchantId" placeholder="请选择供应商" clearable filterable style="width:100%">
+                  <el-option v-for="item in useBasicStore().merchantList" :key="item.id" :label="item.merchantName" :value="item.id"/>
+                </el-select>
               </el-form-item>
-              <el-form-item label="银行账户id" prop="bankAccountId">
-                <el-input
-                  v-model="queryParams.bankAccountId"
-                  placeholder="请输入银行账户id"
-                  clearable
-                  @keyup.enter="handleQuery"
-                />
+              <el-form-item label="银行账户" prop="bankAccountId">
+                <el-select v-model="queryParams.bankAccountId" placeholder="请选择银行账户" clearable filterable style="width:100%">
+                  <el-option v-for="item in useBasicStore().bankAccountList" :key="item.id" :label="item.accountName" :value="item.id"/>
+                </el-select>
               </el-form-item>
-              <el-form-item label="关联业务编号" prop="relatedNo">
+              <el-form-item label="业务编号" prop="relatedNo">
                 <el-input
                   v-model="queryParams.relatedNo"
                   placeholder="请输入关联业务编号"
@@ -37,30 +31,20 @@
 
       <el-row :gutter="10" class="mb8" type="flex" justify="space-between">
         <el-col :span="6"><span style="font-size: large">交易流水</span></el-col>
-        <el-col :span="1.5">
-          <el-button
-            type="primary"
-            plain
-            icon="Plus"
-            @click="handleAdd"
-            v-hasPermi="['financial:transHistory:add']"
-          >新增</el-button>
-          <el-button
-            type="warning"
-            plain
-            icon="Download"
-            @click="handleExport"
-            v-hasPermi="['financial:transHistory:export']"
-          >导出</el-button>
-        </el-col>
       </el-row>
 
       <el-table v-loading="loading" :data="transHistoryList" border class="mt20">
-            <el-table-column label="" prop="id" v-if="true"/>
-            <el-table-column label="商家id" prop="merchantId" />
-            <el-table-column label="银行账户id" prop="bankAccountId" />
+            <el-table-column label="往来单位" prop="merchantId" >
+              <template #default="{ row }">
+                <div>{{ useBasicStore().merchantMap.get(row.merchantId)?.merchantName }}</div>
+              </template>
+            </el-table-column>
+            <el-table-column label="银行账户" prop="bankAccountId">
+              <template #default="{ row }">
+                <div>{{ useBasicStore().bankAccountMap.get(row.bankAccountId)?.accountName }}</div>
+              </template>
+            </el-table-column>
             <el-table-column label="交易类型" prop="transType" />
-            <el-table-column label="关联业务id" prop="relatedId" />
             <el-table-column label="关联业务编号" prop="relatedNo" />
             <el-table-column label="总金额" prop="totalAmount" />
             <el-table-column label="优惠金额" prop="discountAmount" />
@@ -75,12 +59,6 @@
                 <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
               </template>
             </el-table-column>
-        <el-table-column label="操作" align="right" class-name="small-padding fixed-width">
-          <template #default="scope">
-            <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['financial:transHistory:edit']">修改</el-button>
-            <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['financial:transHistory:remove']">删除</el-button>
-          </template>
-        </el-table-column>
       </el-table>
 
       <el-row>
@@ -143,6 +121,7 @@
 
 <script setup name="TransHistory">
   import { listTransHistory, getTransHistory } from "@/api/financial/transHistory";
+  import {useBasicStore} from "@/store/modules/basic";
 
 const { proxy } = getCurrentInstance();
 

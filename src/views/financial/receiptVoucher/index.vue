@@ -142,7 +142,7 @@
         <div class="dialog-footer">
           <div class="btn-box">
             <div>
-              <el-button :loading="finishBtnLoading" type="primary" @click="submitForm" class="ml10">完成收款</el-button>
+              <el-button :loading="finishBtnLoading" type="primary" @click="finishForm" class="ml10">完成收款</el-button>
             </div>
             <div>
               <el-button :loading="saveBtnLoading" type="primary" @click="submitForm">暂 存</el-button>
@@ -156,7 +156,14 @@
 </template>
 
 <script setup name="ReceiptVoucher">
-  import { listReceiptVoucher, getReceiptVoucher, delReceiptVoucher, addReceiptVoucher, updateReceiptVoucher } from "@/api/financial/receiptVoucher";
+import {
+  listReceiptVoucher,
+  getReceiptVoucher,
+  delReceiptVoucher,
+  addReceiptVoucher,
+  updateReceiptVoucher,
+  finishReceiptVoucher
+} from "@/api/financial/receiptVoucher";
   import {useBasicStore} from "@/store/modules/basic";
   import { numSub, generateNo } from '@/utils/ruoyi'
   import {computed, watch} from "vue";
@@ -319,11 +326,11 @@ function submitForm() {
     }
   });
 }
-  function finishReceipt() {
+  function finishForm() {
     proxy.$refs["receiptVoucherRef"].validate(valid => {
       if (valid) {
         finishBtnLoading.value = true;
-        addReceiptVoucher(form.value).then(response => {
+        finishReceiptVoucher(form.value).then(response => {
           proxy.$modal.msgSuccess("操作成功");
           open.value = false;
           getList();

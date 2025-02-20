@@ -8,7 +8,11 @@
       </el-row>
 
       <el-table v-loading="loading" :data="merchantBalanceList" border class="mt20">
-            <el-table-column label="商户id" prop="merchantId" />
+            <el-table-column label="往来单位" prop="merchantId" >
+              <template #default="{ row }">
+                <div>{{ useBasicStore().merchantMap.get(row.merchantId)?.merchantName }}</div>
+              </template>
+            </el-table-column>
             <el-table-column label="初始余额" prop="initialBalance" />
             <el-table-column label="当前余额" prop="balance" />
       </el-table>
@@ -49,6 +53,7 @@
 
 <script setup name="MerchantBalance">
   import { listMerchantBalance, getMerchantBalance, addMerchantBalance } from "@/api/financial/merchantBalance";
+  import {useBasicStore} from "@/store/modules/basic";
 
 const { proxy } = getCurrentInstance();
 
