@@ -7,8 +7,8 @@
                   <el-option v-for="item in useBasicStore().merchantList" :key="item.id" :label="item.merchantName" :value="item.id"/>
                 </el-select>
               </el-form-item>
-              <el-form-item label="银行账户" prop="bankAccountId">
-                <el-select v-model="queryParams.bankAccountId" placeholder="请选择银行账户" clearable filterable style="width:100%">
+              <el-form-item label="交易账户" prop="bankAccountId">
+                <el-select v-model="queryParams.bankAccountId" placeholder="请选择交易账户" clearable filterable style="width:100%">
                   <el-option v-for="item in useBasicStore().bankAccountList" :key="item.id" :label="item.accountName" :value="item.id"/>
                 </el-select>
               </el-form-item>
@@ -39,7 +39,7 @@
                 <div>{{ useBasicStore().merchantMap.get(row.merchantId)?.merchantName }}</div>
               </template>
             </el-table-column>
-            <el-table-column label="银行账户" prop="bankAccountId">
+            <el-table-column label="交易账户" prop="bankAccountId">
               <template #default="{ row }">
                 <div>{{ useBasicStore().bankAccountMap.get(row.bankAccountId)?.accountName }}</div>
               </template>
@@ -53,12 +53,7 @@
             <el-table-column label="余额变动" prop="balanceChange" />
             <el-table-column label="交易前余额" prop="beforeBalance" />
             <el-table-column label="交易后余额" prop="afterBalance" />
-            <el-table-column label="创建人" prop="createBy" />
-            <el-table-column label="创建时间" align="center" prop="createTime" width="180">
-              <template #default="scope">
-                <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
-              </template>
-            </el-table-column>
+            <el-table-column label="操作时间" prop="createTime"/>
       </el-table>
 
       <el-row>
@@ -78,8 +73,8 @@
               <el-form-item label="商家id" prop="merchantId">
                 <el-input v-model="form.merchantId" placeholder="请输入商家id" />
               </el-form-item>
-              <el-form-item label="银行账户id" prop="bankAccountId">
-                <el-input v-model="form.bankAccountId" placeholder="请输入银行账户id" />
+              <el-form-item label="交易账户id" prop="bankAccountId">
+                <el-input v-model="form.bankAccountId" placeholder="请输入交易账户id" />
               </el-form-item>
               <el-form-item label="关联业务id" prop="relatedId">
                 <el-input v-model="form.relatedId" placeholder="请输入关联业务id" />
@@ -151,7 +146,7 @@ const { proxy } = getCurrentInstance();
       { required: true, message: "商家id不能为空", trigger: "blur" }
     ],
     bankAccountId: [
-      { required: true, message: "银行账户id不能为空", trigger: "blur" }
+      { required: true, message: "交易账户id不能为空", trigger: "blur" }
     ],
     transType: [
       { required: true, message: "交易类型不能为空", trigger: "change" }
