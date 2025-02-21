@@ -26,6 +26,14 @@ export function addOrder(data) {
   })
 }
 
+export function passOrder(data) {
+  return request({
+    url: '/purchase/order/pass',
+    method: 'post',
+    data: data
+  })
+}
+
 // 修改采购订单
 export function updateOrder(data) {
   return request({

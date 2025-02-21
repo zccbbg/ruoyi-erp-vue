@@ -243,7 +243,7 @@
 
 <script setup>
 import {computed, getCurrentInstance, onMounted, reactive, ref, toRef, toRefs, watch} from "vue";
-import {addOrder, getOrder, updateOrder} from "@/api/purchase/order";
+import {addOrder, getOrder, updateOrder,passOrder} from "@/api/purchase/order";
 import {ElMessage, ElMessageBox} from "element-plus";
 import SkuSelect from "../../components/SkuSelect.vue";
 import {useRoute} from "vue-router";
@@ -490,7 +490,7 @@ const doFinishEdit = async () => {
 
     const params = getParamsBeforeSave(1);
     loading.value = true
-    pass(params).then((res) => {
+    passOrder(params).then((res) => {
       if (res.code === 200) {
         ElMessage.success('操作成功')
         close()
