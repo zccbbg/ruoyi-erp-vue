@@ -101,8 +101,11 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="预付金额" prop="prepayAmount">
-                    <el-input-number :controls="false" style="width:100%;" :precision="2" v-model="form.prepayAmount" placeholder="请输入预付金额" />
+                  <el-form-item label="预付金" prop="bankAccountId">
+                    <el-select v-model="form.bankAccountId" placeholder="请选择银行账户" clearable filterable style="width:50%">
+                      <el-option v-for="item in useBasicStore().bankAccountList" :key="item.id" :label="item.accountName" :value="item.id"/>
+                    </el-select>
+                    <el-input-number :controls="false" style="width:50%;" :precision="2" v-model="form.prepayAmount" placeholder="请输入预付金额" />
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -216,7 +219,7 @@
     <div class="footer-global">
       <div class="btn-box">
         <div>
-          <el-button @click="doWarehousing" type="primary" class="ml10">完成编辑</el-button>
+          <el-button @click="doFinishEdit" type="primary" class="ml10">完成编辑</el-button>
         </div>
         <div>
           <el-button @click="save" type="primary">暂存</el-button>
@@ -265,18 +268,25 @@ const initFormData = {
   orderStatus: 0,
   remark: undefined,
   warehouseId: undefined,
+  bankAccountId: undefined,
+  prepayAmount: undefined,
   goodsQty: 0,
   details: [],
 }
+const validateBankAccount = (rule, value, callback) => {
+  if (form.value.prepayAmount && !value) {
+    callback(new Error("请选择银行账户"));
+  } else {
+    callback();
+  }
+};
 const data = reactive({
   form: {...initFormData},
   rules: {
     docNo: [
       {required: true, message: "订单编号不能为空", trigger: "blur"}
     ],
-    warehouseId: [
-      {required: true, message: "请选择仓库", trigger: ['blur', 'change']}
-    ]
+    bankAccountId: [{ validator: validateBankAccount, trigger: ['blur', 'change'] }]
   }
 });
 const { form, rules} = toRefs(data);
@@ -369,8 +379,12 @@ const handleOkClick = (item) => {
 const purchaseOrderForm = ref()
 
 const save = async () => {
-  await proxy?.$modal.confirm('确认暂存采购订单吗？');
-  doSave()
+  proxy.$refs["purchaseOrderForm"].validate(valid => {
+    if (valid) {
+      doSave()
+    }
+  })
+
 }
 
 const handleChangeTotalAmount = (row) => {
@@ -445,7 +459,7 @@ const doSave = async (orderStatus = 0) => {
   })
 }
 
-const doWarehousing = async () => {
+const doFinishEdit = async () => {
   purchaseOrderForm.value?.validate(async (valid) => {
     // 校验
     if (!valid) {
@@ -476,9 +490,9 @@ const doWarehousing = async () => {
 
     const params = getParamsBeforeSave(1);
     loading.value = true
-    inbound(params).then((res) => {
+    pass(params).then((res) => {
       if (res.code === 200) {
-        ElMessage.success('入库成功')
+        ElMessage.success('操作成功')
         close()
       } else {
         ElMessage.error(res.msg)

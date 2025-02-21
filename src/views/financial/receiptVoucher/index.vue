@@ -251,7 +251,6 @@ const { finish_status } = proxy.useDict("finish_status");
 });
 
 const { queryParams, form, rules } = toRefs(data);
-const { queryParams, form, rules } = toRefs(data);
 
   const paidAmount = computed(() =>
     (Number(form.value?.totalAmount) || 0) -
