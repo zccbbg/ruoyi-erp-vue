@@ -61,8 +61,8 @@
               </el-row>
               <el-row>
                 <el-col :span="8">
-                  <el-form-item label="优惠金额" prop="discountAmount">
-                    <el-input-number :controls="false" style="width:100%;" :precision="2" v-model="form.discountAmount" placeholder="请输入优惠金额" />
+                  <el-form-item label="商品金额" prop="goodsAmount">
+                    <el-input-number style="width:100%" v-model="form.goodsAmount" :controls="false" :precision="2" :disabled="true"></el-input-number>
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
@@ -71,22 +71,12 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="预付金额" prop="prepayAmount">
-                    <el-input-number :controls="false" style="width:100%;" :precision="2" v-model="form.prepayAmount" placeholder="请输入预付金额" />
+                  <el-form-item label="优惠金额" prop="discountAmount">
+                    <el-input-number :controls="false" style="width:100%;" :precision="2" v-model="form.discountAmount" placeholder="请输入优惠金额" />
                   </el-form-item>
                 </el-col>
               </el-row>
               <el-row>
-                <el-col :span="8">
-                  <el-form-item label="商品数量" prop="goodsQty">
-                    <el-input-number style="width:100%" v-model="form.goodsQty" :controls="false" :precision="0" :disabled="true"></el-input-number>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item label="商品金额" prop="goodsAmount">
-                    <el-input-number style="width:100%" v-model="form.goodsAmount" :controls="false" :precision="2" :disabled="true"></el-input-number>
-                  </el-form-item>
-                </el-col>
                 <el-col :span="8">
                   <el-form-item label="实际金额" prop="actualAmount">
                     <div style="display: flex; align-items: center; width: 100%;">
@@ -103,6 +93,16 @@
                         </el-icon>
                       </el-tooltip>
                     </div>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="商品数量" prop="goodsQty">
+                    <el-input-number style="width:100%" v-model="form.goodsQty" :controls="false" :precision="0" :disabled="true"></el-input-number>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="预付金额" prop="prepayAmount">
+                    <el-input-number :controls="false" style="width:100%;" :precision="2" v-model="form.prepayAmount" placeholder="请输入预付金额" />
                   </el-form-item>
                 </el-col>
               </el-row>

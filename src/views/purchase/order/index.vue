@@ -30,8 +30,8 @@
                   :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]"
                 ></el-date-picker>
               </el-form-item>
-              <el-form-item label="审核状态" prop="checkedStatus">
-                <el-select v-model="queryParams.checkedStatus" placeholder="请选择审核状态" clearable>
+              <el-form-item label="完成状态" prop="checkedStatus">
+                <el-select v-model="queryParams.checkedStatus" placeholder="请选择完成状态" clearable>
                   <el-option
                     v-for="dict in doc_checked_status"
                     :key="dict.value"
@@ -83,7 +83,7 @@
                 <div>{{ useBasicStore().merchantMap.get(row.merchantId)?.merchantName }}</div>
               </template>
             </el-table-column>
-            <el-table-column label="审核状态" prop="checkedStatus">
+            <el-table-column label="完成状态" prop="checkedStatus">
               <template #default="scope">
                   <dict-tag :options="doc_checked_status" :value="scope.row.checkedStatus"/>
               </template>
@@ -144,7 +144,7 @@
                                 placeholder="请选择交货日期">
                 </el-date-picker>
               </el-form-item>
-              <el-form-item label="审核状态" prop="checkedStatus">
+              <el-form-item label="完成状态" prop="checkedStatus">
                 <el-radio-group v-model="form.checkedStatus">
                   <el-radio
                     v-for="dict in doc_checked_status"
