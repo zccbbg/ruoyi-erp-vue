@@ -205,7 +205,14 @@ const { finish_status } = proxy.useDict("finish_status");
   const ids = ref([]);
   const total = ref(0);
   const title = ref("");
-    const daterangeTransDate = ref([]);
+  const daterangeTransDate = ref([]);
+  const validateDiscount = (rule, value, callback) => {
+    if (form.value.totalAmount !== null && value !== null && form.value.totalAmount < value) {
+      callback(new Error('优惠金额不能大于总金额'));
+    } else {
+      callback();
+    }
+  };
 
   const data = reactive({
     form: {},
@@ -236,12 +243,14 @@ const { finish_status } = proxy.useDict("finish_status");
     paidAmount: [
       { required: true, message: "支付金额不能为空", trigger: "blur" }
     ],
+    discountAmount: [ { validator: validateDiscount, trigger: 'blur' }],
     totalAmount: [
       { required: true, message: "总金额不能为空", trigger: "blur" }
     ]
   }
 });
 
+const { queryParams, form, rules } = toRefs(data);
 const { queryParams, form, rules } = toRefs(data);
 
   const paidAmount = computed(() =>
