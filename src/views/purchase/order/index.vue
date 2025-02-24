@@ -99,11 +99,33 @@
         <el-table-column label="操作" align="right" class-name="small-padding fixed-width" width="120">
           <template #default="scope">
             <div>
-              <el-button link type="primary" @click="handleUpdate(scope.row)" v-hasPermi="['purchase:order:all']">修改</el-button>
+              <el-popover
+                placement="left"
+                title="提示"
+                :width="300"
+                trigger="hover"
+                :disabled="scope.row.checkedStatus === 0"
+                :content="'订单【' + scope.row.docNo + '】已完成，无法修改！' "
+              >
+                <template #reference>
+                  <el-button link type="primary" @click="handleUpdate(scope.row)" v-hasPermi="['purchase:order:all']" :disabled="[1].includes(scope.row.checkedStatus)">修改</el-button>
+                </template>
+              </el-popover>
               <el-button link type="primary"  v-hasPermi="['purchase:order:all']">查看</el-button>
             </div>
             <div>
-              <el-button link type="danger" @click="handleDelete(scope.row)" v-hasPermi="['purchase:order:all']">删除</el-button>
+              <el-popover
+                placement="left"
+                title="提示"
+                :width="300"
+                trigger="hover"
+                :disabled="scope.row.checkedStatus === 0"
+                :content="'订单【' + scope.row.docNo + '】已完成，无法删除！' "
+              >
+                <template #reference>
+                  <el-button type="danger" @click="handleDelete(scope.row)" link v-hasPermi="['purchase:order:all']" :disabled="[1].includes(scope.row.checkedStatus)">删除</el-button>
+                </template>
+              </el-popover>
               <el-button link type="primary" @click="alert('打印功能暂未开发！')" v-hasPermi="['wms:check:all']">打印</el-button>
             </div>
 
