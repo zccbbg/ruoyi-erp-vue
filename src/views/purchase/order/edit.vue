@@ -262,7 +262,6 @@ const batchSetWarehouseId = ref(null)
 const initFormData = {
   id: undefined,
   docNo: undefined,
-  optType: "2",
   merchantId: undefined,
   goodsAmount: undefined,
   orderStatus: 0,
@@ -285,6 +284,9 @@ const data = reactive({
   rules: {
     docNo: [
       {required: true, message: "订单编号不能为空", trigger: "blur"}
+    ],
+    merchantId: [
+      {required: true, message: "供应商不能为空", trigger: "blur"}
     ],
     bankAccountId: [{ validator: validateBankAccount, trigger: ['blur', 'change'] }]
   }
@@ -471,12 +473,12 @@ const doFinishEdit = async () => {
     }
     if (form.value.details?.length) {
       const invalidQtyList = form.value.details.filter(it => !it.qty)
-      const invalidWarehouseList = form.value.details.filter(it => !it.warehouseId)
+      const invalidTotalAmountList = form.value.details.filter(it => !it.totalAmount)
       if (invalidQtyList?.length) {
         return ElMessage.error('请设置商品明细中商品数量')
       }
-      if (invalidWarehouseList?.length) {
-        return ElMessage.error('请设置商品明细中商品仓库')
+      if (invalidTotalAmountList?.length) {
+        return ElMessage.error('请设置商品明细中的合计金额')
       }
     }
 
