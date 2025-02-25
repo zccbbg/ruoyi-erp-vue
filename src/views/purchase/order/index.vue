@@ -89,12 +89,12 @@
               </template>
             </el-table-column>
             <el-table-column label="入库情况" prop="stockStatus" />
-            <el-table-column label="商品数量" prop="goodsQty" />
-            <el-table-column label="商品金额" prop="goodsAmount" />
-            <el-table-column label="其他费用" prop="otherExpensesAmount" />
-            <el-table-column label="优惠金额" prop="discountAmount" />
-            <el-table-column label="实际金额" prop="actualAmount" />
-            <el-table-column label="预付金额" prop="prepayAmount" />
+            <el-table-column label="商品数量" prop="goodsQty" align="right"/>
+            <el-table-column label="商品金额" prop="goodsAmount" align="right"/>
+            <el-table-column label="其他费用" prop="otherExpensesAmount" align="right"/>
+            <el-table-column label="优惠金额" prop="discountAmount" align="right"/>
+            <el-table-column label="实际金额" prop="actualAmount" align="right"/>
+            <el-table-column label="预付金额" prop="prepayAmount" align="right"/>
         <el-table-column label="操作" align="right" class-name="small-padding fixed-width" width="120">
           <template #default="scope">
             <div>
@@ -358,7 +358,8 @@ function submitForm() {
 /** 删除按钮操作 */
 function handleDelete(row) {
   const _ids = row.id || ids.value;
-  proxy.$modal.confirm('是否确认删除采购订单编号为"' + _ids + '"的数据项？').then(function() {
+  const docNo = row.docNo || '';
+  proxy.$modal.confirm('是否确认删除采购订单编号为"' + docNo + '"的数据项？').then(function() {
     loading.value = true;
     return delOrder(_ids);
   }).then(() => {
