@@ -33,7 +33,7 @@
               <el-form-item label="完成状态" prop="checkedStatus">
                 <el-select v-model="queryParams.checkedStatus" placeholder="请选择完成状态" clearable>
                   <el-option
-                    v-for="dict in doc_checked_status"
+                    v-for="dict in finish_status"
                     :key="dict.value"
                     :label="dict.label"
                     :value="dict.value"
@@ -85,11 +85,10 @@
             </el-table-column>
             <el-table-column label="完成状态" prop="checkedStatus">
               <template #default="scope">
-                  <dict-tag :options="doc_checked_status" :value="scope.row.checkedStatus"/>
+                  <dict-tag :options="finish_status" :value="scope.row.checkedStatus"/>
               </template>
             </el-table-column>
-            <el-table-column label="订单状态" prop="stockStatus" />
-
+            <el-table-column label="入库情况" prop="stockStatus" />
             <el-table-column label="商品数量" prop="goodsQty" />
             <el-table-column label="商品金额" prop="goodsAmount" />
             <el-table-column label="其他费用" prop="otherExpensesAmount" />
@@ -169,7 +168,7 @@
               <el-form-item label="完成状态" prop="checkedStatus">
                 <el-radio-group v-model="form.checkedStatus">
                   <el-radio
-                    v-for="dict in doc_checked_status"
+                    v-for="dict in finish_status"
                     :key="dict.value"
                     :label="parseInt(dict.value)"
                   >{{dict.label}}</el-radio>
@@ -221,7 +220,7 @@
   import {useBasicStore} from "../../../store/modules/basic";
 
 const { proxy } = getCurrentInstance();
-    const { doc_checked_status } = proxy.useDict('doc_checked_status');
+    const { finish_status } = proxy.useDict('finish_status');
 
   const orderList = ref([]);
   const open = ref(false);
