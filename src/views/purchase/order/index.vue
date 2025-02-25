@@ -69,7 +69,52 @@
         </el-col>
       </el-row>
 
-      <el-table v-loading="loading" :data="orderList" border class="mt20">
+      <el-table v-loading="loading"
+                :data="orderList" border class="mt20"
+                @expand-change="handleExpandExchange"
+                :row-key="getRowKey"
+                :expand-row-keys="expandedRowKeys">
+          <el-table-column type="expand">
+            <template #default="props">
+              <div style="padding: 0 50px 20px 50px">
+                <h3>商品明细</h3>
+                <el-table :data="props.row.details" v-loading="detailLoading[props.$index]" empty-text="暂无商品明细">
+                  <el-table-column label="商品名称">
+                    <template #default="{ row }">
+                      <div>{{ row?.goods?.goodsName }}</div>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="规格名称">
+                    <template #default="{ row }">
+                      <div>{{ row?.sku?.skuName }}</div>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="仓库" align="left">
+                    <template #default="{ row }">
+                      <div>{{ useBasicStore().warehouseMap.get(row.warehouseId)?.warehouseName }}</div>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="单价(元)" align="right">
+                    <template #default="{ row }">
+                      <el-statistic v-if="row.priceWithTax || row.priceWithTax === 0" :precision="2" :value="Number(row.priceWithTax)"/>
+                      <div v-else>-</div>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="数量" prop="qty" align="right">
+                    <template #default="{ row }">
+                      <el-statistic :value="Number(row.qty)" :precision="0"/>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="金额(元)" align="right">
+                    <template #default="{ row }">
+                      <el-statistic v-if="row.totalAmount || row.totalAmount === 0" :precision="2" :value="Number(row.totalAmount)"/>
+                      <div v-else>-</div>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </template>
+          </el-table-column>
             <el-table-column label="" prop="id" v-if="false"/>
             <el-table-column label="单据编号" prop="docNo" min-width="120"/>
             <el-table-column label="单据日期/交货日期" prop="docDate" width="160">
@@ -110,7 +155,7 @@
                   <el-button link type="primary" @click="handleUpdate(scope.row)" v-hasPermi="['purchase:order:all']" :disabled="[1].includes(scope.row.checkedStatus)">修改</el-button>
                 </template>
               </el-popover>
-              <el-button link type="primary"  v-hasPermi="['purchase:order:all']">查看</el-button>
+              <el-button link type="primary" @click="handleGoDetail(scope.row)" v-hasPermi="['purchase:order:all']">{{ expandedRowKeys.includes(scope.row.id) ? '收起' : '查看' }}</el-button>
             </div>
             <div>
               <el-popover
@@ -143,85 +188,18 @@
       </el-row>
 
     </el-card>
-    <!-- 添加或修改采购订单对话框 -->
-    <el-drawer :title="title" v-model="open" size="50%" append-to-body>
-      <el-form ref="orderRef" :model="form" :rules="rules" label-width="80px">
-              <el-form-item label="单据编号" prop="docNo">
-                <el-input v-model="form.docNo" placeholder="请输入单据编号" />
-              </el-form-item>
-              <el-form-item label="单据日期" prop="docDate">
-                <el-date-picker clearable
-                                v-model="form.docDate"
-                                type="datetime"
-                                value-format="YYYY-MM-DD HH:mm:ss"
-                                placeholder="请选择单据日期">
-                </el-date-picker>
-              </el-form-item>
-              <el-form-item label="交货日期" prop="deliveryDate">
-                <el-date-picker clearable
-                                v-model="form.deliveryDate"
-                                type="datetime"
-                                value-format="YYYY-MM-DD HH:mm:ss"
-                                placeholder="请选择交货日期">
-                </el-date-picker>
-              </el-form-item>
-              <el-form-item label="完成状态" prop="checkedStatus">
-                <el-radio-group v-model="form.checkedStatus">
-                  <el-radio
-                    v-for="dict in finish_status"
-                    :key="dict.value"
-                    :label="parseInt(dict.value)"
-                  >{{dict.label}}</el-radio>
-                </el-radio-group>
-              </el-form-item>
-              <el-form-item label="审核人" prop="checkedBy">
-                <el-input v-model="form.checkedBy" placeholder="请输入审核人" />
-              </el-form-item>
-              <el-form-item label="供应商id" prop="merchantId">
-                <el-input v-model="form.merchantId" placeholder="请输入供应商id" />
-              </el-form-item>
-              <el-form-item label="商品数量" prop="goodsQty">
-                <el-input v-model="form.goodsQty" placeholder="请输入商品数量" />
-              </el-form-item>
-              <el-form-item label="已处理数量" prop="processedQty">
-                <el-input v-model="form.processedQty" placeholder="请输入已处理数量" />
-              </el-form-item>
-              <el-form-item label="商品金额" prop="goodsAmount">
-                <el-input v-model="form.goodsAmount" placeholder="请输入商品金额" />
-              </el-form-item>
-              <el-form-item label="其他费用" prop="otherExpensesAmount">
-                <el-input v-model="form.otherExpensesAmount" placeholder="请输入其他费用" />
-              </el-form-item>
-              <el-form-item label="优惠金额" prop="discountAmount">
-                <el-input v-model="form.discountAmount" placeholder="请输入优惠金额" />
-              </el-form-item>
-              <el-form-item label="实际金额" prop="actualAmount">
-                <el-input v-model="form.actualAmount" placeholder="请输入实际金额" />
-              </el-form-item>
-              <el-form-item label="预付金额" prop="prepayAmount">
-                <el-input v-model="form.prepayAmount" placeholder="请输入预付金额" />
-              </el-form-item>
-              <el-form-item label="备注" prop="remark">
-                <el-input v-model="form.remark" placeholder="请输入备注" />
-              </el-form-item>
-      </el-form>
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button :loading="buttonLoading" type="primary" @click="submitForm">确 定</el-button>
-          <el-button @click="cancel">取 消</el-button>
-        </div>
-      </template>
-    </el-drawer>
   </div>
 </template>
 
 <script setup name="Order">
   import { listOrder, getOrder, delOrder, addOrder, updateOrder } from "@/api/purchase/order";
   import {useBasicStore} from "../../../store/modules/basic";
+  import {listByOrderId} from "@/api/purchase/orderDetail";
 
 const { proxy } = getCurrentInstance();
     const { finish_status } = proxy.useDict('finish_status');
-
+  // 当前展开集合
+  const expandedRowKeys = ref([])
   const orderList = ref([]);
   const open = ref(false);
   const buttonLoading = ref(false);
@@ -231,6 +209,8 @@ const { proxy } = getCurrentInstance();
   const title = ref("");
     const daterangeBillDate = ref([]);
     const daterangeDeliveryDate = ref([]);
+  // 商品明细table的loading状态集合
+  const detailLoading = ref([])
 
   const data = reactive({
     form: {},
@@ -265,11 +245,55 @@ function getList() {
     queryParams.value.params["endDeliveryDate"] = daterangeDeliveryDate.value[1];
   }
   listOrder(queryParams.value).then(response => {
-  orderList.value = response.rows;
+    expandedRowKeys.value = []
+    orderList.value = response.rows;
     total.value = response.total;
     loading.value = false;
   });
 }
+
+  function handleExpandExchange(value, expandedRows) {
+    if (!ifExpand(expandedRows)) {
+      return
+    }
+    expandedRowKeys.value = expandedRows.map(it => it.id)
+    loadOrderDetail(value)
+  }
+
+  function loadOrderDetail(row) {
+    const index = orderList.value.findIndex(it => it.id === row.id)
+    detailLoading.value[index] = true
+    listByOrderId(row.id).then(res => {
+      if (res.data?.length) {
+        const details = res.data.map(it => {
+          return {
+            ...it,
+            warehouseName: useBasicStore().warehouseMap.get(it.warehouseId)?.warehouseName,
+          }
+        })
+        orderList.value[index].details = details
+      }
+    }).finally(() => {
+      detailLoading.value[index] = false
+    })
+  }
+
+  function getRowKey(row) {
+    return row.id
+  }
+
+  function ifExpand(expandedRows) {
+    if (expandedRows.length < expandedRowKeys.value.length) {
+      expandedRowKeys.value = expandedRows.map(it => it.id)
+      return false;
+    }
+    return true
+  }
+
+  function handleGoDetail(row) {
+    const index = expandedRowKeys.value.indexOf(row.id)
+    expandedRowKeys.value.splice(index, 1)
+  }
 
 // 取消按钮
 function cancel() {

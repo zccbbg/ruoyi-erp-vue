@@ -9,6 +9,13 @@ export function listOrderDetail(query) {
   })
 }
 
+export function listByOrderId(orderId) {
+  return request({
+    url: '/purchase/orderDetail/listByOrderId/'+orderId,
+    method: 'get'
+  })
+}
+
 // 查询采购订单明细详细
 export function getOrderDetail(id) {
   return request({
