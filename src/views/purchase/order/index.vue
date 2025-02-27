@@ -170,7 +170,7 @@
                   <el-button type="danger" @click="handleDelete(scope.row)" link v-hasPermi="['purchase:order:all']" :disabled="[1].includes(scope.row.checkedStatus)">删除</el-button>
                 </template>
               </el-popover>
-              <el-button link type="primary" @click="alert('打印功能暂未开发！')" v-hasPermi="['wms:check:all']">打印</el-button>
+              <el-button link type="primary" @click="handlePrint(row)" v-hasPermi="['wms:check:all']">打印</el-button>
             </div>
 
           </template>
@@ -251,6 +251,10 @@ function getList() {
     loading.value = false;
   });
 }
+
+  async function handlePrint(row) {
+    proxy.$modal.alert('打印功能暂未开发！')
+  }
 
   function handleExpandExchange(value, expandedRows) {
     if (!ifExpand(expandedRows)) {

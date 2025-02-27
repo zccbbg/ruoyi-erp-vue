@@ -276,40 +276,8 @@ function handleGoDetail(row) {
   }
 }
 
-/** 导出按钮操作 */
 async function handlePrint(row) {
-  const res = await getReceiptDoc(row.id)
-  const receiptDoc = res.data
-  let table = []
-  if (receiptDoc.details?.length) {
-    table = receiptDoc.details.map(detail => {
-      return {
-        goodsName: detail.goods.goodsName,
-        skuName: detail.sku.skuName,
-        qty: Number(detail.qty).toFixed(0),
-        totalAmount: detail.totalAmount
-      }
-    })
-  }
-  const printData = {
-    docNo: receiptDoc.docNo,
-    checkedStatus: proxy.selectDictLabel(wms_receipt_status.value, receiptDoc.checkedStatus),
-    warehouseName: useBasicStore().warehouseMap.get(receiptDoc.warehouseId)?.warehouseName,
-    goodsQty: Number(receiptDoc.goodsQty).toFixed(0),
-    goodsAmount: ((receiptDoc.goodsAmount || receiptDoc.goodsAmount === 0) ? (receiptDoc.goodsAmount + '元') : ''),
-    createBy: receiptDoc.createBy,
-    createTime: proxy.parseTime(receiptDoc.createTime, '{mm}-{dd} {hh}:{ii}'),
-    updateBy: receiptDoc.updateBy,
-    updateTime: proxy.parseTime(receiptDoc.updateTime, '{mm}-{dd} {hh}:{ii}'),
-    remark: receiptDoc.remark,
-    table
-  }
-  let printTemplate = new proxy.$hiprint.PrintTemplate({template: receiptPanel})
-  printTemplate.print(printData, {}, {
-    styleHandler: () => {
-      return '<link href="https://cyl-press.oss-cn-shenzhen.aliyuncs.com/print-lock.css" media="print" rel="stylesheet">'
-    }
-  })
+  proxy.$modal.alert('打印功能暂未开发！')
 }
 
 
