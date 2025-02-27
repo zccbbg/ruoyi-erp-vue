@@ -2,74 +2,74 @@
   <div class="app-container">
     <el-card>
       <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="68px">
-        <el-form-goods label="父id" prop="pid">
+        <el-form-item label="父id" prop="pid">
           <el-input
             v-model="queryParams.pid"
             placeholder="请输入父id"
             clearable
             @keyup.enter="handleQuery"
           />
-        </el-form-goods>
-        <el-form-goods label="sku id" prop="skuId">
+        </el-form-item>
+        <el-form-item label="sku id" prop="skuId">
           <el-input
             v-model="queryParams.skuId"
             placeholder="请输入sku id"
             clearable
             @keyup.enter="handleQuery"
           />
-        </el-form-goods>
-        <el-form-goods label="商品数量" prop="qty">
+        </el-form-item>
+        <el-form-item label="商品数量" prop="qty">
           <el-input
             v-model="queryParams.qty"
             placeholder="请输入商品数量"
             clearable
             @keyup.enter="handleQuery"
           />
-        </el-form-goods>
-        <el-form-goods label="不含税价" prop="priceWithoutTax">
+        </el-form-item>
+        <el-form-item label="不含税价" prop="priceWithoutTax">
           <el-input
             v-model="queryParams.priceWithoutTax"
             placeholder="请输入不含税价"
             clearable
             @keyup.enter="handleQuery"
           />
-        </el-form-goods>
-        <el-form-goods label="税费" prop="taxAmount">
+        </el-form-item>
+        <el-form-item label="税费" prop="taxAmount">
           <el-input
             v-model="queryParams.taxAmount"
             placeholder="请输入税费"
             clearable
             @keyup.enter="handleQuery"
           />
-        </el-form-goods>
-        <el-form-goods label="税率" prop="taxRate">
+        </el-form-item>
+        <el-form-item label="税率" prop="taxRate">
           <el-input
             v-model="queryParams.taxRate"
             placeholder="请输入税率"
             clearable
             @keyup.enter="handleQuery"
           />
-        </el-form-goods>
-        <el-form-goods label="含税价" prop="priceWithTax">
+        </el-form-item>
+        <el-form-item label="含税价" prop="priceWithTax">
           <el-input
             v-model="queryParams.priceWithTax"
             placeholder="请输入含税价"
             clearable
             @keyup.enter="handleQuery"
           />
-        </el-form-goods>
-        <el-form-goods label="总金额" prop="totalAmount">
+        </el-form-item>
+        <el-form-item label="总金额" prop="totalAmount">
           <el-input
             v-model="queryParams.totalAmount"
             placeholder="请输入总金额"
             clearable
             @keyup.enter="handleQuery"
           />
-        </el-form-goods>
-        <el-form-goods>
+        </el-form-item>
+        <el-form-item>
           <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
           <el-button icon="Refresh" @click="resetQuery">重置</el-button>
-        </el-form-goods>
+        </el-form-item>
       </el-form>
     </el-card>
 
@@ -128,33 +128,33 @@
     <!-- 添加或修改采购退货单明细对话框 -->
     <el-drawer :title="title" v-model="open" size="50%" append-to-body>
       <el-form ref="refundDetailRef" :model="form" :rules="rules" label-width="80px">
-        <el-form-goods label="父id" prop="pid">
+        <el-form-item label="父id" prop="pid">
           <el-input v-model="form.pid" placeholder="请输入父id" />
-        </el-form-goods>
-        <el-form-goods label="sku id" prop="skuId">
+        </el-form-item>
+        <el-form-item label="sku id" prop="skuId">
           <el-input v-model="form.skuId" placeholder="请输入sku id" />
-        </el-form-goods>
-        <el-form-goods label="商品数量" prop="qty">
+        </el-form-item>
+        <el-form-item label="商品数量" prop="qty">
           <el-input v-model="form.qty" placeholder="请输入商品数量" />
-        </el-form-goods>
-        <el-form-goods label="不含税价" prop="priceWithoutTax">
+        </el-form-item>
+        <el-form-item label="不含税价" prop="priceWithoutTax">
           <el-input v-model="form.priceWithoutTax" placeholder="请输入不含税价" />
-        </el-form-goods>
-        <el-form-goods label="税费" prop="taxAmount">
+        </el-form-item>
+        <el-form-item label="税费" prop="taxAmount">
           <el-input v-model="form.taxAmount" placeholder="请输入税费" />
-        </el-form-goods>
-        <el-form-goods label="税率" prop="taxRate">
+        </el-form-item>
+        <el-form-item label="税率" prop="taxRate">
           <el-input v-model="form.taxRate" placeholder="请输入税率" />
-        </el-form-goods>
-        <el-form-goods label="含税价" prop="priceWithTax">
+        </el-form-item>
+        <el-form-item label="含税价" prop="priceWithTax">
           <el-input v-model="form.priceWithTax" placeholder="请输入含税价" />
-        </el-form-goods>
-        <el-form-goods label="总金额" prop="totalAmount">
+        </el-form-item>
+        <el-form-item label="总金额" prop="totalAmount">
           <el-input v-model="form.totalAmount" placeholder="请输入总金额" />
-        </el-form-goods>
-        <el-form-goods label="备注" prop="remark">
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" placeholder="请输入备注" />
-        </el-form-goods>
+        </el-form-item>
       </el-form>
       <template #footer>
         <div class="dialog-footer">

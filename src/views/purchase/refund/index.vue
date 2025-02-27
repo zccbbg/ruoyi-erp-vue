@@ -2,114 +2,114 @@
   <div class="app-container">
     <el-card>
       <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="68px">
-        <el-form-goods label="trade id" prop="tradeId">
+        <el-form-item label="trade id" prop="tradeId">
           <el-input
             v-model="queryParams.tradeId"
             placeholder="请输入trade id"
             clearable
             @keyup.enter="handleQuery"
           />
-        </el-form-goods>
-        <el-form-goods label="单据编号" prop="billNo">
+        </el-form-item>
+        <el-form-item label="单据编号" prop="billNo">
           <el-input
             v-model="queryParams.billNo"
             placeholder="请输入单据编号"
             clearable
             @keyup.enter="handleQuery"
           />
-        </el-form-goods>
-        <el-form-goods label="单据日期" prop="billDate">
+        </el-form-item>
+        <el-form-item label="单据日期" prop="billDate">
           <el-date-picker clearable
             v-model="queryParams.billDate"
             type="date"
             value-format="YYYY-MM-DD"
             placeholder="请选择单据日期">
           </el-date-picker>
-        </el-form-goods>
-        <el-form-goods label="审核人" prop="checkedBy">
+        </el-form-item>
+        <el-form-item label="审核人" prop="checkedBy">
           <el-input
             v-model="queryParams.checkedBy"
             placeholder="请输入审核人"
             clearable
             @keyup.enter="handleQuery"
           />
-        </el-form-goods>
-        <el-form-goods label="供应商id" prop="merchantId">
+        </el-form-item>
+        <el-form-item label="供应商id" prop="merchantId">
           <el-input
             v-model="queryParams.merchantId"
             placeholder="请输入供应商id"
             clearable
             @keyup.enter="handleQuery"
           />
-        </el-form-goods>
-        <el-form-goods label="商品数量" prop="goodsQty">
+        </el-form-item>
+        <el-form-item label="商品数量" prop="goodsQty">
           <el-input
             v-model="queryParams.goodsQty"
             placeholder="请输入商品数量"
             clearable
             @keyup.enter="handleQuery"
           />
-        </el-form-goods>
-        <el-form-goods label="商品金额" prop="goodsAmount">
+        </el-form-item>
+        <el-form-item label="商品金额" prop="goodsAmount">
           <el-input
             v-model="queryParams.goodsAmount"
             placeholder="请输入商品金额"
             clearable
             @keyup.enter="handleQuery"
           />
-        </el-form-goods>
-        <el-form-goods label="其他费用" prop="otherExpensesAmount">
+        </el-form-item>
+        <el-form-item label="其他费用" prop="otherExpensesAmount">
           <el-input
             v-model="queryParams.otherExpensesAmount"
             placeholder="请输入其他费用"
             clearable
             @keyup.enter="handleQuery"
           />
-        </el-form-goods>
-        <el-form-goods label="优惠金额" prop="discountAmount">
+        </el-form-item>
+        <el-form-item label="优惠金额" prop="discountAmount">
           <el-input
             v-model="queryParams.discountAmount"
             placeholder="请输入优惠金额"
             clearable
             @keyup.enter="handleQuery"
           />
-        </el-form-goods>
-        <el-form-goods label="实际金额" prop="actualAmount">
+        </el-form-item>
+        <el-form-item label="实际金额" prop="actualAmount">
           <el-input
             v-model="queryParams.actualAmount"
             placeholder="请输入实际金额"
             clearable
             @keyup.enter="handleQuery"
           />
-        </el-form-goods>
-        <el-form-goods label="已支付退款金额" prop="paidAmount">
+        </el-form-item>
+        <el-form-item label="已支付退款金额" prop="paidAmount">
           <el-input
             v-model="queryParams.paidAmount"
             placeholder="请输入已支付退款金额"
             clearable
             @keyup.enter="handleQuery"
           />
-        </el-form-goods>
-        <el-form-goods label="已抵扣退款金额" prop="deductedAmount">
+        </el-form-item>
+        <el-form-item label="已抵扣退款金额" prop="deductedAmount">
           <el-input
             v-model="queryParams.deductedAmount"
             placeholder="请输入已抵扣退款金额"
             clearable
             @keyup.enter="handleQuery"
           />
-        </el-form-goods>
-        <el-form-goods label="未付金额" prop="dueAmount">
+        </el-form-item>
+        <el-form-item label="未付金额" prop="dueAmount">
           <el-input
             v-model="queryParams.dueAmount"
             placeholder="请输入未付金额"
             clearable
             @keyup.enter="handleQuery"
           />
-        </el-form-goods>
-        <el-form-goods>
+        </el-form-item>
+        <el-form-item>
           <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
           <el-button icon="Refresh" @click="resetQuery">重置</el-button>
-        </el-form-goods>
+        </el-form-item>
       </el-form>
     </el-card>
 
@@ -178,53 +178,53 @@
     <!-- 添加或修改采购退货单对话框 -->
     <el-drawer :title="title" v-model="open" size="50%" append-to-body>
       <el-form ref="refundRef" :model="form" :rules="rules" label-width="80px">
-        <el-form-goods label="trade id" prop="tradeId">
+        <el-form-item label="trade id" prop="tradeId">
           <el-input v-model="form.tradeId" placeholder="请输入trade id" />
-        </el-form-goods>
-        <el-form-goods label="单据编号" prop="billNo">
+        </el-form-item>
+        <el-form-item label="单据编号" prop="billNo">
           <el-input v-model="form.billNo" placeholder="请输入单据编号" />
-        </el-form-goods>
-        <el-form-goods label="单据日期" prop="billDate">
+        </el-form-item>
+        <el-form-item label="单据日期" prop="billDate">
           <el-date-picker clearable
             v-model="form.billDate"
             type="datetime"
             value-format="YYYY-MM-DD HH:mm:ss"
             placeholder="请选择单据日期">
           </el-date-picker>
-        </el-form-goods>
-        <el-form-goods label="审核人" prop="checkedBy">
+        </el-form-item>
+        <el-form-item label="审核人" prop="checkedBy">
           <el-input v-model="form.checkedBy" placeholder="请输入审核人" />
-        </el-form-goods>
-        <el-form-goods label="供应商id" prop="merchantId">
+        </el-form-item>
+        <el-form-item label="供应商id" prop="merchantId">
           <el-input v-model="form.merchantId" placeholder="请输入供应商id" />
-        </el-form-goods>
-        <el-form-goods label="商品数量" prop="goodsQty">
+        </el-form-item>
+        <el-form-item label="商品数量" prop="goodsQty">
           <el-input v-model="form.goodsQty" placeholder="请输入商品数量" />
-        </el-form-goods>
-        <el-form-goods label="商品金额" prop="goodsAmount">
+        </el-form-item>
+        <el-form-item label="商品金额" prop="goodsAmount">
           <el-input v-model="form.goodsAmount" placeholder="请输入商品金额" />
-        </el-form-goods>
-        <el-form-goods label="其他费用" prop="otherExpensesAmount">
+        </el-form-item>
+        <el-form-item label="其他费用" prop="otherExpensesAmount">
           <el-input v-model="form.otherExpensesAmount" placeholder="请输入其他费用" />
-        </el-form-goods>
-        <el-form-goods label="优惠金额" prop="discountAmount">
+        </el-form-item>
+        <el-form-item label="优惠金额" prop="discountAmount">
           <el-input v-model="form.discountAmount" placeholder="请输入优惠金额" />
-        </el-form-goods>
-        <el-form-goods label="实际金额" prop="actualAmount">
+        </el-form-item>
+        <el-form-item label="实际金额" prop="actualAmount">
           <el-input v-model="form.actualAmount" placeholder="请输入实际金额" />
-        </el-form-goods>
-        <el-form-goods label="已支付退款金额" prop="paidAmount">
+        </el-form-item>
+        <el-form-item label="已支付退款金额" prop="paidAmount">
           <el-input v-model="form.paidAmount" placeholder="请输入已支付退款金额" />
-        </el-form-goods>
-        <el-form-goods label="已抵扣退款金额" prop="deductedAmount">
+        </el-form-item>
+        <el-form-item label="已抵扣退款金额" prop="deductedAmount">
           <el-input v-model="form.deductedAmount" placeholder="请输入已抵扣退款金额" />
-        </el-form-goods>
-        <el-form-goods label="未付金额" prop="dueAmount">
+        </el-form-item>
+        <el-form-item label="未付金额" prop="dueAmount">
           <el-input v-model="form.dueAmount" placeholder="请输入未付金额" />
-        </el-form-goods>
-        <el-form-goods label="备注" prop="remark">
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" placeholder="请输入备注" />
-        </el-form-goods>
+        </el-form-item>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
