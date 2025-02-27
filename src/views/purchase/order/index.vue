@@ -292,7 +292,14 @@ function getList() {
 
   function handleGoDetail(row) {
     const index = expandedRowKeys.value.indexOf(row.id)
-    expandedRowKeys.value.splice(index, 1)
+    if (index !== -1) {
+      // 收起
+      expandedRowKeys.value.splice(index, 1)
+    } else {
+      // 展开
+      expandedRowKeys.value.push(row.id)
+      loadOrderDetail(row)
+    }
   }
 
 // 取消按钮
