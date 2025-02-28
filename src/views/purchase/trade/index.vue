@@ -50,23 +50,17 @@
       </el-row>
 
       <el-table v-loading="loading" :data="tradeList" border class="mt20">
-        <el-table-column label="" prop="id" v-if="true"/>
-        <el-table-column label="订单id" prop="orderId" />
-        <el-table-column label="单据编号" prop="billNo" />
-        <el-table-column label="单据日期" align="center" prop="billDate" width="180">
+        <el-table-column label="" prop="id" v-if="false"/>
+        <el-table-column label="单据编号" prop="docNo" />
+        <el-table-column label="单据日期" align="center" prop="docDate" width="180">
           <template #default="scope">
-            <span>{{ parseTime(scope.row.billDate, '{y}-{m}-{d}') }}</span>
+            <span>{{ parseTime(scope.row.docDate, '{y}-{m}-{d}') }}</span>
           </template>
         </el-table-column>
         <el-table-column label="审核状态" prop="checkedStatus" />
-        <el-table-column label="支付状态" prop="paymentStatus" />
         <el-table-column label="退货状态" prop="refundStatus" />
         <el-table-column label="退货金额" prop="refundAmount" />
-        <el-table-column label="退货抵扣" prop="deductedRefundAmount" />
-        <el-table-column label="预付款抵扣" prop="deductedPrepayAmount" />
         <el-table-column label="支付金额" prop="paidAmount" />
-        <el-table-column label="剩余金额" prop="dueAmount" />
-        <el-table-column label="审核人" prop="checkedBy" />
         <el-table-column label="供应商id" prop="merchantId" />
         <el-table-column label="商品数量" prop="goodsQty" />
         <el-table-column label="商品金额" prop="goodsAmount" />
@@ -114,87 +108,9 @@ const data = reactive({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
-    orderId: undefined,
-    billNo: undefined,
-    billDate: undefined,
+    docNo: undefined,
     checkedStatus: undefined,
-    paymentStatus: undefined,
-    refundStatus: undefined,
-    refundAmount: undefined,
-    deductedRefundAmount: undefined,
-    deductedPrepayAmount: undefined,
-    paidAmount: undefined,
-    dueAmount: undefined,
-    checkedBy: undefined,
-    merchantId: undefined,
-    goodsQty: undefined,
-    goodsAmount: undefined,
-    otherExpensesAmount: undefined,
-    discountAmount: undefined,
-    actualAmount: undefined,
   },
-  rules: {
-    id: [
-      { required: true, message: "不能为空", trigger: "blur" }
-    ],
-    orderId: [
-      { required: true, message: "订单id不能为空", trigger: "blur" }
-    ],
-    billNo: [
-      { required: true, message: "单据编号不能为空", trigger: "blur" }
-    ],
-    billDate: [
-      { required: true, message: "单据日期不能为空", trigger: "blur" }
-    ],
-    checkedStatus: [
-      { required: true, message: "审核状态不能为空", trigger: "change" }
-    ],
-    paymentStatus: [
-      { required: true, message: "支付状态不能为空", trigger: "change" }
-    ],
-    refundStatus: [
-      { required: true, message: "退货状态不能为空", trigger: "change" }
-    ],
-    refundAmount: [
-      { required: true, message: "退货金额不能为空", trigger: "blur" }
-    ],
-    deductedRefundAmount: [
-      { required: true, message: "退货抵扣不能为空", trigger: "blur" }
-    ],
-    deductedPrepayAmount: [
-      { required: true, message: "预付款抵扣不能为空", trigger: "blur" }
-    ],
-    paidAmount: [
-      { required: true, message: "支付金额不能为空", trigger: "blur" }
-    ],
-    dueAmount: [
-      { required: true, message: "剩余金额不能为空", trigger: "blur" }
-    ],
-    checkedBy: [
-      { required: true, message: "审核人不能为空", trigger: "blur" }
-    ],
-    merchantId: [
-      { required: true, message: "供应商id不能为空", trigger: "blur" }
-    ],
-    goodsQty: [
-      { required: true, message: "商品数量不能为空", trigger: "blur" }
-    ],
-    goodsAmount: [
-      { required: true, message: "商品金额不能为空", trigger: "blur" }
-    ],
-    otherExpensesAmount: [
-      { required: true, message: "其他费用不能为空", trigger: "blur" }
-    ],
-    discountAmount: [
-      { required: true, message: "优惠金额不能为空", trigger: "blur" }
-    ],
-    actualAmount: [
-      { required: true, message: "实际金额不能为空", trigger: "blur" }
-    ],
-    remark: [
-      { required: true, message: "备注不能为空", trigger: "blur" }
-    ],
-  }
 });
 
 const { queryParams, form, rules } = toRefs(data);
@@ -220,16 +136,13 @@ function reset() {
   form.value = {
     id: null,
     orderId: null,
-    billNo: null,
-    billDate: null,
+    orderNo: null,
+    docNo: null,
+    docDate: null,
     checkedStatus: null,
-    paymentStatus: null,
     refundStatus: null,
     refundAmount: null,
-    deductedRefundAmount: null,
-    deductedPrepayAmount: null,
     paidAmount: null,
-    dueAmount: null,
     checkedBy: null,
     merchantId: null,
     goodsQty: null,
