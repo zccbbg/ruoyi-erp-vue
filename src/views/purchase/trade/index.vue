@@ -10,6 +10,16 @@
             @keyup.enter="handleQuery"
           />
         </el-form-item>
+        <el-form-item label="单据日期" style="width: 308px">
+          <el-date-picker
+            v-model="daterangeBillDate"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            type="daterange"
+            range-separator="-"
+            start-placeholder="开始日期"
+            :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]"
+          ></el-date-picker>
+        </el-form-item>
         <el-form-item label="编辑状态" prop="checkedStatus">
           <el-select v-model="queryParams.checkedStatus" placeholder="请选择编辑状态" clearable>
             <el-option
@@ -57,11 +67,19 @@
             <span>{{ parseTime(scope.row.docDate, '{y}-{m}-{d}') }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="审核状态" prop="checkedStatus" />
+        <el-table-column label="供应商" prop="merchantId" min-width="120">
+          <template #default="{ row }">
+            <div>{{ useBasicStore().merchantMap.get(row.merchantId)?.merchantName }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="编辑状态" prop="checkedStatus">
+          <template #default="scope">
+            <dict-tag :options="finish_status" :value="scope.row.checkedStatus"/>
+          </template>
+        </el-table-column>
         <el-table-column label="退货状态" prop="refundStatus" />
         <el-table-column label="退货金额" prop="refundAmount" />
         <el-table-column label="支付金额" prop="paidAmount" />
-        <el-table-column label="供应商id" prop="merchantId" />
         <el-table-column label="商品数量" prop="goodsQty" />
         <el-table-column label="商品金额" prop="goodsAmount" />
         <el-table-column label="其他费用" prop="otherExpensesAmount" />
@@ -92,6 +110,7 @@
 
 <script setup name="Trade">
 import { listTrade, getTrade, delTrade, addTrade, updateTrade } from "@/api/purchase/trade";
+import {useBasicStore} from "@/store/modules/basic";
 
 const { proxy } = getCurrentInstance();
 const { finish_status } = proxy.useDict('finish_status');
@@ -102,6 +121,7 @@ const loading = ref(true);
 const ids = ref([]);
 const total = ref(0);
 const title = ref("");
+const daterangeBillDate = ref([]);
 
 const data = reactive({
   form: {},
@@ -117,7 +137,12 @@ const { queryParams, form, rules } = toRefs(data);
 
 /** 查询采购入库单列表 */
 function getList() {
+  queryParams.value.params = {};
   loading.value = true;
+  if (null != daterangeBillDate && '' != daterangeBillDate) {
+    queryParams.value.params["beginBillDate"] = daterangeBillDate.value[0];
+    queryParams.value.params["endBillDate"] = daterangeBillDate.value[1];
+  }
   listTrade(queryParams.value).then(response => {
     tradeList.value = response.rows;
     total.value = response.total;
@@ -167,6 +192,7 @@ function handleQuery() {
 
 /** 重置按钮操作 */
 function resetQuery() {
+  daterangeBillDate.value = [];
   proxy.resetForm("queryRef");
   handleQuery();
 }
