@@ -42,3 +42,11 @@ export function delTrade(id) {
     method: 'delete'
   })
 }
+
+export function passTrade(data) {
+  return request({
+    url: '/purchase/trade/pass',
+    method: 'post',
+    data: data
+  })
+}

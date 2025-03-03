@@ -30,6 +30,13 @@
             <el-col :span="18">
               <el-row>
                 <el-col :span="8">
+                  <el-form-item label="供应商" prop="merchantId">
+                    <el-select v-model="form.merchantId" placeholder="请选择供应商" clearable filterable style="width:100%">
+                      <el-option v-for="item in useBasicStore().supplierList" :key="item.id" :label="item.merchantName" :value="item.id"/>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
                   <el-form-item label="单据日期" prop="docDate" >
                     <el-date-picker clearable
                                     v-model="form.docDate"
@@ -49,13 +56,6 @@
                                     value-format="YYYY-MM-DD"
                                     placeholder="请选择交货日期">
                     </el-date-picker>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item label="供应商" prop="merchantId">
-                    <el-select v-model="form.merchantId" placeholder="请选择供应商" clearable filterable style="width:100%">
-                      <el-option v-for="item in useBasicStore().supplierList" :key="item.id" :label="item.merchantName" :value="item.id"/>
-                    </el-select>
                   </el-form-item>
                 </el-col>
               </el-row>

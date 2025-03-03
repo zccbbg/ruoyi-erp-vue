@@ -2,7 +2,7 @@
   <div>
     <div class="receipt-order-edit-wrapper app-container" style="margin-bottom: 60px" v-loading="loading">
       <el-card header="采购入库基本信息">
-        <el-form label-width="108px" :model="form" ref="purchaseOrderForm" :rules="rules">
+        <el-form label-width="108px" :model="form" ref="purchaseTradeForm" :rules="rules">
           <el-row :gutter="24">
             <el-col :span="6">
               <el-row>
@@ -30,6 +30,13 @@
             <el-col :span="18">
               <el-row>
                 <el-col :span="8">
+                  <el-form-item label="供应商" prop="merchantId">
+                    <el-select v-model="form.merchantId" placeholder="请选择供应商" clearable filterable style="width:100%">
+                      <el-option v-for="item in useBasicStore().supplierList" :key="item.id" :label="item.merchantName" :value="item.id"/>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
                   <el-form-item label="单据日期" prop="docDate" >
                     <el-date-picker clearable
                                     v-model="form.docDate"
@@ -41,21 +48,8 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="交货日期" prop="deliveryDate">
-                    <el-date-picker clearable
-                                    v-model="form.deliveryDate"
-                                    type="date"
-                                    style="width:100%"
-                                    value-format="YYYY-MM-DD"
-                                    placeholder="请选择交货日期">
-                    </el-date-picker>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item label="供应商" prop="merchantId">
-                    <el-select v-model="form.merchantId" placeholder="请选择供应商" clearable filterable style="width:100%">
-                      <el-option v-for="item in useBasicStore().supplierList" :key="item.id" :label="item.merchantName" :value="item.id"/>
-                    </el-select>
+                  <el-form-item label="订单编号" prop="orderNo">
+                    <el-input v-model="form.orderNo" placeholder="请输入订单编号"/>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -243,7 +237,7 @@
 
 <script setup>
 import {computed, getCurrentInstance, onMounted, reactive, ref, toRef, toRefs, watch} from "vue";
-import {addOrder, getOrder, updateOrder,passOrder} from "@/api/purchase/order";
+import {addTrade, getTrade, updateTrade,passTrade} from "@/api/purchase/trade";
 import {ElMessage, ElMessageBox} from "element-plus";
 import SkuSelect from "../../components/SkuSelect.vue";
 import {useRoute} from "vue-router";
@@ -378,10 +372,10 @@ const handleOkClick = (item) => {
 // 选择商品 end
 
 // 初始化receipt-order-form ref
-const purchaseOrderForm = ref()
+const purchaseTradeForm = ref()
 
 const save = async () => {
-  proxy.$refs["purchaseOrderForm"].validate(valid => {
+  proxy.$refs["purchaseTradeForm"].validate(valid => {
     if (valid) {
       doSave()
     }
@@ -427,8 +421,8 @@ const getParamsBeforeSave = (orderStatus) => {
 }
 
 const doSave = async (orderStatus = 0) => {
-  //验证purchaseOrderForm表单
-  purchaseOrderForm.value?.validate((valid) => {
+  //验证purchaseTradeForm表单
+  purchaseTradeForm.value?.validate((valid) => {
     // 校验
     if (!valid) {
       return ElMessage.error('请填写必填项')
@@ -436,7 +430,7 @@ const doSave = async (orderStatus = 0) => {
     const params = getParamsBeforeSave(orderStatus)
     loading.value = true
     if (params.id) {
-      updateOrder(params).then((res) => {
+      updateTrade(params).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.msg)
           close()
@@ -447,7 +441,7 @@ const doSave = async (orderStatus = 0) => {
         loading.value = false
       })
     } else {
-      addOrder(params).then((res) => {
+      addTrade(params).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.msg)
           close()
@@ -462,7 +456,7 @@ const doSave = async (orderStatus = 0) => {
 }
 
 const doFinishEdit = async () => {
-  purchaseOrderForm.value?.validate(async (valid) => {
+  purchaseTradeForm.value?.validate(async (valid) => {
     // 校验
     if (!valid) {
       return ElMessage.error('请填写必填项')
@@ -519,7 +513,7 @@ onMounted(() => {
 // 获取入库单详情
 const loadDetail = (id) => {
   loading.value = true
-  getOrder(id).then((response) => {
+  getTrade(id).then((response) => {
     form.value = {...response.data}
     if (response.data.details?.length) {
       selectedSku.value = response.data.details.map(it => {
