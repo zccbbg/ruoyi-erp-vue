@@ -59,7 +59,52 @@
         </el-col>
       </el-row>
 
-      <el-table v-loading="loading" :data="tradeList" border class="mt20">
+      <el-table v-loading="loading"
+                :data="tradeList" border class="mt20"
+                @expand-change="handleExpandExchange"
+                :row-key="getRowKey"
+                :expand-row-keys="expandedRowKeys">
+        <el-table-column type="expand">
+          <template #default="props">
+            <div style="padding: 0 50px 20px 50px">
+              <h3>商品明细</h3>
+              <el-table :data="props.row.details" v-loading="detailLoading[props.$index]" empty-text="暂无商品明细">
+                <el-table-column label="商品名称">
+                  <template #default="{ row }">
+                    <div>{{ row?.goods?.goodsName }}</div>
+                  </template>
+                </el-table-column>
+                <el-table-column label="规格名称">
+                  <template #default="{ row }">
+                    <div>{{ row?.sku?.skuName }}</div>
+                  </template>
+                </el-table-column>
+                <el-table-column label="仓库" align="left">
+                  <template #default="{ row }">
+                    <div>{{ useBasicStore().warehouseMap.get(row.warehouseId)?.warehouseName }}</div>
+                  </template>
+                </el-table-column>
+                <el-table-column label="单价(元)" align="right">
+                  <template #default="{ row }">
+                    <el-statistic v-if="row.priceWithTax || row.priceWithTax === 0" :precision="2" :value="Number(row.priceWithTax)"/>
+                    <div v-else>-</div>
+                  </template>
+                </el-table-column>
+                <el-table-column label="数量" prop="qty" align="right">
+                  <template #default="{ row }">
+                    <el-statistic :value="Number(row.qty)" :precision="0"/>
+                  </template>
+                </el-table-column>
+                <el-table-column label="金额(元)" align="right">
+                  <template #default="{ row }">
+                    <el-statistic v-if="row.totalAmount || row.totalAmount === 0" :precision="2" :value="Number(row.totalAmount)"/>
+                    <div v-else>-</div>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column label="" prop="id" v-if="false"/>
         <el-table-column label="单据编号" prop="docNo" />
         <el-table-column label="单据日期" align="center" prop="docDate" width="180">
@@ -86,11 +131,39 @@
         <el-table-column label="优惠金额" prop="discountAmount" />
         <el-table-column label="实际金额" prop="actualAmount" />
         <el-table-column label="备注" prop="remark" />
-        <el-table-column label="操作" align="right" class-name="small-padding fixed-width">
-            <template #default="scope">
-                <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['purchase:trade:edit']">修改</el-button>
-                <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['purchase:trade:remove']">删除</el-button>
-            </template>
+        <el-table-column label="操作" align="right" class-name="small-padding fixed-width" width="120">
+          <template #default="scope">
+            <div>
+              <el-popover
+                placement="left"
+                title="提示"
+                :width="300"
+                trigger="hover"
+                :disabled="scope.row.checkedStatus === 0"
+                :content="'订单【' + scope.row.docNo + '】已完成，无法修改！' "
+              >
+                <template #reference>
+                  <el-button link type="primary" @click="handleUpdate(scope.row)" v-hasPermi="['purchase:order:all']" :disabled="[1].includes(scope.row.checkedStatus)">修改</el-button>
+                </template>
+              </el-popover>
+              <el-button link type="primary" @click="handleGoDetail(scope.row)" v-hasPermi="['purchase:order:all']">{{ expandedRowKeys.includes(scope.row.id) ? '收起' : '查看' }}</el-button>
+            </div>
+            <div>
+              <el-popover
+                placement="left"
+                title="提示"
+                :width="300"
+                trigger="hover"
+                :disabled="scope.row.checkedStatus === 0"
+                :content="'订单【' + scope.row.docNo + '】已完成，无法删除！' "
+              >
+                <template #reference>
+                  <el-button type="danger" @click="handleDelete(scope.row)" link v-hasPermi="['purchase:order:all']" :disabled="[1].includes(scope.row.checkedStatus)">删除</el-button>
+                </template>
+              </el-popover>
+              <el-button link type="primary" @click="handlePrint(row)" v-hasPermi="['wms:check:all']">打印</el-button>
+            </div>
+          </template>
         </el-table-column>
       </el-table>
 
@@ -111,7 +184,9 @@
 <script setup name="Trade">
 import { listTrade, getTrade, delTrade, addTrade, updateTrade } from "@/api/purchase/trade";
 import {useBasicStore} from "@/store/modules/basic";
+import {listByOrderId} from "@/api/purchase/orderDetail";
 
+const expandedRowKeys = ref([])
 const { proxy } = getCurrentInstance();
 const { finish_status } = proxy.useDict('finish_status');
 const tradeList = ref([]);
@@ -122,6 +197,7 @@ const ids = ref([]);
 const total = ref(0);
 const title = ref("");
 const daterangeBillDate = ref([]);
+const detailLoading = ref([])
 
 const data = reactive({
   form: {},
@@ -144,10 +220,65 @@ function getList() {
     queryParams.value.params["endBillDate"] = daterangeBillDate.value[1];
   }
   listTrade(queryParams.value).then(response => {
+    expandedRowKeys.value = []
     tradeList.value = response.rows;
     total.value = response.total;
     loading.value = false;
   });
+}
+
+function getRowKey(row) {
+  return row.id
+}
+
+function ifExpand(expandedRows) {
+  if (expandedRows.length < expandedRowKeys.value.length) {
+    expandedRowKeys.value = expandedRows.map(it => it.id)
+    return false;
+  }
+  return true
+}
+
+function loadTradeDetail(row) {
+  const index = tradeList.value.findIndex(it => it.id === row.id)
+  detailLoading.value[index] = true
+  listByTradeId(row.id).then(res => {
+    if (res.data?.length) {
+      const details = res.data.map(it => {
+        return {
+          ...it,
+          warehouseName: useBasicStore().warehouseMap.get(it.warehouseId)?.warehouseName,
+        }
+      })
+      tradeList.value[index].details = details
+    }
+  }).finally(() => {
+    detailLoading.value[index] = false
+  })
+}
+
+function handleGoDetail(row) {
+  const index = expandedRowKeys.value.indexOf(row.id)
+  if (index !== -1) {
+    // 收起
+    expandedRowKeys.value.splice(index, 1)
+  } else {
+    // 展开
+    expandedRowKeys.value.push(row.id)
+    loadTradeDetail(row)
+  }
+}
+
+async function handlePrint(row) {
+  proxy.$modal.alert('打印功能暂未开发！')
+}
+
+function handleExpandExchange(value, expandedRows) {
+  if (!ifExpand(expandedRows)) {
+    return
+  }
+  expandedRowKeys.value = expandedRows.map(it => it.id)
+  loadTradeDetail(value)
 }
 
 // 取消按钮
