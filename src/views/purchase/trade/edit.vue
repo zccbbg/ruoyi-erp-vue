@@ -505,7 +505,7 @@ onMounted(() => {
   if (id) {
     loadDetail(id)
   } else {
-    form.value.docNo = 'PO' + generateNo()
+    form.value.docNo = 'TO' + generateNo()
   }
 })
 

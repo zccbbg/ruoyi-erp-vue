@@ -140,7 +140,7 @@
                 :width="300"
                 trigger="hover"
                 :disabled="scope.row.checkedStatus === 0"
-                :content="'订单【' + scope.row.docNo + '】已完成，无法修改！' "
+                :content="'入库单【' + scope.row.docNo + '】已完成，无法修改！' "
               >
                 <template #reference>
                   <el-button link type="primary" @click="handleUpdate(scope.row)" v-hasPermi="['purchase:order:all']" :disabled="[1].includes(scope.row.checkedStatus)">修改</el-button>
@@ -155,13 +155,13 @@
                 :width="300"
                 trigger="hover"
                 :disabled="scope.row.checkedStatus === 0"
-                :content="'订单【' + scope.row.docNo + '】已完成，无法删除！' "
+                :content="'入库单【' + scope.row.docNo + '】已完成，无法删除！' "
               >
                 <template #reference>
                   <el-button type="danger" @click="handleDelete(scope.row)" link v-hasPermi="['purchase:order:all']" :disabled="[1].includes(scope.row.checkedStatus)">删除</el-button>
                 </template>
               </el-popover>
-              <el-button link type="primary" @click="handlePrint(row)" v-hasPermi="['wms:check:all']">打印</el-button>
+              <el-button link type="primary" @click="handlePrint(scope.row)" v-hasPermi="['wms:check:all']">打印</el-button>
             </div>
           </template>
         </el-table-column>
@@ -184,7 +184,7 @@
 <script setup name="Trade">
 import { listTrade, getTrade, delTrade, addTrade, updateTrade } from "@/api/purchase/trade";
 import {useBasicStore} from "@/store/modules/basic";
-import {listByOrderId} from "@/api/purchase/orderDetail";
+import {listByTradeId} from "@/api/purchase/tradeDetail";
 
 const expandedRowKeys = ref([])
 const { proxy } = getCurrentInstance();
@@ -335,13 +335,7 @@ function handleAdd() {
 
 /** 修改按钮操作 */
 function handleUpdate(row) {
-  reset();
-  const _id = row.id || ids.value
-  getTrade(_id).then(response => {
-    form.value = response.data;
-    open.value = true;
-    title.value = "修改采购入库单";
-  });
+  proxy.$router.push({ path: "/purchase/tradeEdit",  query: { id: row.id } });
 }
 
 /** 提交按钮 */
@@ -373,7 +367,8 @@ function submitForm() {
 /** 删除按钮操作 */
 function handleDelete(row) {
   const _ids = row.id || ids.value;
-  proxy.$modal.confirm('是否确认删除采购入库单编号为"' + _ids + '"的数据项？').then(function() {
+  const docNo = row.docNo || '';
+  proxy.$modal.confirm('是否确认删除入库单编号为"' + docNo + '"的数据项？').then(function() {
     loading.value = true;
     return delTrade(_ids);
   }).then(() => {

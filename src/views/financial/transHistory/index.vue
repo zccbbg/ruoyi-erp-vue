@@ -39,19 +39,19 @@
                 <div>{{ useBasicStore().merchantMap.get(row.merchantId)?.merchantName }}</div>
               </template>
             </el-table-column>
+            <el-table-column label="交易类型" prop="transType" />
             <el-table-column label="交易账户" prop="bankAccountId">
               <template #default="{ row }">
                 <div>{{ useBasicStore().bankAccountMap.get(row.bankAccountId)?.accountName }}</div>
               </template>
             </el-table-column>
-            <el-table-column label="交易类型" prop="transType" />
+            <el-table-column label="交易帐户变动" prop="paidAmount" align="right" width="110" :formatter="formatNumber"/>
             <el-table-column label="关联业务编号" prop="relatedNo" />
             <el-table-column label="总金额" prop="totalAmount" align="right" width="90"/>
             <el-table-column label="优惠金额" prop="discountAmount" align="right" width="90"/>
             <el-table-column label="实际金额" prop="actualAmount" align="right" width="90"/>
-            <el-table-column label="银行帐户变动" prop="paidAmount" align="right" width="110" :formatter="formatNumber"/>
-            <el-table-column label="往来单位余额" prop="balanceChange" align="right" width="110" :formatter="formatNumber"/>
             <el-table-column label="交易前余额" prop="beforeBalance" align="right" width="90"/>
+            <el-table-column label="余额变动" prop="balanceChange" align="right" width="110" :formatter="formatNumber"/>
             <el-table-column label="交易后余额" prop="afterBalance" align="right" width="90"/>
             <el-table-column label="操作时间" prop="createTime" align="right"/>
       </el-table>

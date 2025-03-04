@@ -42,3 +42,10 @@ export function delTradeDetail(id) {
     method: 'delete'
   })
 }
+
+export function listByTradeId(tradeId) {
+  return request({
+    url: '/purchase/tradeDetail/listByTradeId/'+tradeId,
+    method: 'get'
+  })
+}
