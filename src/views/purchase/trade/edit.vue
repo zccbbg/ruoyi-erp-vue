@@ -486,7 +486,7 @@ const doFinishEdit = async () => {
 
     const params = getParamsBeforeSave(1);
     loading.value = true
-    passOrder(params).then((res) => {
+    passTrade(params).then((res) => {
       if (res.code === 200) {
         ElMessage.success('操作成功')
         close()

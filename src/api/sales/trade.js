@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-// 查询销售入库单列表
+// 查询销售出库单列表
 export function listTrade(query) {
   return request({
     url: '/sales/trade/list',
@@ -9,7 +9,7 @@ export function listTrade(query) {
   })
 }
 
-// 查询销售入库单详细
+// 查询销售出库单详细
 export function getTrade(id) {
   return request({
     url: '/sales/trade/' + id,
@@ -17,7 +17,7 @@ export function getTrade(id) {
   })
 }
 
-// 新增销售入库单
+// 新增销售出库单
 export function addTrade(data) {
   return request({
     url: '/sales/trade',
@@ -26,7 +26,7 @@ export function addTrade(data) {
   })
 }
 
-// 修改销售入库单
+// 修改销售出库单
 export function updateTrade(data) {
   return request({
     url: '/sales/trade',
@@ -35,7 +35,7 @@ export function updateTrade(data) {
   })
 }
 
-// 删除销售入库单
+// 删除销售出库单
 export function delTrade(id) {
   return request({
     url: '/sales/trade/' + id,
