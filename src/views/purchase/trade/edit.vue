@@ -243,8 +243,8 @@ import SkuSelect from "../../components/SkuSelect.vue";
 import {useRoute} from "vue-router";
 import {useBasicStore} from '@/store/modules/basic'
 import { numSub, generateNo } from '@/utils/ruoyi'
-import { delOrderDetail } from '@/api/purchase/orderDetail'
-import {getWarehouseAndSkuKey} from "@/utils/wmsUtil";
+import {delTrade} from "../../../api/purchase/trade";
+import {delTradeDetail} from "../../../api/purchase/tradeDetail";
 
 const {proxy} = getCurrentInstance();
 const selectedSku = ref([])
@@ -546,7 +546,7 @@ const handleDeleteDetail = (row, index) => {
   if (row.id) {
     proxy.$modal.confirm('确认删除本条商品明细吗？如确认会立即执行！').then(function () {
       loading.value = true
-      return delOrderDetail(row.id);
+      return delTradeDetail(row.id);
     }).then(() => {
       form.value.details.splice(index, 1)
       proxy.$modal.msgSuccess("删除成功");

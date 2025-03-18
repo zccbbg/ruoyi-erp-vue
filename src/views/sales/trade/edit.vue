@@ -243,8 +243,6 @@ import SkuSelect from "../../components/SkuSelect.vue";
 import {useRoute} from "vue-router";
 import {useBasicStore} from '@/store/modules/basic'
 import { numSub, generateNo } from '@/utils/ruoyi'
-import { delOrderDetail } from '@/api/sales/orderDetail'
-import {getWarehouseAndSkuKey} from "@/utils/wmsUtil";
 import {passOrder} from "@/api/sales/order";
 import {delTradeDetail} from "../../../api/sales/tradeDetail";
 
