@@ -99,7 +99,7 @@
                     <el-select v-model="form.bankAccountId" placeholder="请选择银行账户" clearable filterable style="width:50%">
                       <el-option v-for="item in useBasicStore().bankAccountList" :key="item.id" :label="item.accountName" :value="item.id"/>
                     </el-select>
-                    <el-input-number :controls="false" style="width:50%;" :precision="2" v-model="form.prepayAmount" placeholder="本次支付金额" />
+                    <el-input-number :controls="false" style="width:50%;" :precision="2" v-model="form.paidAmount" placeholder="本次支付金额" />
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -245,6 +245,7 @@ import {useBasicStore} from '@/store/modules/basic'
 import { numSub, generateNo } from '@/utils/ruoyi'
 import { delOrderDetail } from '@/api/sales/orderDetail'
 import {getWarehouseAndSkuKey} from "@/utils/wmsUtil";
+import {passOrder} from "@/api/sales/order";
 
 const {proxy} = getCurrentInstance();
 const selectedSku = ref([])
@@ -321,7 +322,7 @@ watch(actualAmount, (newVal) => {
 });
 
 const cancel = async () => {
-  await proxy?.$modal.confirm('确认取消编辑采购入库单吗？');
+  await proxy?.$modal.confirm('确认取消编辑销售出库单吗？');
   close()
 }
 const close = () => {

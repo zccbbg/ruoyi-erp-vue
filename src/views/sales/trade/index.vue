@@ -40,7 +40,7 @@
     <el-card class="mt20">
 
       <el-row :gutter="10" class="mb8" type="flex" justify="space-between">
-        <el-col :span="6"><span style="font-size: large">采购入库单</span></el-col>
+        <el-col :span="6"><span style="font-size: large">销售出库单</span></el-col>
         <el-col :span="1.5">
           <el-button
             type="primary"
@@ -211,7 +211,7 @@ const data = reactive({
 
 const { queryParams, form, rules } = toRefs(data);
 
-/** 查询采购入库单列表 */
+/** 查询销售出库单列表 */
 function getList() {
   queryParams.value.params = {};
   loading.value = true;
