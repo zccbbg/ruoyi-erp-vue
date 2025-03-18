@@ -246,6 +246,7 @@ import { numSub, generateNo } from '@/utils/ruoyi'
 import { delOrderDetail } from '@/api/sales/orderDetail'
 import {getWarehouseAndSkuKey} from "@/utils/wmsUtil";
 import {passOrder} from "@/api/sales/order";
+import {delTradeDetail} from "../../../api/sales/tradeDetail";
 
 const {proxy} = getCurrentInstance();
 const selectedSku = ref([])
@@ -547,7 +548,7 @@ const handleDeleteDetail = (row, index) => {
   if (row.id) {
     proxy.$modal.confirm('确认删除本条商品明细吗？如确认会立即执行！').then(function () {
       loading.value = true
-      return delOrderDetail(row.id);
+      return delTradeDetail(row.id);
     }).then(() => {
       form.value.details.splice(index, 1)
       proxy.$modal.msgSuccess("删除成功");
