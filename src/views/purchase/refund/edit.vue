@@ -7,8 +7,8 @@
             <el-col :span="6">
               <el-row>
                 <el-col :span="24">
-                  <el-form-item label="订单编号" prop="docNo">
-                    <el-input class="w200" v-model="form.docNo" placeholder="订单编号" :disabled="form.id"></el-input>
+                  <el-form-item label="单据编号" prop="docNo">
+                    <el-input class="w200" v-model="form.docNo" placeholder="单据编号" :disabled="form.id"></el-input>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -48,20 +48,14 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="交货日期" prop="deliveryDate">
-                    <el-date-picker clearable
-                                    v-model="form.deliveryDate"
-                                    type="date"
-                                    style="width:100%"
-                                    value-format="YYYY-MM-DD"
-                                    placeholder="请选择交货日期">
-                    </el-date-picker>
+                  <el-form-item label="订单编号" prop="orderNo">
+                    <el-input v-model="form.orderNo" placeholder="请输入订单编号"/>
                   </el-form-item>
                 </el-col>
               </el-row>
               <el-row>
                 <el-col :span="8">
-                  <el-form-item label="退单金额" prop="goodsAmount">
+                  <el-form-item label="商品金额" prop="goodsAmount">
                     <el-input-number style="width:100%" v-model="form.goodsAmount" :controls="false" :precision="2" :disabled="true"></el-input-number>
                   </el-form-item>
                 </el-col>
@@ -96,16 +90,16 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="退单数量" prop="goodsQty">
+                  <el-form-item label="商品数量" prop="goodsQty">
                     <el-input-number style="width:100%" v-model="form.goodsQty" :controls="false" :precision="0" :disabled="true"></el-input-number>
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="退款金额" prop="bankAccountId">
+                  <el-form-item label="本次支付" prop="bankAccountId">
                     <el-select v-model="form.bankAccountId" placeholder="请选择银行账户" clearable filterable style="width:50%">
                       <el-option v-for="item in useBasicStore().bankAccountList" :key="item.id" :label="item.accountName" :value="item.id"/>
                     </el-select>
-                    <el-input-number :controls="false" style="width:50%;" :precision="2" v-model="form.prepayAmount" placeholder="请输入退款金额" />
+                    <el-input-number :controls="false" style="width:50%;" :precision="2" v-model="form.prepayAmount" placeholder="请输入支付金额" />
                   </el-form-item>
                 </el-col>
               </el-row>
