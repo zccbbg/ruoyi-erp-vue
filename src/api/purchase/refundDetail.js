@@ -42,3 +42,9 @@ export function delRefundDetail(id) {
     method: 'delete'
   })
 }
+export function listByRefundId(refundId) {
+  return request({
+    url: '/purchase/refundDetail/listByRefundId/'+refundId,
+    method: 'get'
+  })
+}

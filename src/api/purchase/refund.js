@@ -42,3 +42,11 @@ export function delRefund(id) {
     method: 'delete'
   })
 }
+//完成采购退货单
+export function passRefund(data) {
+  return request({
+    url: '/purchase/refund/pass',
+    method: 'post',
+    data: data
+  })
+}
