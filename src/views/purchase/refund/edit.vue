@@ -49,7 +49,7 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="入库单编号" prop="tradeNo">
-                    <el-input v-model="form.tradeNo" placeholder="请输入入库单编号"/>
+                    <el-input v-model="form.tradeNo" placeholder="请输入入库单编号" :disabled="true"/>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -354,6 +354,9 @@ const handleConfirmSetWarehouse = () => {
 
 // 选择退单 start
 const showAddItem = () => {
+  if(this.form.tradeId){
+
+  }
   skuSelectRef.value.getList()
   skuSelectShow.value = true
 }
@@ -502,10 +505,18 @@ const doFinishEdit = async () => {
 const route = useRoute();
 onMounted(() => {
   const id = route.query && route.query.id;
+  const tradeNo = route.query && route.query.tradeNo;
+  const tradeId = route.query && route.query.tradeId;
   if (id) {
     loadDetail(id)
   } else {
     form.value.docNo = 'PO' + generateNo()
+  }
+  if(tradeNo){
+    form.value.tradeNo = tradeNo
+  }
+  if(tradeId){
+    form.value.tradeId = tradeId
   }
 })
 

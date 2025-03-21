@@ -165,7 +165,18 @@
                   <el-button type="danger" @click="handleDelete(scope.row)" link v-hasPermi="['purchase:order:all']" :disabled="[1].includes(scope.row.checkedStatus)">删除</el-button>
                 </template>
               </el-popover>
-              <el-button link type="primary" @click="handlePrint(scope.row)" v-hasPermi="['wms:check:all']">打印</el-button>
+              <el-popover
+                placement="left"
+                title="提示"
+                :width="300"
+                trigger="hover"
+                :disabled="scope.row.checkedStatus === 1"
+                :content="'入库单【' + scope.row.docNo + '】未完成，无法退货！' "
+              >
+                <template #reference>
+                  <el-button type="danger" @click="handleRefund(scope.row)" link v-hasPermi="['wms:check:all']" :disabled="[0].includes(scope.row.checkedStatus)">退货</el-button>
+                </template>
+              </el-popover>
             </div>
           </template>
         </el-table-column>
@@ -274,8 +285,8 @@ function handleGoDetail(row) {
   }
 }
 
-async function handlePrint(row) {
-  proxy.$modal.alert('打印功能暂未开发！')
+function handleRefund(row) {
+  proxy.$router.push({ path: "/purchase/refundEdit",  query: { tradeNo: row.docNo ,tradeId: row.id} });
 }
 
 function handleExpandExchange(value, expandedRows) {

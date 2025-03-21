@@ -172,13 +172,13 @@
 </template>
 
 <script setup name="Refund">
+import { ref, reactive, toRefs, computed } from 'vue';
 import { listRefund, getRefund, delRefund, addRefund, updateRefund } from "@/api/purchase/refund";
-import {parseTime} from "../../../utils/ruoyi";
-import {useBasicStore} from "../../../store/modules/basic";
-import {ElMessage} from "element-plus";
-import {passRefund} from "../../../api/purchase/refund";
-import {getCurrentInstance, ref} from "vue";
-import {getRefundDetail,listByRefundId} from "../../../api/purchase/refundDetail";
+import { parseTime } from "../../../utils/ruoyi";
+import { useBasicStore } from "../../../store/modules/basic";
+import { getCurrentInstance } from "vue";
+import { getRefundDetail, listByRefundId } from "../../../api/purchase/refundDetail";
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const { proxy } = getCurrentInstance();
 
@@ -191,9 +191,9 @@ const total = ref(0);
 const title = ref("");
 const daterangeBillDate = ref([]);
 const { finish_status } = proxy.useDict('finish_status');
-const refundRef = ref()
-const expandedRowKeys = ref([])
-const detailLoading = ref([])
+const refundRef = ref();
+const expandedRowKeys = ref([]);
+const detailLoading = ref([]);
 
 const data = reactive({
   form: {},
@@ -422,10 +422,15 @@ function resetQuery() {
 }
 
 /** 新增按钮操作 */
-function handleAdd() {
-  proxy.$router.push({ path: "/purchase/refundEdit" });
+const handleAdd=()=> {
+  ElMessageBox.alert('请去采购入库单模块进行退单操作', '系统提示', {
+    confirmButtonText: '确定',
+    callback: () => {
+      //跳转到采购入库单模块
+      proxy.$router.push({ path: "/purchase/trade" });
+    },
+  })
 }
-
 /** 修改按钮操作 */
 function handleUpdate(row) {
   proxy.$router.push({ path: "/purchase/refundEdit",  query: { id: row.id } });
