@@ -13,7 +13,13 @@ export function listSkuPage(query) {
     params: query
   });
 };
-
+export function listSkuByPost(query) {
+  return request({
+    url: '/basic/sku/list',
+    method: 'post',
+    data: query
+  });
+};
 export function listSku(query) {
   return request({
     url: '/basic/sku/listNoPage',

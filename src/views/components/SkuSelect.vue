@@ -101,7 +101,7 @@
 <script setup lang="ts" name="SkuSelect">
 import {computed, getCurrentInstance, onMounted, reactive, ref} from 'vue';
 import {ElForm} from "element-plus";
-import {listSkuPage} from "@/api/basic/sku";
+import {listSkuByPost} from "@/api/basic/sku";
 import {useRouter} from "vue-router";
 import {useBasicStore} from '@/store/modules/basic'
 
@@ -138,14 +138,18 @@ const loadAll = () => {
 const getRowKey = (row: any) => {
   return row.id;
 }
-const getList = () => {
+const getList = (skuIds) => {
+  if(skuIds){
+    skuIds.value = skuIds;
+  }
   const data = {
     ...query,
     pageNum: pageReq.page,
-    pageSize: pageReq.size
+    pageSize: pageReq.size,
+    skuIds: skuIds.value
   }
   loading.value = true
-  listSkuPage(data).then((res) => {
+  listSkuByPost(data).then((res) => {
     const content = [...res.rows];
     list.value = content.map((it) => ({...it, id: it.skuId, checked: false}));
     total.value = res.total;

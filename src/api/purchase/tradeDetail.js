@@ -42,7 +42,7 @@ export function delTradeDetail(id) {
     method: 'delete'
   })
 }
-
+//根据采购入库单id查询采购入库单明细
 export function listByTradeId(tradeId) {
   return request({
     url: '/purchase/tradeDetail/listByTradeId/'+tradeId,

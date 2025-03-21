@@ -244,6 +244,7 @@ import {useBasicStore} from '@/store/modules/basic'
 import { numSub, generateNo } from '@/utils/ruoyi'
 import { delRefundDetail } from '@/api/purchase/refundDetail'
 import {addRefund, updateRefund, passRefund, getRefund} from "../../../api/purchase/refund";
+import {listByTradeId} from "../../../api/purchase/tradeDetail";
 
 const {proxy} = getCurrentInstance();
 const selectedSku = ref([])
@@ -352,13 +353,18 @@ const handleConfirmSetWarehouse = () => {
   ElMessage.success("仓库批量设置成功");
 }
 
-// 选择退单 start
+// 选择商品 start
 const showAddItem = () => {
-  if(this.form.tradeId){
-
+  if(form.value.tradeId){
+    listByTradeId(form.value.tradeId).then(res => {
+     const skuIds = res.data.map(it => it.skuId)
+      skuSelectRef.value.getList(skuIds)
+      skuSelectShow.value = true
+    })
+  }else{
+    skuSelectRef.value.getList()
+    skuSelectShow.value = true
   }
-  skuSelectRef.value.getList()
-  skuSelectShow.value = true
 }
 // 选择成功
 const handleOkClick = (item) => {
