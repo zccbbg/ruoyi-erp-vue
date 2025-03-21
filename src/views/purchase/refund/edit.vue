@@ -48,8 +48,8 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="订单编号" prop="orderNo">
-                    <el-input v-model="form.orderNo" placeholder="请输入订单编号"/>
+                  <el-form-item label="入库单编号" prop="tradeNo">
+                    <el-input v-model="form.tradeNo" placeholder="请输入入库单编号"/>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -125,7 +125,7 @@
               />
             </div>
 
-            <el-button type="primary" plain="plain" size="default" @click="showAddItem" icon="Plus">添加退单</el-button>
+            <el-button type="primary" plain="plain" size="default" @click="showAddItem" icon="Plus">添加商品</el-button>
           </div>
           <el-table :data="form.details" brefund empty-text="暂无退单明细">
             <el-table-column label="退单信息" prop="sku.goodsName">
@@ -263,6 +263,7 @@ const initFormData = {
   bankAccountId: undefined,
   prepayAmount: undefined,
   goodsQty: 0,
+  tradeNo: undefined,
   details: [],
 }
 const validateBankAccount = (rule, value, callback) => {
@@ -276,13 +277,10 @@ const data = reactive({
   form: {...initFormData},
   rules: {
     docNo: [
-      {required: true, message: "订单编号不能为空", trigger: "blur"}
+      {required: true, message: "退货单编号不能为空", trigger: "blur"}
     ],
     merchantId: [
       {required: true, message: "供应商不能为空", trigger: "blur"}
-    ],
-    tradeId: [
-      {required: true, message: "采购入库单号不能为空", trigger: "blur"}
     ],
     bankAccountId: [{ validator: validateBankAccount, trigger: ['blur', 'change'] }]
   }
@@ -323,7 +321,7 @@ watch(actualAmount, (newVal) => {
 });
 
 const cancel = async () => {
-  await proxy?.$modal.confirm('确认取消编辑采购订单吗？');
+  await proxy?.$modal.confirm('确认取消编辑采购退货单吗？');
   close()
 }
 const close = () => {
@@ -480,7 +478,7 @@ const doFinishEdit = async () => {
 
     // 弹出确认框
     try {
-      await proxy?.$modal.confirm('完成编辑后订单将不可再次编辑，如设置了预付金额，将从账户扣除!');
+      await proxy?.$modal.confirm('完成编辑后退款单将不可再次编辑，如设置了预付金额，将从账户扣除!');
     } catch (error) {
       // 用户取消操作
       return;

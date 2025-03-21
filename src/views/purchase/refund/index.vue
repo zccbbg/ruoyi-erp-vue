@@ -130,7 +130,7 @@
                 :width="300"
                 trigger="hover"
                 :disabled="scope.row.checkedStatus === 0"
-                :content="'入库单【' + scope.row.docNo + '】已完成，无法修改！' "
+                :content="'退货单【' + scope.row.docNo + '】已完成，无法修改！' "
               >
                 <template #reference>
                   <el-button link type="primary" @click="handleUpdate(scope.row)" v-hasPermi="['purchase:refund:all']" :disabled="[1].includes(scope.row.checkedStatus)">修改</el-button>
@@ -145,7 +145,7 @@
                 :width="300"
                 trigger="hover"
                 :disabled="scope.row.checkedStatus === 0"
-                :content="'入库单【' + scope.row.docNo + '】已完成，无法删除！' "
+                :content="'退货单【' + scope.row.docNo + '】已完成，无法删除！' "
               >
                 <template #reference>
                   <el-button type="danger" @click="handleDelete(scope.row)" link v-hasPermi="['purchase:refund:all']" :disabled="[1].includes(scope.row.checkedStatus)">删除</el-button>

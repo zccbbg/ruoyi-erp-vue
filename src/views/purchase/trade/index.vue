@@ -117,12 +117,16 @@
             <div>{{ useBasicStore().merchantMap.get(row.merchantId)?.merchantName }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="编辑状态" prop="checkedStatus">
+        <el-table-column label="编辑状态" prop="checkedStatus" align="center">
           <template #default="scope">
             <dict-tag :options="finish_status" :value="scope.row.checkedStatus"/>
           </template>
         </el-table-column>
-        <el-table-column label="退货状态" prop="refundStatus" />
+        <el-table-column label="退货状态" prop="refundStatus" align="center">
+          <template #default="scope">
+            <dict-tag :options="refund_status" :value="scope.row.refundStatus"/>
+          </template>
+        </el-table-column>
         <el-table-column label="退货金额" prop="refundAmount" align="right"/>
         <el-table-column label="支付金额" prop="paidAmount" align="right"/>
         <el-table-column label="商品数量" prop="goodsQty" align="right"/>
@@ -189,6 +193,7 @@ import {listByTradeId} from "@/api/purchase/tradeDetail";
 const expandedRowKeys = ref([])
 const { proxy } = getCurrentInstance();
 const { finish_status } = proxy.useDict('finish_status');
+const { refund_status } = proxy.useDict('refund_status');
 const tradeList = ref([]);
 const open = ref(false);
 const buttonLoading = ref(false);
