@@ -82,7 +82,7 @@
             </el-table>
     <el-row>
       <pagination v-show="total > 0" :total="total" :page-sizes="[5, 10, 20, 50]" v-model:limit="pageReq.size" v-model:page="pageReq.page"
-                  @pagination="getList" class="mr10"/>
+                  @pagination="getList(null)" class="mr10"/>
     </el-row>
     <template v-slot:footer>
       <div style="width: 100%;display: flex;justify-content: space-between">
@@ -119,6 +119,7 @@ const query = reactive({
 const selectItemSkuVoCheck = ref([])
 const skuSelectFormRef = ref(null)
 const total = ref(0);
+const selectedSkuIds = ref(null)
 const pageReq = reactive({
   page: 1,
   size: 10,
@@ -133,20 +134,20 @@ const rightListKeySet = computed(() => {
 
 const loadAll = () => {
   pageReq.page = 1
-  getList()
+  getList(null)
 };
 const getRowKey = (row: any) => {
   return row.id;
 }
 const getList = (skuIds) => {
   if(skuIds){
-    skuIds.value = skuIds;
+    selectedSkuIds.value = skuIds;
   }
   const data = {
     ...query,
     pageNum: pageReq.page,
     pageSize: pageReq.size,
-    skuIds: skuIds.value
+    ...(selectedSkuIds ? { skuIds: selectedSkuIds?.value } : {})
   }
   loading.value = true
   listSkuByPost(data).then((res) => {
