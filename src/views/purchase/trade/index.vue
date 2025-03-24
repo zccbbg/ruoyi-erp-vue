@@ -286,7 +286,7 @@ function handleGoDetail(row) {
 }
 
 function handleRefund(row) {
-  proxy.$router.push({ path: "/purchase/refundEdit",  query: { tradeNo: row.docNo ,tradeId: row.id} });
+  proxy.$router.push({ path: "/purchase/refundEdit",  query: { tradeNo: row.docNo ,tradeId: row.id ,merchantId: row.merchantId} });
 }
 
 function handleExpandExchange(value, expandedRows) {
