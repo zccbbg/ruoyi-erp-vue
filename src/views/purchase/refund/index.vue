@@ -422,14 +422,18 @@ function resetQuery() {
 }
 
 /** 新增按钮操作 */
-const handleAdd=()=> {
-  ElMessageBox.alert('请去采购入库单模块进行退单操作', '系统提示', {
+const handleAdd = () => {
+  ElMessageBox.confirm('请去采购入库单模块进行退单操作', '系统提示', {
     confirmButtonText: '确定',
-    callback: () => {
-      //跳转到采购入库单模块
-      proxy.$router.push({ path: "/purchase/trade" });
-    },
-  })
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    // 用户点击确定按钮
+    proxy.$router.push({ path: "/purchase/trade" });
+  }).catch(() => {
+    // 用户点击取消按钮
+    ElMessage.info('已取消操作');
+  });
 }
 /** 修改按钮操作 */
 function handleUpdate(row) {

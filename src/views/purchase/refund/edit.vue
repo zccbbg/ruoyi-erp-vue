@@ -513,6 +513,8 @@ onMounted(() => {
   const id = route.query && route.query.id;
   const tradeNo = route.query && route.query.tradeNo;
   const tradeId = route.query && route.query.tradeId;
+  const merchantId = route.query && route.query.merchantId;
+
   if (id) {
     loadDetail(id)
   } else {
@@ -523,6 +525,9 @@ onMounted(() => {
   }
   if(tradeId){
     form.value.tradeId = tradeId
+  }
+  if(merchantId){
+    form.value.merchantId = merchantId
   }
 })
 
