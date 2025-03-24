@@ -31,7 +31,7 @@
               <el-row>
                 <el-col :span="8">
                   <el-form-item label="供应商" prop="merchantId">
-                    <el-select v-model="form.merchantId" placeholder="请选择供应商" clearable filterable style="width:100%">
+                    <el-select v-model="form.merchantId" placeholder="请选择供应商" clearable filterable style="width:100%" :disabled="true">
                       <el-option v-for="item in useBasicStore().supplierList" :key="item.id" :label="item.merchantName" :value="item.id"/>
                     </el-select>
                   </el-form-item>
@@ -150,25 +150,41 @@
                 <div v-if="row.sku.barcode">条码：{{row.sku.barcode}}</div>
               </template>
             </el-table-column>
-            <el-table-column label="退货数量" prop="qty" width="180">
+            <el-table-column label="数量" prop="qty" width="180">
               <template #default="scope">
                 <el-input-number
                   v-model="scope.row.qty"
-                  placeholder="退货数量"
+                  placeholder="数量"
+                  @change="handleChangeQty(scope.row)"
+                  :controls="false"
                   :min="1"
                   :precision="0"
-                  @change="handleChangeQty"
                 ></el-input-number>
               </template>
             </el-table-column>
-            <el-table-column label="金额" prop="totalAmount" width="180">
+            <el-table-column label="单价" prop="priceWithTax" width="180">
+              <template #default="scope">
+                <el-input-number
+                  v-model="scope.row.priceWithTax"
+                  @change="handleChangePrice(scope.row)"
+                  placeholder="单价"
+                  :precision="2"
+                  :controls="false"
+                  :min="0"
+                  :max="2147483647"
+                ></el-input-number>
+              </template>
+            </el-table-column>
+            <el-table-column label="合计金额" prop="totalAmount" width="180">
               <template #default="scope">
                 <el-input-number
                   v-model="scope.row.totalAmount"
-                  placeholder="金额"
+                  :controls="false"
+                  placeholder="合计金额"
                   :precision="2"
                   :min="0"
                   :max="2147483647"
+                  @change="handleChangeTotalAmount(scope.row)"
                 ></el-input-number>
               </template>
             </el-table-column>
@@ -228,6 +244,7 @@ import { numSub, generateNo } from '@/utils/ruoyi'
 import { delRefundDetail } from '@/api/purchase/refundDetail'
 import {addRefund, updateRefund, passRefund, getRefund} from "../../../api/purchase/refund";
 import {listByTradeId} from "../../../api/purchase/tradeDetail";
+import {getWarehouseAndSkuKey} from "@/utils/wmsUtil";
 
 const {proxy} = getCurrentInstance();
 const selectedSku = ref([])
