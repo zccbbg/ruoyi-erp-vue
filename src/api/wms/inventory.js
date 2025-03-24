@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 查询库存列表
 export function listInventory(query) {
   return request({
-    url: '/wms/inventory/boardList/warehouse',
+    url: '/wms/inventory/boardList/warehouse/tradeId',
     method: 'get',
     params: query
   })

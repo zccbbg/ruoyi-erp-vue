@@ -59,7 +59,7 @@
         :total="total"
         v-model:limit="pageReq.size"
         v-model:page="pageReq.page"
-        @pagination="getList"
+        @pagination="getPage"
         class="mr10"
       />
     </el-row>
@@ -91,6 +91,7 @@ const spanMethod = computed(() => getRowspanMethod(list.value, ['itemId']))
 const router = useRouter()
 const loading = ref(false)
 const deptOptions = ref([]);
+const tradeId = ref(null);
 const query = reactive({
   goodsName: '',
   goodsNo: '',
@@ -120,16 +121,17 @@ const editableList = computed(() => {
 
 const loadAll = () => {
   pageReq.page = 1
-  getList()
+  getPage()
 };
 const getRowKey = (row) => {
   return row.id;
 }
-const getList = () => {
+const getPage = () =>{
   const data = {
     ...query,
     pageNum: pageReq.page,
-    pageSize: pageReq.size
+    pageSize: pageReq.size,
+    tradeId: tradeId.value
   }
   loading.value = true
   listInventory(data).then((res) => {
@@ -142,6 +144,10 @@ const getList = () => {
     ));
     total.value = res.total;
   }).then(() => toggleSelection()).finally(() => loading.value = false);
+}
+const getList = (id) => {
+  tradeId.value = id
+  getPage()
 }
 
 const props = defineProps({

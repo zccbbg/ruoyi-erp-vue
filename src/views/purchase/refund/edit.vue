@@ -107,7 +107,7 @@
           </el-row>
         </el-form>
       </el-card>
-      <el-card header="退单明细" class="mt10">
+      <el-card header="退货明细" class="mt10">
         <div class="receipt-refund-content">
           <div class="flex-space-between mb8">
             <div>
@@ -127,11 +127,21 @@
 
             <el-button type="primary" plain="plain" size="default" @click="showAddItem" icon="Plus">添加商品</el-button>
           </div>
-          <el-table :data="form.details" brefund empty-text="暂无退单明细">
-            <el-table-column label="退单信息" prop="sku.goodsName">
+          <el-table :data="form.details" border empty-text="暂无退货明细">
+            <el-table-column label="仓库" align="left">
               <template #default="{ row }">
-                <div>{{ row.goods.goodsName + (row.goods.itemCode ? ('(' + row.goods.itemCode + ')') : '') }}</div>
-                <div v-if="row.goods.brandId">品牌：{{ useBasicStore().brandMap.get(row.goods.brandId).brandName }}</div>
+                <div>{{ useBasicStore().warehouseMap.get(row.warehouseId)?.warehouseName }}</div>
+              </template>
+            </el-table-column>
+            <el-table-column label="商品信息" prop="sku.goodsName">
+              <template #default="{ row }">
+                <div>{{
+                    row.goods.goodsName + (row.goods.goodsNo ? ('(' + row.goods.goodsNo + ')') : '')
+                  }}
+                </div>
+                <div v-if="row.goods.brandId">
+                  品牌：{{ useBasicStore().brandMap.get(row.goods.brandId).brandName }}
+                </div>
               </template>
             </el-table-column>
             <el-table-column label="规格信息">
@@ -140,74 +150,47 @@
                 <div v-if="row.sku.barcode">条码：{{row.sku.barcode}}</div>
               </template>
             </el-table-column>
-            <el-table-column>
-              <template #header>
-                <div style="display: flex; align-items: center;">
-                  <div>仓库</div>
-                  <el-button style="margin-left: 10px" @click="setWarehouseDialogVisible">批量</el-button>
-                </div>
-              </template>
-              <template #default="scope">
-                <el-select v-model="scope.row.warehouseId" placeholder="请选择仓库"
-                           filterable>
-                  <el-option v-for="item in useBasicStore().warehouseList" :key="item.id" :label="item.warehouseName"
-                             :value="item.id"/>
-                </el-select>
-              </template>
-            </el-table-column>
-            <el-table-column label="数量" prop="qty" width="180">
+            <el-table-column label="退货数量" prop="qty" width="180">
               <template #default="scope">
                 <el-input-number
                   v-model="scope.row.qty"
-                  placeholder="数量"
-                  @change="handleChangeQty(scope.row)"
-                  :controls="false"
+                  placeholder="退货数量"
                   :min="1"
                   :precision="0"
+                  @change="handleChangeQty"
                 ></el-input-number>
               </template>
             </el-table-column>
-            <el-table-column label="单价" prop="priceWithTax" width="180">
-              <template #default="scope">
-                <el-input-number
-                  v-model="scope.row.priceWithTax"
-                  @change="handleChangePrice(scope.row)"
-                  placeholder="单价"
-                  :precision="2"
-                  :controls="false"
-                  :min="0"
-                  :max="2147483647"
-                ></el-input-number>
-              </template>
-            </el-table-column>
-            <el-table-column label="合计金额" prop="totalAmount" width="180">
+            <el-table-column label="金额" prop="totalAmount" width="180">
               <template #default="scope">
                 <el-input-number
                   v-model="scope.row.totalAmount"
-                  :controls="false"
-                  placeholder="合计金额"
+                  placeholder="金额"
                   :precision="2"
                   :min="0"
                   :max="2147483647"
-                  @change="handleChangeTotalAmount(scope.row)"
                 ></el-input-number>
               </template>
             </el-table-column>
             <el-table-column label="操作" width="100" align="right" fixed="right">
               <template #default="scope">
-                <el-button icon="Delete" type="danger" plain size="small" @click="handleDeleteDetail(scope.row, scope.$index)" link>删除</el-button>
+                <el-button icon="Delete" type="danger" plain size="small"
+                           @click="handleDeleteDetail(scope.row, scope.$index)" link>删除
+                </el-button>
               </template>
             </el-table-column>
           </el-table>
         </div>
       </el-card>
-      <SkuSelect
-        ref="skuSelectRef"
-        :model-value="skuSelectShow"
-        :selected-sku="selectedSku"
+      <InventorySelect
+        ref="inventorySelectRef"
+        :model-value="inventorySelectShow"
         @handleOkClick="handleOkClick"
-        @handleCancelClick="skuSelectShow = false"
-        :size="'80%'"
+        @handleCancelClick="inventorySelectShow = false"
+        :size="'90%'"
+        :select-warehouse-disable="false"
+        :warehouse-id="form.warehouseId"
+        :selected-inventory="selectedInventory"
       />
     </div>
     <div class="footer-global">
@@ -238,7 +221,7 @@
 <script setup>
 import {computed, getCurrentInstance, onMounted, reactive, ref, toRef, toRefs, watch} from "vue";
 import {ElMessage, ElMessageBox} from "element-plus";
-import SkuSelect from "../../components/SkuSelect.vue";
+import InventorySelect from "../../components/InventorySelect.vue"
 import {useRoute} from "vue-router";
 import {useBasicStore} from '@/store/modules/basic'
 import { numSub, generateNo } from '@/utils/ruoyi'
@@ -253,6 +236,9 @@ const loading = ref(false)
 const batchSetWarehouseVisible = ref(false)
 const skuSelectRef = ref(null)
 const batchSetWarehouseId = ref(null)
+const inventorySelectRef = ref(null)
+const selectedInventory = ref([])
+const inventorySelectShow = ref(false)
 const initFormData = {
   id: undefined,
   docNo: undefined,
@@ -355,26 +341,25 @@ const handleConfirmSetWarehouse = () => {
 
 // 选择商品 start
 const showAddItem = () => {
-  if(form.value.tradeId){
-    listByTradeId(form.value.tradeId).then(res => {
-     const skuIds = res.data.map(it => it.skuId)
-      skuSelectRef.value.getList(skuIds)
-      skuSelectShow.value = true
-    })
-  }else{
-    skuSelectRef.value.getList()
-    skuSelectShow.value = true
-  }
+  inventorySelectRef.value.getList(form.value.tradeId)
+  inventorySelectShow.value = true
 }
 // 选择成功
 const handleOkClick = (item) => {
-  skuSelectShow.value = false
-  selectedSku.value = [...item]
-  item.forEach((it) => {
-    if (!form.value.details.find(detail => detail.sku.id === it.id)) {
+  inventorySelectShow.value = false
+  selectedInventory.value = [...item]
+  item.forEach(it => {
+    if (!form.value.details.find(detail => getWarehouseAndSkuKey(detail) === getWarehouseAndSkuKey(it))) {
       form.value.details.push(
-        {...it}
-      )
+        {
+          sku: it.sku,
+          goods: it.goods,
+          skuId: it.skuId,
+          totalAmount: undefined,
+          qty: undefined,
+          warehouseId: it.warehouseId,
+          inventoryId: it.id,
+        })
     }
   })
 }
