@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="receipt-order-edit-wrapper app-container" style="margin-bottom: 60px" v-loading="loading">
-      <el-card header="采购入库基本信息">
-        <el-form label-width="108px" :model="form" ref="purchaseTradeForm" :rules="rules">
+    <div class="receipt-refund-edit-wrapper app-container" style="margin-bottom: 60px" v-loading="loading">
+      <el-card header="销售退款单基本信息">
+        <el-form label-width="108px" :model="form" ref="salesRefundForm" :rules="rules">
           <el-row :gutter="24">
             <el-col :span="6">
               <el-row>
@@ -31,7 +31,7 @@
               <el-row>
                 <el-col :span="8">
                   <el-form-item label="供应商" prop="merchantId">
-                    <el-select v-model="form.merchantId" placeholder="请选择供应商" clearable filterable style="width:100%">
+                    <el-select v-model="form.merchantId" placeholder="请选择供应商" clearable filterable style="width:100%" :disabled="true">
                       <el-option v-for="item in useBasicStore().supplierList" :key="item.id" :label="item.merchantName" :value="item.id"/>
                     </el-select>
                   </el-form-item>
@@ -48,8 +48,8 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="订单编号" prop="orderNo">
-                    <el-input v-model="form.orderNo" placeholder="请输入订单编号"/>
+                  <el-form-item label="入库单编号" prop="tradeNo">
+                    <el-input v-model="form.tradeNo" placeholder="请输入入库单编号" :disabled="true"/>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -81,7 +81,7 @@
                         :precision="2"
                         :disabled="true"
                       />
-                      <el-tooltip content="实际金额 = 商品金额 + 其他费用 - 优惠金额" placement="top">
+                      <el-tooltip content="实际金额 = 退单金额 + 其他费用 - 优惠金额" placement="top">
                         <el-icon style="margin-left: 8px; cursor: pointer; color: #409EFF;">
                           <QuestionFilled />
                         </el-icon>
@@ -99,7 +99,7 @@
                     <el-select v-model="form.bankAccountId" placeholder="请选择银行账户" clearable filterable style="width:50%">
                       <el-option v-for="item in useBasicStore().bankAccountList" :key="item.id" :label="item.accountName" :value="item.id"/>
                     </el-select>
-                    <el-input-number :controls="false" style="width:50%;" :precision="2" v-model="form.paidAmount" placeholder="本次支付金额" />
+                    <el-input-number :controls="false" style="width:50%;" :precision="2" v-model="form.prepayAmount" placeholder="请输入支付金额" />
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -107,8 +107,8 @@
           </el-row>
         </el-form>
       </el-card>
-      <el-card header="商品明细" class="mt10">
-        <div class="receipt-order-content">
+      <el-card header="退货明细" class="mt10">
+        <div class="receipt-refund-content">
           <div class="flex-space-between mb8">
             <div>
               <span>审批模式：</span>
@@ -127,7 +127,7 @@
 
             <el-button type="primary" plain="plain" size="default" @click="showAddItem" icon="Plus">添加商品</el-button>
           </div>
-          <el-table :data="form.details" border empty-text="暂无商品明细">
+          <el-table :data="form.details" brefund empty-text="暂无退货明细">
             <el-table-column label="商品信息" prop="sku.goodsName">
               <template #default="{ row }">
                 <div>{{ row.goods.goodsName + (row.goods.itemCode ? ('(' + row.goods.itemCode + ')') : '') }}</div>
@@ -237,32 +237,32 @@
 
 <script setup>
 import {computed, getCurrentInstance, onMounted, reactive, ref, toRef, toRefs, watch} from "vue";
-import {addTrade, getTrade, updateTrade,passTrade} from "@/api/purchase/trade";
 import {ElMessage, ElMessageBox} from "element-plus";
-import SkuSelect from "../../components/SkuSelect.vue";
 import {useRoute} from "vue-router";
 import {useBasicStore} from '@/store/modules/basic'
 import { numSub, generateNo } from '@/utils/ruoyi'
-import {delTradeDetail} from "../../../api/purchase/tradeDetail";
-
-const {proxy} = getCurrentInstance();
+import { delRefundDetail } from '@/api/sales/refundDetail'
+import {addRefund, updateRefund, getRefund, passSalesRefund} from "../../../api/sales/refund";
 const selectedSku = ref([])
+import SkuSelect from "@/views/components/SkuSelect.vue";
+const skuSelectRef = ref(null)
+const {proxy} = getCurrentInstance();
 const mode = ref(false)
 const loading = ref(false)
 const batchSetWarehouseVisible = ref(false)
-const skuSelectRef = ref(null)
 const batchSetWarehouseId = ref(null)
 const initFormData = {
   id: undefined,
   docNo: undefined,
   merchantId: undefined,
   goodsAmount: undefined,
-  orderStatus: 0,
+  refundStatus: 0,
   remark: undefined,
   warehouseId: undefined,
   bankAccountId: undefined,
   prepayAmount: undefined,
   goodsQty: 0,
+  tradeNo: undefined,
   details: [],
 }
 const validateBankAccount = (rule, value, callback) => {
@@ -276,7 +276,7 @@ const data = reactive({
   form: {...initFormData},
   rules: {
     docNo: [
-      {required: true, message: "单据编号不能为空", trigger: "blur"}
+      {required: true, message: "退货单编号不能为空", trigger: "blur"}
     ],
     merchantId: [
       {required: true, message: "供应商不能为空", trigger: "blur"}
@@ -287,17 +287,17 @@ const data = reactive({
 const { form, rules} = toRefs(data);
 
 
-// 计算商品总数量
+// 计算退单总数量
 const goodsQty = computed(() => {
   return form.value.details.reduce((sum, row) => sum + (row.qty || 0), 0);
 });
 
-// 计算商品总数量
+// 计算退单总数量
 const goodsAmount = computed(() => {
   return form.value.details.reduce((sum, row) => sum + (row.totalAmount || 0), 0);
 });
 
-// 计算商品实际金额
+// 计算退单实际金额
 const actualAmount = computed(() =>
   (Number(goodsAmount.value) || 0) +
   (Number(form.value?.otherExpensesAmount) || 0) -
@@ -320,18 +320,18 @@ watch(actualAmount, (newVal) => {
 });
 
 const cancel = async () => {
-  await proxy?.$modal.confirm('确认取消编辑采购入库单吗？');
+  await proxy?.$modal.confirm('确认取消编辑销售退货单吗？');
   close()
 }
 const close = () => {
-  const obj = {path: "/purchase/trade"};
+  const obj = {path: "/sales/refund"};
   proxy?.$tab.closeOpenPage(obj);
 }
 const skuSelectShow = ref(false)
 
 const setWarehouseDialogVisible = () => {
   if(form.value.details?.length == 0){
-    ElMessage.error("请先添加商品！");
+    ElMessage.error("请先添加退单！");
   }else {
     batchSetWarehouseVisible.value = true;
   }
@@ -353,7 +353,7 @@ const handleConfirmSetWarehouse = () => {
 
 // 选择商品 start
 const showAddItem = () => {
-  skuSelectRef.value.getList()
+  skuSelectRef.value.getList(form.value.tradeId)
   skuSelectShow.value = true
 }
 // 选择成功
@@ -368,13 +368,13 @@ const handleOkClick = (item) => {
     }
   })
 }
-// 选择商品 end
+// 选择退单 end
 
-// 初始化receipt-order-form ref
-const purchaseTradeForm = ref()
+// 初始化receipt-refund-form ref
+const salesRefundForm = ref()
 
 const save = async () => {
-  proxy.$refs["purchaseTradeForm"].validate(valid => {
+  proxy.$refs["salesRefundForm"].validate(valid => {
     if (valid) {
       doSave()
     }
@@ -400,7 +400,7 @@ const handleChangeQty = (row) => {
   }
 }
 
-const getParamsBeforeSave = (orderStatus) => {
+const getParamsBeforeSave = (refundStatus) => {
   let details = []
   if (form.value.details?.length) {
     details = form.value.details.map(it => {
@@ -414,22 +414,22 @@ const getParamsBeforeSave = (orderStatus) => {
 
   return {
     ...form.value,
-    orderStatus,
+    refundStatus,
     details: details
   }
 }
 
-const doSave = async (orderStatus = 0) => {
-  //验证purchaseTradeForm表单
-  purchaseTradeForm.value?.validate((valid) => {
+const doSave = async (refundStatus = 0) => {
+  //验证salesRefundForm表单
+  salesRefundForm.value?.validate((valid) => {
     // 校验
     if (!valid) {
       return ElMessage.error('请填写必填项')
     }
-    const params = getParamsBeforeSave(orderStatus)
+    const params = getParamsBeforeSave(refundStatus)
     loading.value = true
     if (params.id) {
-      updateTrade(params).then((res) => {
+      updateRefund(params).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.msg)
           close()
@@ -440,7 +440,7 @@ const doSave = async (orderStatus = 0) => {
         loading.value = false
       })
     } else {
-      addTrade(params).then((res) => {
+      addRefund(params).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.msg)
           close()
@@ -455,29 +455,29 @@ const doSave = async (orderStatus = 0) => {
 }
 
 const doFinishEdit = async () => {
-  purchaseTradeForm.value?.validate(async (valid) => {
+  salesRefundForm.value?.validate(async (valid) => {
     // 校验
     if (!valid) {
       return ElMessage.error('请填写必填项')
     }
 
     if (!form.value.details?.length) {
-      return ElMessage.error('请选择商品')
+      return ElMessage.error('请选择退单')
     }
     if (form.value.details?.length) {
       const invalidQtyList = form.value.details.filter(it => !it.qty)
       const invalidTotalAmountList = form.value.details.filter(it => !it.totalAmount)
       if (invalidQtyList?.length) {
-        return ElMessage.error('请设置商品明细中商品数量')
+        return ElMessage.error('请设置退单明细中退单数量')
       }
       if (invalidTotalAmountList?.length) {
-        return ElMessage.error('请设置商品明细中的合计金额')
+        return ElMessage.error('请设置退单明细中的合计金额')
       }
     }
 
     // 弹出确认框
     try {
-      await proxy?.$modal.confirm('完成编辑后单据将不可再次编辑，如设置了支付金额，将从账户扣除!');
+      await proxy?.$modal.confirm('完成编辑后退款单将不可再次编辑，如设置了预付金额，将从账户扣除!');
     } catch (error) {
       // 用户取消操作
       return;
@@ -485,7 +485,7 @@ const doFinishEdit = async () => {
 
     const params = getParamsBeforeSave(1);
     loading.value = true
-    passTrade(params).then((res) => {
+    passSalesRefund(params).then((res) => {
       if (res.code === 200) {
         ElMessage.success('操作成功')
         close()
@@ -501,10 +501,22 @@ const doFinishEdit = async () => {
 const route = useRoute();
 onMounted(() => {
   const id = route.query && route.query.id;
+  const tradeNo = route.query && route.query.tradeNo;
+  const tradeId = route.query && route.query.tradeId;
+  const merchantId = route.query && route.query.merchantId;
   if (id) {
     loadDetail(id)
   } else {
-    form.value.docNo = 'TO' + generateNo()
+    form.value.docNo = 'PO' + generateNo()
+  }
+  if(tradeNo){
+    form.value.tradeNo = tradeNo
+  }
+  if(tradeId){
+    form.value.tradeId = tradeId
+  }
+  if(merchantId){
+    form.value.merchantId = merchantId
   }
 })
 
@@ -512,7 +524,7 @@ onMounted(() => {
 // 获取入库单详情
 const loadDetail = (id) => {
   loading.value = true
-  getTrade(id).then((response) => {
+  getRefund(id).then((response) => {
     form.value = {...response.data}
     if (response.data.details?.length) {
       selectedSku.value = response.data.details.map(it => {
@@ -543,9 +555,9 @@ const handleAutoCalc = () => {
 
 const handleDeleteDetail = (row, index) => {
   if (row.id) {
-    proxy.$modal.confirm('确认删除本条商品明细吗？如确认会立即执行！').then(function () {
+    proxy.$modal.confirm('确认删除本条退单明细吗？如确认会立即执行！').then(function () {
       loading.value = true
-      return delTradeDetail(row.id);
+      return delRefundDetail(row.id);
     }).then(() => {
       form.value.details.splice(index, 1)
       proxy.$modal.msgSuccess("删除成功");
@@ -555,8 +567,8 @@ const handleDeleteDetail = (row, index) => {
   } else {
     form.value.details.splice(index, 1)
   }
-  const indexOfSelected = selectedSku.value.findIndex(it => row.sku.id=== it.id)
-  selectedSku.value.splice(indexOfSelected, 1)
+  const indexOfSelected = selectedInventory.value.findIndex(it => row.sku.id=== it.id)
+  selectedInventory.value.splice(indexOfSelected, 1)
 }
 const goSaasTip = () => {
   ElMessageBox.alert('审批模式请去Saas版本体验！', '系统提示', {

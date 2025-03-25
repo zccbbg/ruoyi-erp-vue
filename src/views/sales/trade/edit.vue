@@ -158,7 +158,7 @@
             <el-table-column label="数量" prop="qty" width="180">
               <template #default="scope">
                 <el-input-number
-                  v-model="scope.row.qty"
+                  v-model.number="scope.row.qty"
                   placeholder="数量"
                   @change="handleChangeQty(scope.row)"
                   :controls="false"
@@ -201,13 +201,15 @@
           </el-table>
         </div>
       </el-card>
-      <SkuSelect
-        ref="skuSelectRef"
-        :model-value="skuSelectShow"
-        :selected-sku="selectedSku"
+      <InventorySelect
+        ref="inventorySelectRef"
+        :model-value="inventorySelectShow"
         @handleOkClick="handleOkClick"
-        @handleCancelClick="skuSelectShow = false"
-        :size="'80%'"
+        @handleCancelClick="inventorySelectShow = false"
+        :size="'90%'"
+        :select-warehouse-disable="false"
+        :warehouse-id="form.warehouseId"
+        :selected-inventory="selectedInventory"
       />
     </div>
     <div class="footer-global">
@@ -239,20 +241,21 @@
 import {computed, getCurrentInstance, onMounted, reactive, ref, toRef, toRefs, watch} from "vue";
 import {addTrade, getTrade, updateTrade,passTrade} from "@/api/sales/trade";
 import {ElMessage, ElMessageBox} from "element-plus";
-import SkuSelect from "../../components/SkuSelect.vue";
 import {useRoute} from "vue-router";
 import {useBasicStore} from '@/store/modules/basic'
 import { numSub, generateNo } from '@/utils/ruoyi'
-import {passOrder} from "@/api/sales/order";
 import {delTradeDetail} from "../../../api/sales/tradeDetail";
+import InventorySelect from "@/views/components/InventorySelect.vue";
+import {getWarehouseAndSkuKey} from "@/utils/wmsUtil";
 
 const {proxy} = getCurrentInstance();
-const selectedSku = ref([])
 const mode = ref(false)
 const loading = ref(false)
 const batchSetWarehouseVisible = ref(false)
-const skuSelectRef = ref(null)
 const batchSetWarehouseId = ref(null)
+const inventorySelectShow = ref(false)
+const selectedInventory = ref([])
+const inventorySelectRef = ref(null)
 const initFormData = {
   id: undefined,
   docNo: undefined,
@@ -354,18 +357,25 @@ const handleConfirmSetWarehouse = () => {
 
 // 选择商品 start
 const showAddItem = () => {
-  skuSelectRef.value.getList()
-  skuSelectShow.value = true
+  inventorySelectRef.value.getList(form.value.tradeId)
+  inventorySelectShow.value = true
 }
 // 选择成功
 const handleOkClick = (item) => {
-  skuSelectShow.value = false
-  selectedSku.value = [...item]
-  item.forEach((it) => {
-    if (!form.value.details.find(detail => detail.sku.id === it.id)) {
+  inventorySelectShow.value = false
+  selectedInventory.value = [...item]
+  item.forEach(it => {
+    if (!form.value.details.find(detail => getWarehouseAndSkuKey(detail) === getWarehouseAndSkuKey(it))) {
       form.value.details.push(
-        {...it}
-      )
+        {
+          sku: it.sku,
+          goods: it.goods,
+          skuId: it.skuId,
+          totalAmount: undefined,
+          qty: undefined,
+          warehouseId: it.warehouseId,
+          inventoryId: it.id,
+        })
     }
   })
 }
@@ -486,7 +496,7 @@ const doFinishEdit = async () => {
 
     const params = getParamsBeforeSave(1);
     loading.value = true
-    passOrder(params).then((res) => {
+    passTrade(params).then((res) => {
       if (res.code === 200) {
         ElMessage.success('操作成功')
         close()
@@ -516,12 +526,16 @@ const loadDetail = (id) => {
   getTrade(id).then((response) => {
     form.value = {...response.data}
     if (response.data.details?.length) {
-      selectedSku.value = response.data.details.map(it => {
+      selectedInventory.value = response.data.details.map(it => {
         return {
-          id: it.skuId
+          id: it.id,
+          skuId: it.skuId,
+          warehouseId: it.warehouseId
         }
       })
     }
+    form.value = {...response.data}
+    inventorySelectRef.value.setWarehouseId(form.value.warehouseId)
     Promise.resolve();
   }).then(() => {
   }).finally(() => {
@@ -556,8 +570,8 @@ const handleDeleteDetail = (row, index) => {
   } else {
     form.value.details.splice(index, 1)
   }
-  const indexOfSelected = selectedSku.value.findIndex(it => row.sku.id=== it.id)
-  selectedSku.value.splice(indexOfSelected, 1)
+  const indexOfSelected = selectedInventory.value.findIndex(it => row.sku.id=== it.id)
+  selectedInventory.value.splice(indexOfSelected, 1)
 }
 const goSaasTip = () => {
   ElMessageBox.alert('审批模式请去Saas版本体验！', '系统提示', {

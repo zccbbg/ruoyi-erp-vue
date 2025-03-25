@@ -13,11 +13,11 @@ export function listSkuPage(query) {
     params: query
   });
 };
-export function listSkuByPost(query) {
+export function listSkuPageByTradeId(query) {
   return request({
-    url: '/basic/sku/list',
-    method: 'post',
-    data: query
+    url: '/basic/sku/list/tradeId',
+    method: 'get',
+    params: query
   });
 };
 export function listSku(query) {

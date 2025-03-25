@@ -49,13 +49,6 @@
             @click="handleAdd"
             v-hasPermi="['sales:trade:add']"
           >新增</el-button>
-<!--          <el-button-->
-<!--            type="warning"-->
-<!--            plain-->
-<!--            icon="Download"-->
-<!--            @click="handleExport"-->
-<!--            v-hasPermi="['sales:trade:export']"-->
-<!--          >导出</el-button>-->
         </el-col>
       </el-row>
 
@@ -112,7 +105,7 @@
             <span>{{ parseTime(scope.row.docDate, '{y}-{m}-{d}') }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="供应商" prop="merchantId" min-width="120">
+        <el-table-column label="供应商" prop="merchantId" min-width="120" >
           <template #default="{ row }">
             <div>{{ useBasicStore().merchantMap.get(row.merchantId)?.merchantName }}</div>
           </template>
@@ -140,7 +133,7 @@
                 :width="300"
                 trigger="hover"
                 :disabled="scope.row.checkedStatus === 0"
-                :content="'入库单【' + scope.row.docNo + '】已完成，无法修改！' "
+                :content="'出库单【' + scope.row.docNo + '】已完成，无法修改！' "
               >
                 <template #reference>
                   <el-button link type="primary" @click="handleUpdate(scope.row)" v-hasPermi="['sales:order:all']" :disabled="[1].includes(scope.row.checkedStatus)">修改</el-button>
@@ -155,13 +148,24 @@
                 :width="300"
                 trigger="hover"
                 :disabled="scope.row.checkedStatus === 0"
-                :content="'入库单【' + scope.row.docNo + '】已完成，无法删除！' "
+                :content="'出库单【' + scope.row.docNo + '】已完成，无法删除！' "
               >
                 <template #reference>
                   <el-button type="danger" @click="handleDelete(scope.row)" link v-hasPermi="['sales:order:all']" :disabled="[1].includes(scope.row.checkedStatus)">删除</el-button>
                 </template>
               </el-popover>
-              <el-button link type="primary" @click="handlePrint(scope.row)" v-hasPermi="['wms:check:all']">打印</el-button>
+              <el-popover
+                placement="left"
+                title="提示"
+                :width="300"
+                trigger="hover"
+                :disabled="scope.row.checkedStatus === 1"
+                :content="'出库单【' + scope.row.docNo + '】未完成，无法退货！' "
+              >
+                <template #reference>
+                  <el-button type="danger" @click="handleRefund(scope.row)" link v-hasPermi="['wms:check:all']" :disabled="[0].includes(scope.row.checkedStatus)">退货</el-button>
+                </template>
+              </el-popover>
             </div>
           </template>
         </el-table-column>
@@ -268,9 +272,8 @@ function handleGoDetail(row) {
     loadTradeDetail(row)
   }
 }
-
-async function handlePrint(row) {
-  proxy.$modal.alert('打印功能暂未开发！')
+function handleRefund(row){
+  proxy.$router.push({ path: "/sales/refundEdit",  query: { tradeNo: row.docNo ,tradeId: row.id ,merchantId: row.merchantId} });
 }
 
 function handleExpandExchange(value, expandedRows) {
