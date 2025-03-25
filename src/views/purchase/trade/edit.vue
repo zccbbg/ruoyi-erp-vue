@@ -364,7 +364,7 @@ const handleOkClick = (item) => {
   item.forEach((it) => {
     if (!form.value.details.find(detail => detail.sku.id === it.id)) {
       form.value.details.push(
-        {...it}
+        {...it, id: null}
       )
     }
   })

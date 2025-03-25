@@ -43,7 +43,7 @@ export function delRefund(id) {
   })
 }
 //完成采购退货单
-export function passRefund(data) {
+export function passPurchaseRefund(data) {
   return request({
     url: '/purchase/refund/pass',
     method: 'post',

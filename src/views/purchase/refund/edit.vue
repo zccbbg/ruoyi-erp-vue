@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="receipt-refund-edit-wrapper app-container" style="margin-bottom: 60px" v-loading="loading">
-      <el-card header="采购退款单基本信息">
+      <el-card header="采购退货单基本信息">
         <el-form label-width="108px" :model="form" ref="purchaseRefundForm" :rules="rules">
           <el-row :gutter="24">
             <el-col :span="6">
@@ -242,7 +242,7 @@ import {useRoute} from "vue-router";
 import {useBasicStore} from '@/store/modules/basic'
 import { numSub, generateNo } from '@/utils/ruoyi'
 import { delRefundDetail } from '@/api/purchase/refundDetail'
-import {addRefund, updateRefund, passRefund, getRefund} from "../../../api/purchase/refund";
+import {addRefund, updateRefund, getRefund, passPurchaseRefund} from "../../../api/purchase/refund";
 import {listByTradeId} from "../../../api/purchase/tradeDetail";
 import {getWarehouseAndSkuKey} from "@/utils/wmsUtil";
 
@@ -497,7 +497,7 @@ const doFinishEdit = async () => {
 
     const params = getParamsBeforeSave(1);
     loading.value = true
-    passRefund(params).then((res) => {
+    passPurchaseRefund(params).then((res) => {
       if (res.code === 200) {
         ElMessage.success('操作成功')
         close()
