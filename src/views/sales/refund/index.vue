@@ -186,7 +186,7 @@ import {ElMessage, ElMessageBox} from "element-plus";
 import {ref} from "vue";
 import {useBasicStore} from "../../../store/modules/basic";
 import {parseTime} from "../../../utils/ruoyi";
-import {listBySalesRefundId} from "@/api/sales/refundDetail";
+import {listBySalesRefundId, listRefundDetailById} from "@/api/sales/refundDetail";
 
 const { proxy } = getCurrentInstance();
 const detailLoading = ref([]);
@@ -404,7 +404,7 @@ function handleGoDetail(row) {
 function loadRefundDetail(row) {
   const index = refundList.value.findIndex(it => it.id === row.id)
   detailLoading.value[index] = true
-  listBySalesRefundId(row.id).then(res => {
+  listRefundDetailById(row.id).then(res => {
     if (res.data?.length) {
       const details = res.data.map(it => {
         return {

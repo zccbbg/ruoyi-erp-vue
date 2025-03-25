@@ -367,15 +367,7 @@ const handleOkClick = (item) => {
   item.forEach(it => {
     if (!form.value.details.find(detail => getWarehouseAndSkuKey(detail) === getWarehouseAndSkuKey(it))) {
       form.value.details.push(
-        {
-          sku: it.sku,
-          goods: it.goods,
-          skuId: it.skuId,
-          totalAmount: undefined,
-          qty: undefined,
-          warehouseId: it.warehouseId,
-          inventoryId: it.id,
-        })
+        {...it, id: null})
     }
   })
 }
