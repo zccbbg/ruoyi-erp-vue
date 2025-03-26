@@ -115,14 +115,18 @@
             <dict-tag :options="finish_status" :value="scope.row.checkedStatus"/>
           </template>
         </el-table-column>
-        <el-table-column label="退货状态" prop="refundStatus" />
-        <el-table-column label="退货金额" prop="refundAmount" />
-        <el-table-column label="支付金额" prop="paidAmount" />
-        <el-table-column label="商品数量" prop="goodsQty" />
-        <el-table-column label="商品金额" prop="goodsAmount" />
-        <el-table-column label="其他费用" prop="otherExpensesAmount" />
-        <el-table-column label="优惠金额" prop="discountAmount" />
-        <el-table-column label="实际金额" prop="actualAmount" />
+        <el-table-column label="退货状态" prop="refundStatus" align="center">
+          <template #default="scope">
+            <dict-tag :options="refund_status" :value="scope.row.refundStatus"/>
+          </template>
+        </el-table-column>
+        <el-table-column label="退货金额" prop="refundAmount" align="right"/>
+        <el-table-column label="支付金额" prop="paidAmount" align="right"/>
+        <el-table-column label="商品数量" prop="goodsQty" align="right"/>
+        <el-table-column label="商品金额" prop="goodsAmount" align="right"/>
+        <el-table-column label="其他费用" prop="otherExpensesAmount" align="right"/>
+        <el-table-column label="优惠金额" prop="discountAmount" align="right"/>
+        <el-table-column label="实际金额" prop="actualAmount" align="right"/>
         <el-table-column label="备注" prop="remark" />
         <el-table-column label="操作" align="right" class-name="small-padding fixed-width" width="120">
           <template #default="scope">
@@ -189,10 +193,10 @@
 import { listTrade, getTrade, delTrade, addTrade, updateTrade } from "@/api/sales/trade";
 import {useBasicStore} from "@/store/modules/basic";
 import {listByTradeId} from "@/api/sales/tradeDetail";
-
 const expandedRowKeys = ref([])
 const { proxy } = getCurrentInstance();
 const { finish_status } = proxy.useDict('finish_status');
+const { refund_status } = proxy.useDict('refund_status');
 const tradeList = ref([]);
 const open = ref(false);
 const buttonLoading = ref(false);

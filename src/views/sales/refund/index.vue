@@ -186,7 +186,7 @@ import {ElMessage, ElMessageBox} from "element-plus";
 import {ref} from "vue";
 import {useBasicStore} from "../../../store/modules/basic";
 import {parseTime} from "../../../utils/ruoyi";
-import {listBySalesRefundId, listRefundDetailById} from "@/api/sales/refundDetail";
+import {listRefundDetailById} from "@/api/sales/refundDetail";
 
 const { proxy } = getCurrentInstance();
 const detailLoading = ref([]);

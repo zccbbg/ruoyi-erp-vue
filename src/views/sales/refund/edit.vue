@@ -99,7 +99,7 @@
                     <el-select v-model="form.bankAccountId" placeholder="请选择银行账户" clearable filterable style="width:50%">
                       <el-option v-for="item in useBasicStore().bankAccountList" :key="item.id" :label="item.accountName" :value="item.id"/>
                     </el-select>
-                    <el-input-number :controls="false" style="width:50%;" :precision="2" v-model="form.prepayAmount" placeholder="请输入支付金额" />
+                    <el-input-number :controls="false" style="width:50%;" :precision="2" v-model="form.paidAmount" placeholder="请输入支付金额" />
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -266,7 +266,7 @@ const initFormData = {
   details: [],
 }
 const validateBankAccount = (rule, value, callback) => {
-  if (form.value.prepayAmount && !value) {
+  if (form.value.paidAmount && !value) {
     callback(new Error("请选择银行账户"));
   } else {
     callback();

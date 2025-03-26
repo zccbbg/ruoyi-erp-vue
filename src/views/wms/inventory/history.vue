@@ -97,14 +97,6 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作后" align="right">
-          <template #default="{ row }">
-            <div>
-              <el-statistic :value="Number(row.afterQty)" :precision="0" v-if="row.afterQty"/>
-              <span v-else>-</span>
-            </div>
-          </template>
-        </el-table-column>
         <el-table-column label="数量/金额(元)">
           <template #default="{ row }">
             <div class="flex-space-between">
@@ -114,6 +106,14 @@
             <div class="flex-space-between" v-if="row.amount || row.amount === 0">
               <div>金额：</div>
               <el-statistic :value="Number(row.amount)" :precision="2"/>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作后" align="right">
+          <template #default="{ row }">
+            <div>
+              <el-statistic :value="Number(row.afterQty)" :precision="0" v-if="row.afterQty"/>
+              <span v-else>-</span>
             </div>
           </template>
         </el-table-column>
