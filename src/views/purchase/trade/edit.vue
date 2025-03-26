@@ -31,7 +31,7 @@
               <el-row>
                 <el-col :span="8">
                   <el-form-item label="供应商" prop="merchantId">
-                    <el-select v-model="form.merchantId" placeholder="请选择供应商" clearable filterable style="width:100%">
+                    <el-select v-model="form.merchantId" placeholder="请选择供应商" clearable filterable style="width:100%" :disabled="merchantSelectDisabled">
                       <el-option v-for="item in useBasicStore().supplierList" :key="item.id" :label="item.merchantName" :value="item.id"/>
                     </el-select>
                   </el-form-item>
@@ -49,7 +49,7 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="订单编号" prop="orderNo">
-                    <el-input v-model="form.orderNo" placeholder="请输入订单编号"/>
+                    <el-input v-model="form.orderNo" placeholder="请输入订单编号" :disabled="orderNoSelectDisabled"/>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -252,6 +252,8 @@ const loading = ref(false)
 const batchSetWarehouseVisible = ref(false)
 const skuSelectRef = ref(null)
 const batchSetWarehouseId = ref(null)
+const merchantSelectDisabled = ref(false)
+const orderNoSelectDisabled = ref(false)
 const initFormData = {
   id: undefined,
   docNo: undefined,
@@ -353,7 +355,7 @@ const handleConfirmSetWarehouse = () => {
 
 // 选择商品 start
 const showAddItem = () => {
-  skuSelectRef.value.getList()
+  skuSelectRef.value.getListByPurchaseOrderId(form.value.orderId)
   skuSelectShow.value = true
 }
 // 选择成功
@@ -510,12 +512,14 @@ onMounted(() => {
     form.value.docNo = 'TO' + generateNo()
   }
   if(orderNo){
+    orderNoSelectDisabled.value = true
     form.value.orderNo = orderNo
   }
   if(orderId){
     form.value.orderId = orderId
   }
   if(merchantId){
+    merchantSelectDisabled.value = true
     form.value.merchantId = merchantId
   }
 })

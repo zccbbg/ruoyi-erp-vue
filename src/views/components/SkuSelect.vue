@@ -101,12 +101,13 @@
 <script setup lang="ts" name="SkuSelect">
 import {computed, getCurrentInstance, onMounted, reactive, ref} from 'vue';
 import {ElForm} from "element-plus";
-import {listSkuPageByTradeId} from "@/api/basic/sku";
+import {listSkuPageByTradeId,listSkuPageByOrderId} from "@/api/basic/sku";
 import {useRouter} from "vue-router";
 import {useBasicStore} from '@/store/modules/basic'
 
 const { proxy } = getCurrentInstance()
 const tradeId = ref(null);
+const orderId = ref(null);
 const router = useRouter()
 const loading = ref(false)
 const deptOptions = ref([]);
@@ -144,17 +145,32 @@ const getPage = () => {
     ...query,
     pageNum: pageReq.page,
     pageSize: pageReq.size,
-    tradeId: tradeId.value
+    tradeId: tradeId.value,
+    orderId: orderId.value
   }
-  loading.value = true
-  listSkuPageByTradeId(data).then((res) => {
-    const content = [...res.rows];
-    list.value = content.map((it) => ({...it, id: it.skuId, checked: false}));
-    total.value = res.total;
-  }).then(() => toggleSelection()).finally(() => loading.value = false);
+  if(tradeId.value!=null){
+    listSkuPageByTradeId(data).then((res) => {
+      const content = [...res.rows];
+      list.value = content.map((it) => ({...it, id: it.skuId, checked: false}));
+      total.value = res.total;
+    }).then(() => toggleSelection()).finally(() => loading.value = false);
+  }else{
+    listSkuPageByOrderId(data).then((res) => {
+      const content = [...res.rows];
+      list.value = content.map((it) => ({...it, id: it.skuId, checked: false}));
+      total.value = res.total;
+    }).then(() => toggleSelection()).finally(() => loading.value = false);
+  }
 }
-const getList = (id) => {
+const getList = () => {
+  getPage()
+}
+const getListBySalesTradeId = (id) => {
   tradeId.value = id
+  getPage()
+}
+const getListByPurchaseOrderId = (id) => {
+  orderId.value = id
   getPage()
 }
 const goCreateItem = () => {
@@ -240,7 +256,9 @@ const getVolumeText = (row) => {
     + ((row.height || row.height === 0) ? (' 高：' + row.height) : '')
 }
 defineExpose({
-  getList
+  getList,
+  getListByPurchaseOrderId,
+  getListBySalesTradeId
 })
 </script>
 <style lang="scss">

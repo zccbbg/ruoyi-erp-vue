@@ -20,6 +20,13 @@ export function listSkuPageByTradeId(query) {
     params: query
   });
 };
+export function listSkuPageByOrderId(query) {
+  return request({
+    url: '/basic/sku/list/orderId',
+    method: 'get',
+    params: query
+  });
+};
 export function listSku(query) {
   return request({
     url: '/basic/sku/listNoPage',

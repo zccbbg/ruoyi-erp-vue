@@ -353,7 +353,7 @@ const handleConfirmSetWarehouse = () => {
 
 // 选择商品 start
 const showAddItem = () => {
-  skuSelectRef.value.getList(form.value.tradeId)
+  skuSelectRef.value.getListBySalesTradeId(form.value.tradeId)
   skuSelectShow.value = true
 }
 // 选择成功
