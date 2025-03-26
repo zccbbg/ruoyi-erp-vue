@@ -1,14 +1,20 @@
 import request from '@/utils/request'
 
 // 查询库存列表
-export function listInventory(query) {
+export function listInventoryByTradeId(query) {
   return request({
     url: '/wms/inventory/boardList/warehouse/tradeId',
     method: 'get',
     params: query
   })
 }
-
+export function listInventoryByOrderId(query) {
+  return request({
+    url: '/wms/inventory/boardList/warehouse/orderId',
+    method: 'get',
+    params: query
+  })
+}
 export function listInventoryNoPage(query) {
   return request({
     url: '/wms/inventory/listNoPage',

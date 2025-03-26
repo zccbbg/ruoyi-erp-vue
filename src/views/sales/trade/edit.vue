@@ -31,7 +31,7 @@
               <el-row>
                 <el-col :span="8">
                   <el-form-item label="供应商" prop="merchantId">
-                    <el-select v-model="form.merchantId" placeholder="请选择供应商" clearable filterable style="width:100%">
+                    <el-select v-model="form.merchantId" placeholder="请选择供应商" clearable filterable style="width:100%" :disabled ="merchantSelectDisabled">
                       <el-option v-for="item in useBasicStore().supplierList" :key="item.id" :label="item.merchantName" :value="item.id"/>
                     </el-select>
                   </el-form-item>
@@ -49,7 +49,7 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="订单编号" prop="orderNo">
-                    <el-input v-model="form.orderNo" placeholder="请输入订单编号"/>
+                    <el-input v-model="form.orderNo" placeholder="请输入订单编号" :disabled="orderNoSelectDisabled"/>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -256,6 +256,8 @@ const batchSetWarehouseId = ref(null)
 const inventorySelectShow = ref(false)
 const selectedInventory = ref([])
 const inventorySelectRef = ref(null)
+const orderNoSelectDisabled = ref(false)
+const merchantSelectDisabled = ref(false)
 const initFormData = {
   id: undefined,
   docNo: undefined,
@@ -357,7 +359,7 @@ const handleConfirmSetWarehouse = () => {
 
 // 选择商品 start
 const showAddItem = () => {
-  inventorySelectRef.value.getList(form.value.tradeId)
+  inventorySelectRef.value.getListBySalesOrderId(form.value.orderId)
   inventorySelectShow.value = true
 }
 // 选择成功
@@ -504,10 +506,24 @@ const doFinishEdit = async () => {
 const route = useRoute();
 onMounted(() => {
   const id = route.query && route.query.id;
+  const orderNo = route.query && route.query.orderNo;
+  const orderId = route.query && route.query.orderId;
+  const merchantId = route.query && route.query.merchantId;
   if (id) {
     loadDetail(id)
   } else {
     form.value.docNo = 'TO' + generateNo()
+  }
+  if(orderNo){
+    orderNoSelectDisabled.value = true
+    form.value.orderNo = orderNo
+  }
+  if(orderId){
+    form.value.orderId = orderId
+  }
+  if(merchantId){
+    merchantSelectDisabled.value = true
+    form.value.merchantId = merchantId
   }
 })
 

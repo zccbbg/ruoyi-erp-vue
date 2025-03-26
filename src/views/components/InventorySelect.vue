@@ -82,7 +82,7 @@ import {ElForm} from "element-plus";
 import {getRowspanMethod} from "@/utils/getRowSpanMethod";
 import {useRouter} from "vue-router";
 import {useBasicStore} from '@/store/modules/basic'
-import {listInventory} from "@/api/wms/inventory";
+import {listInventoryByOrderId, listInventoryByTradeId} from "@/api/wms/inventory";
 import {getWarehouseAndSkuKey} from "@/utils/wmsUtil";
 
 const {proxy} = getCurrentInstance()
@@ -92,6 +92,7 @@ const router = useRouter()
 const loading = ref(false)
 const deptOptions = ref([]);
 const tradeId = ref(null);
+const orderId = ref(null);
 const query = reactive({
   goodsName: '',
   goodsNo: '',
@@ -131,25 +132,45 @@ const getPage = () =>{
     ...query,
     pageNum: pageReq.page,
     pageSize: pageReq.size,
-    tradeId: tradeId.value
+    tradeId: tradeId.value,
+    orderId: orderId.value
   }
   loading.value = true
-  listInventory(data).then((res) => {
-    const content = [...res.rows];
-    list.value = content.map((item) => (
-      {
-        ...item,
-        warehouseName: useBasicStore().warehouseMap.get(item.warehouseId)?.warehouseName
-      }
-    ));
-    total.value = res.total;
-  }).then(() => toggleSelection()).finally(() => loading.value = false);
+  if(tradeId.value!=null){
+    listInventoryByTradeId(data).then((res) => {
+      const content = [...res.rows];
+      list.value = content.map((item) => (
+        {
+          ...item,
+          warehouseName: useBasicStore().warehouseMap.get(item.warehouseId)?.warehouseName
+        }
+      ));
+      total.value = res.total;
+    }).then(() => toggleSelection()).finally(() => loading.value = false);
+  } else {
+    listInventoryByOrderId(data).then((res) => {
+      const content = [...res.rows];
+      list.value = content.map((item) => (
+        {
+          ...item,
+          warehouseName: useBasicStore().warehouseMap.get(item.warehouseId)?.warehouseName
+        }
+      ));
+      total.value = res.total;
+    }).then(() => toggleSelection()).finally(() => loading.value = false);
+  }
 }
-const getList = (id) => {
+const getList = () => {
+  getPage()
+}
+const getListBySalesOrderId = (id) => {
+  orderId.value = id
+  getPage()
+}
+const getListByPurchaseTradeId = (id) => {
   tradeId.value = id
   getPage()
 }
-
 const props = defineProps({
   modelValue: {
     type: Boolean,
@@ -212,10 +233,9 @@ const setWarehouseId = (warehouseId = null) => {
 
 defineExpose({
   setWarehouseId,
-  getList
-})
-onMounted(() => {
-  loadAll();
+  getList,
+  getListBySalesOrderId,
+  getListByPurchaseTradeId
 })
 </script>
 <style lang="scss">

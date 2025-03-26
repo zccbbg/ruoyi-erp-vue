@@ -170,7 +170,7 @@
                   <el-button type="danger" @click="handleDelete(scope.row)" link v-hasPermi="['sales:order:all']" :disabled="[1].includes(scope.row.checkedStatus)">删除</el-button>
                 </template>
               </el-popover>
-              <el-button link type="primary" @click="handlePrint(row)" v-hasPermi="['wms:check:all']">打印</el-button>
+              <el-button link type="primary" @click="handleOutBand(scope.row)" v-hasPermi="['wms:check:all']">出库</el-button>
             </div>
 
           </template>
@@ -252,8 +252,8 @@ function getList() {
   });
 }
 
-  async function handlePrint(row) {
-    proxy.$modal.alert('打印功能暂未开发！')
+  async function handleOutBand(row) {
+    proxy.$router.push({ path: "/sales/tradeEdit",  query: {orderNo: row.docNo ,orderId: row.id ,merchantId: row.merchantId} });
   }
 
   function handleExpandExchange(value, expandedRows) {
