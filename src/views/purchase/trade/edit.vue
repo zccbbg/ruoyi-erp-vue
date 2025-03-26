@@ -501,10 +501,22 @@ const doFinishEdit = async () => {
 const route = useRoute();
 onMounted(() => {
   const id = route.query && route.query.id;
+  const orderNo = route.query && route.query.orderNo;
+  const orderId = route.query && route.query.orderId;
+  const merchantId = route.query && route.query.merchantId;
   if (id) {
     loadDetail(id)
   } else {
     form.value.docNo = 'TO' + generateNo()
+  }
+  if(orderNo){
+    form.value.orderNo = orderNo
+  }
+  if(orderId){
+    form.value.orderId = orderId
+  }
+  if(merchantId){
+    form.value.merchantId = merchantId
   }
 })
 

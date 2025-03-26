@@ -3,19 +3,32 @@
     <el-card>
       <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="68px">
         <el-form-item label="操作类型" prop="optType">
-          <el-radio-group v-model="queryParams.optType" @change="handleQuery">
+          <el-select style="width: 100%" v-model="queryParams.optType" placeholder="请择操作类型" @change="handleQuery"
+                     filterable clearable>
+            <el-option v-for="item in  wms_inventory_history_type" :key="item.value" :label="item.label"
+                       :value="item.value"/>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="类型汇总" prop="summaryType">
+          <el-radio-group v-model="queryParams.summaryType" @change="handleQuery">
             <el-radio-button
-              :key="-1"
-              :label="-1"
+              :key="0"
+              :label="0"
             >
               全部
             </el-radio-button>
             <el-radio-button
-              v-for="item in wms_inventory_history_type"
-              :key="item.value"
-              :label="item.value"
+              :key="1"
+              :label="1"
             >
-              {{ item.label }}
+              入库
+            </el-radio-button>
+            <el-radio-button
+              :key="-1"
+              :label="-1"
+            >
+              出库
             </el-radio-button>
           </el-radio-group>
         </el-form-item>
@@ -149,13 +162,14 @@ const queryRef = ref(null)
 const queryParams = ref({
   pageNum: 1,
   pageSize: 10,
-  optType: -1,
+  optType: undefined,
   optNo: undefined,
   goodsName: undefined,
   goodsNo: undefined,
   skuName: undefined,
   skuNo: undefined,
   warehouseId: undefined,
+  summaryType: undefined
 })
 
 /** 查询往来单位列表 */

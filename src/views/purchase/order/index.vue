@@ -170,7 +170,18 @@
                   <el-button type="danger" @click="handleDelete(scope.row)" link v-hasPermi="['purchase:order:all']" :disabled="[1].includes(scope.row.checkedStatus)">删除</el-button>
                 </template>
               </el-popover>
-              <el-button link type="primary" @click="handlePrint(row)" v-hasPermi="['wms:check:all']">打印</el-button>
+              <el-popover
+                placement="left"
+                title="提示"
+                :width="300"
+                trigger="hover"
+                :disabled="scope.row.checkedStatus === 1"
+                :content="'订单【' + scope.row.docNo + '】未完成，无法入库！' "
+              >
+                <template #reference>
+                  <el-button type="primary" @click="handleTrade(scope.row)" link v-hasPermi="['wms:check:all']" :disabled="[0].includes(scope.row.checkedStatus)">入库</el-button>
+                </template>
+              </el-popover>
             </div>
 
           </template>
@@ -252,8 +263,8 @@ function getList() {
   });
 }
 
-  async function handlePrint(row) {
-    proxy.$modal.alert('打印功能暂未开发！')
+  async function handleTrade(row) {
+    proxy.$router.push({ path: "/purchase/tradeEdit",  query: {orderNo: row.docNo ,orderId: row.id ,merchantId: row.merchantId} });
   }
 
   function handleExpandExchange(value, expandedRows) {
