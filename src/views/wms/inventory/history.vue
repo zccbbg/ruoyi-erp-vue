@@ -169,7 +169,8 @@ const queryParams = ref({
   skuName: undefined,
   skuNo: undefined,
   warehouseId: undefined,
-  summaryType: undefined
+  summaryType: undefined,
+  createTimeRange: undefined
 })
 
 /** 查询往来单位列表 */
