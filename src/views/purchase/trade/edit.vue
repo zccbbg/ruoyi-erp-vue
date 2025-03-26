@@ -266,7 +266,7 @@ const initFormData = {
   details: [],
 }
 const validateBankAccount = (rule, value, callback) => {
-  if (form.value.prepayAmount && !value) {
+  if (form.value.paidAmount && !value) {
     callback(new Error("请选择银行账户"));
   } else {
     callback();
