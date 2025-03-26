@@ -2,33 +2,42 @@
   <div class="app-container">
     <el-card>
       <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="68px">
-              <el-form-item label="往来单位" prop="merchantId">
-                <el-select v-model="queryParams.merchantId" placeholder="请选择供应商" clearable filterable style="width:100%">
-                  <el-option v-for="item in useBasicStore().merchantList" :key="item.id" :label="item.merchantName" :value="item.id"/>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="交易账户" prop="bankAccountId">
-                <el-select v-model="queryParams.bankAccountId" placeholder="请选择交易账户" clearable filterable style="width:100%">
-                  <el-option v-for="item in useBasicStore().bankAccountList" :key="item.id" :label="item.accountName" :value="item.id"/>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="业务编号" prop="relatedNo">
-                <el-input
-                  v-model="queryParams.relatedNo"
-                  placeholder="请输入关联业务编号"
-                  clearable
-                  @keyup.enter="handleQuery"
-                />
-              </el-form-item>
+        <el-form-item label="往来单位" prop="merchantId">
+          <el-select v-model="queryParams.merchantId" placeholder="请选择供应商" clearable filterable style="width:100%">
+            <el-option v-for="item in useBasicStore().merchantList" :key="item.id" :label="item.merchantName" :value="item.id"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="交易账户" prop="bankAccountId">
+          <el-select v-model="queryParams.bankAccountId" placeholder="请选择交易账户" clearable filterable style="width:100%">
+            <el-option v-for="item in useBasicStore().bankAccountList" :key="item.id" :label="item.accountName" :value="item.id"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="交易类型" prop="transType">
+          <el-select v-model="queryParams.transType" placeholder="请选择交易类型" clearable filterable style="width:100%">
+            <el-option
+              v-for="item in transTypeOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="业务编号" prop="relatedNo">
+          <el-input
+            v-model="queryParams.relatedNo"
+            placeholder="请输入关联业务编号"
+            clearable
+            @keyup.enter="handleQuery"
+          />
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
-            <el-button icon="Refresh" @click="resetQuery">重置</el-button>
+          <el-button icon="Refresh" @click="resetQuery">重置</el-button>
         </el-form-item>
       </el-form>
     </el-card>
 
     <el-card class="mt20">
-
       <el-row :gutter="10" class="mb8" type="flex" justify="space-between">
         <el-col :span="6"><span style="font-size: large">交易流水</span></el-col>
       </el-row>
@@ -40,20 +49,26 @@
               </template>
             </el-table-column>
             <el-table-column label="交易类型" prop="transType" />
-            <el-table-column label="交易账户" prop="bankAccountId">
-              <template #default="{ row }">
-                <div>{{ useBasicStore().bankAccountMap.get(row.bankAccountId)?.accountName }}</div>
-              </template>
-            </el-table-column>
-            <el-table-column label="交易帐户变动" prop="paidAmount" align="right" width="110" :formatter="formatNumber"/>
-            <el-table-column label="关联业务编号" prop="relatedNo" />
-            <el-table-column label="总金额" prop="totalAmount" align="right" width="90"/>
-            <el-table-column label="优惠金额" prop="discountAmount" align="right" width="90"/>
-            <el-table-column label="实际金额" prop="actualAmount" align="right" width="90"/>
-            <el-table-column label="交易前余额" prop="beforeBalance" align="right" width="90"/>
-            <el-table-column label="余额变动" prop="balanceChange" align="right" width="110" :formatter="formatNumber"/>
-            <el-table-column label="交易后余额" prop="afterBalance" align="right" width="90"/>
-            <el-table-column label="操作时间" prop="createTime" align="right"/>
+        <el-table-column label="关联业务编号" prop="relatedNo" />
+        <el-table-column label="交易账户详情">
+          <el-table-column label="交易账户" prop="bankAccountId">
+            <template #default="{ row }">
+              <div>{{ useBasicStore().bankAccountMap.get(row.bankAccountId)?.accountName }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="交易帐户变动" prop="paidAmount" align="right" width="110" :formatter="formatNumber"/>
+        </el-table-column>
+        <el-table-column label="交易金额" align="right">
+          <el-table-column label="总金额" prop="totalAmount" align="right" width="90"/>
+          <el-table-column label="优惠金额" prop="discountAmount" align="right" width="90"/>
+          <el-table-column label="实际金额" prop="actualAmount" align="right" width="90"/>
+        </el-table-column>
+        <el-table-column label="商户余额">
+          <el-table-column label="交易前余额" prop="beforeBalance" align="right" width="90"/>
+          <el-table-column label="余额变动" prop="balanceChange" align="right" width="110" :formatter="formatNumber"/>
+          <el-table-column label="交易后余额" prop="afterBalance" align="right" width="90"/>
+        </el-table-column>
+            <el-table-column label="操作时间" prop="createTime"/>
       </el-table>
 
       <el-row>
@@ -119,7 +134,6 @@
   import {useBasicStore} from "@/store/modules/basic";
 
 const { proxy } = getCurrentInstance();
-
   const transHistoryList = ref([]);
   const open = ref(false);
   const buttonLoading = ref(false);
@@ -127,7 +141,16 @@ const { proxy } = getCurrentInstance();
   const ids = ref([]);
   const total = ref(0);
   const title = ref("");
-
+  const transTypeOptions = [
+    { value: '采购订单', label: '采购订单' },
+    { value: '采购入库', label: '采购入库' },
+    { value: '采购退货', label: '采购退货' },
+    { value: '销售订单', label: '销售订单' },
+    { value: '销售出库', label: '销售出库' },
+    { value: '销售退货', label: '销售退货' },
+    { value: '收款单', label: '收款单' },
+    { value: '付款单', label: '付款单' },
+  ]
   const data = reactive({
     form: {},
     queryParams: {
@@ -180,7 +203,6 @@ const { proxy } = getCurrentInstance();
     ],
   }
 });
-
 const { queryParams, form, rules } = toRefs(data);
 
   const formatNumber = (row, column, cellValue) => {
