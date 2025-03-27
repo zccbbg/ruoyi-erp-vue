@@ -183,10 +183,11 @@
 <script setup name="Refund">
 import { listRefund, getRefund, delRefund, addRefund, updateRefund } from "@/api/sales/refund";
 import {ElMessage, ElMessageBox} from "element-plus";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {useBasicStore} from "../../../store/modules/basic";
 import {parseTime} from "../../../utils/ruoyi";
 import {listRefundDetailById} from "@/api/sales/refundDetail";
+import {useRoute} from "vue-router";
 
 const { proxy } = getCurrentInstance();
 const detailLoading = ref([]);
@@ -442,5 +443,12 @@ function ifExpand(expandedRows) {
   }, `refund_${new Date().getTime()}.xlsx`)
 }*/
 
-getList();
+const route = useRoute();
+onMounted(() => {
+  const relatedNo = route.query && route.query.relatedNo;
+  if (relatedNo) {
+    queryParams.value.docNo = relatedNo;
+  }
+  getList();
+})
 </script>

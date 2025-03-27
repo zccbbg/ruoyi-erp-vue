@@ -192,7 +192,8 @@ import {
 } from "@/api/financial/receiptVoucher";
   import {useBasicStore} from "@/store/modules/basic";
   import { numSub, generateNo } from '@/utils/ruoyi'
-  import {computed, watch} from "vue";
+import {computed, onMounted, watch} from "vue";
+import {useRoute} from "vue-router";
 
 const { proxy } = getCurrentInstance();
 const { finish_status } = proxy.useDict("finish_status");
@@ -403,7 +404,14 @@ function handleExport() {
   }, `receiptVoucher_${new Date().getTime()}.xlsx`)
 }
 
-getList();
+const route = useRoute();
+onMounted(() => {
+  const relatedNo = route.query && route.query.relatedNo;
+  if (relatedNo) {
+    queryParams.value.voucherNo = relatedNo;
+  }
+  getList();
+})
 </script>
 <style lang="scss" scoped>
 .btn-box {

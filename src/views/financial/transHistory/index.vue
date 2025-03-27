@@ -51,7 +51,7 @@
             <el-table-column label="交易类型" prop="transType" />
         <el-table-column label="关联业务编号/操作时间">
           <template #default="{ row }">
-            <div>{{ row.relatedNo }}</div>
+            <a @click="handleRelatedNoClick(row.relatedNo,row.transType)" style="color: #409EFF;">{{ row.relatedNo }}</a>
             <div>{{ (row.createTime) }}</div>
           </template>
         </el-table-column>
@@ -209,7 +209,7 @@ const { proxy } = getCurrentInstance();
 });
 const { queryParams, form, rules } = toRefs(data);
 
-  const formatNumber = (row, column, cellValue) => {
+const formatNumber = (row, column, cellValue) => {
     return cellValue > 0 ? `+${cellValue}` : cellValue;
   };
 
@@ -329,6 +329,27 @@ function handleExport() {
     ...queryParams.value
   }, `transHistory_${new Date().getTime()}.xlsx`)
 }
-
+  // 定义路由映射表，使用对象字面量提高代码可读性
+  const routingMap = {
+    '采购入库': '/purchase/trade',
+    '采购订单': '/purchase/order',
+    '采购退货单': '/purchase/refund',
+    '销售出库': '/sales/trade',
+    '销售订单': '/sales/order',
+    '销售退货单': '/sales/refund',
+    '收款单': '/finalcial/receiptVoucher',
+    '付款单': '/finalcial/paymentVoucher'
+  };
+function handleRelatedNoClick(relatedNo,transType) {
+  const routingAddress = routingMap[transType];
+  if(routingAddress){
+    // 跳转到对应模块并传递相关参数
+    proxy.$router.push({
+      path: routingAddress, // 替换为实际的目标模块名称
+      query: {relatedNo}
+    });
+  }
+  }
 getList();
 </script>
+

@@ -172,13 +172,14 @@
 </template>
 
 <script setup name="Refund">
-import { ref, reactive, toRefs, computed } from 'vue';
+import {ref, reactive, toRefs, computed, onMounted} from 'vue';
 import { listRefund, getRefund, delRefund, addRefund, updateRefund } from "@/api/purchase/refund";
 import { parseTime } from "../../../utils/ruoyi";
 import { useBasicStore } from "../../../store/modules/basic";
 import { getCurrentInstance } from "vue";
 import { getRefundDetail, listByRefundId } from "../../../api/purchase/refundDetail";
 import { ElMessage, ElMessageBox } from 'element-plus'
+import {useRoute} from "vue-router";
 
 const { proxy } = getCurrentInstance();
 
@@ -488,8 +489,14 @@ function handleExport() {
     ...queryParams.value
   }, `refund_${new Date().getTime()}.xlsx`)
 }
-
-getList();
+const route = useRoute();
+onMounted(() => {
+  const relatedNo = route.query && route.query.relatedNo;
+  if (relatedNo) {
+    queryParams.value.docNo = relatedNo;
+  }
+  getList();
+})
 </script>
 
 <style lang="scss" scoped>.dialog-footer {

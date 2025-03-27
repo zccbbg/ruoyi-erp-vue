@@ -193,6 +193,8 @@
 import { listTrade, getTrade, delTrade, addTrade, updateTrade } from "@/api/sales/trade";
 import {useBasicStore} from "@/store/modules/basic";
 import {listByTradeId} from "@/api/sales/tradeDetail";
+import {useRoute} from "vue-router";
+import {onMounted} from "vue";
 const expandedRowKeys = ref([])
 const { proxy } = getCurrentInstance();
 const { finish_status } = proxy.useDict('finish_status');
@@ -395,5 +397,12 @@ function handleExport() {
   }, `trade_${new Date().getTime()}.xlsx`)
 }
 
-getList();
+const route = useRoute();
+onMounted(() => {
+  const relatedNo = route.query && route.query.relatedNo;
+  if (relatedNo) {
+    queryParams.value.docNo = relatedNo;
+  }
+  getList();
+})
 </script>

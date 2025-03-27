@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-card>
       <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="68px">
-        <el-form-item label="单据编号" prop="docNo">
+        <el-form-item label="单据编号" prop="docNo" @change="handleQuery">
           <el-input
             v-model="queryParams.docNo"
             placeholder="请输入单据编号"
@@ -200,6 +200,9 @@
 import { listTrade, getTrade, delTrade, addTrade, updateTrade } from "@/api/purchase/trade";
 import {useBasicStore} from "@/store/modules/basic";
 import {listByTradeId} from "@/api/purchase/tradeDetail";
+import {useRoute} from "vue-router";
+import {onMounted} from "vue";
+import {generateNo} from "@/utils/ruoyi";
 
 const expandedRowKeys = ref([])
 const { proxy } = getCurrentInstance();
@@ -403,6 +406,12 @@ function handleExport() {
     ...queryParams.value
   }, `trade_${new Date().getTime()}.xlsx`)
 }
-
-getList();
+const route = useRoute();
+onMounted(() => {
+  const relatedNo = route.query && route.query.relatedNo;
+  if (relatedNo) {
+    queryParams.value.docNo = relatedNo;
+  }
+  getList();
+})
 </script>

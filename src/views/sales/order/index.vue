@@ -195,6 +195,8 @@
   import { listOrder, getOrder, delOrder, addOrder, updateOrder } from "@/api/sales/order";
   import {useBasicStore} from "../../../store/modules/basic";
   import {listByOrderId} from "@/api/sales/orderDetail";
+  import {useRoute} from "vue-router";
+  import {onMounted} from "vue";
 
 const { proxy } = getCurrentInstance();
     const { finish_status } = proxy.useDict('finish_status');
@@ -413,6 +415,12 @@ function handleExport() {
     ...queryParams.value
   }, `order_${new Date().getTime()}.xlsx`)
 }
-
-getList();
+  const route = useRoute();
+  onMounted(() => {
+    const relatedNo = route.query && route.query.relatedNo;
+    if (relatedNo) {
+      queryParams.value.docNo = relatedNo;
+    }
+    getList();
+  })
 </script>
