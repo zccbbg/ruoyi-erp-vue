@@ -244,6 +244,7 @@ import {useRoute} from "vue-router";
 import {useBasicStore} from '@/store/modules/basic'
 import { numSub, generateNo } from '@/utils/ruoyi'
 import {delTradeDetail} from "../../../api/purchase/tradeDetail";
+import {listByOrderId} from "@/api/purchase/orderDetail";
 
 const {proxy} = getCurrentInstance();
 const selectedSku = ref([])
@@ -516,7 +517,14 @@ onMounted(() => {
     form.value.orderNo = orderNo
   }
   if(orderId){
+    loading.value = true
     form.value.orderId = orderId
+    //根据orderId查询订单明细
+    listByOrderId(orderId).then((response) => {
+      form.value.details = response.data
+    }).finally(() => {
+      loading.value = false
+    })
   }
   if(merchantId){
     merchantSelectDisabled.value = true
