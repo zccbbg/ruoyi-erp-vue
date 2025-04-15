@@ -358,6 +358,7 @@ const handleConfirmSetWarehouse = () => {
 
 // 选择商品 start
 const showAddItem = () => {
+  loading.value = true
   inventorySelectRef.value.getListByPurchaseTradeId(form.value.tradeId)
   inventorySelectShow.value = true
 }

@@ -360,6 +360,7 @@ const handleConfirmSetWarehouse = () => {
 
 // 选择商品 start
 const showAddItem = () => {
+  loading.value = true
   inventorySelectRef.value.getListBySalesOrderId(form.value.orderId)
   inventorySelectShow.value = true
 }

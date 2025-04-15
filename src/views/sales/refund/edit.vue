@@ -354,6 +354,7 @@ const handleConfirmSetWarehouse = () => {
 
 // 选择商品 start
 const showAddItem = () => {
+  loading.value = true
   skuSelectRef.value.getListBySalesTradeId(form.value.tradeId)
   skuSelectShow.value = true
 }
