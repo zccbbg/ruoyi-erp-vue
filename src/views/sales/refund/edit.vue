@@ -245,6 +245,7 @@ import { delRefundDetail } from '@/api/sales/refundDetail'
 import {addRefund, updateRefund, getRefund, passSalesRefund} from "../../../api/sales/refund";
 const selectedSku = ref([])
 import SkuSelect from "@/views/components/SkuSelect.vue";
+import {listByTradeId} from "@/api/sales/tradeDetail";
 const skuSelectRef = ref(null)
 const {proxy} = getCurrentInstance();
 const mode = ref(false)
@@ -513,7 +514,13 @@ onMounted(() => {
     form.value.tradeNo = tradeNo
   }
   if(tradeId){
+    loading.value = true
     form.value.tradeId = tradeId
+    listByTradeId(tradeId).then((response) => {
+      form.value.details = response.data
+    }).finally(() => {
+      loading.value = false
+    })
   }
   if(merchantId){
     form.value.merchantId = merchantId

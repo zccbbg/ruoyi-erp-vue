@@ -243,7 +243,7 @@ import {useBasicStore} from '@/store/modules/basic'
 import { numSub, generateNo } from '@/utils/ruoyi'
 import { delRefundDetail } from '@/api/purchase/refundDetail'
 import {addRefund, updateRefund, getRefund, passPurchaseRefund} from "../../../api/purchase/refund";
-import {listByTradeId} from "../../../api/purchase/tradeDetail";
+import {getTradeDetail, listByTradeId, listTradeDetail} from "../../../api/purchase/tradeDetail";
 import {getWarehouseAndSkuKey} from "@/utils/wmsUtil";
 
 const {proxy} = getCurrentInstance();
@@ -526,7 +526,13 @@ onMounted(() => {
     form.value.tradeNo = tradeNo
   }
   if(tradeId){
+    loading.value = true
     form.value.tradeId = tradeId
+    listByTradeId(tradeId).then((response) => {
+      form.value.details = response.data
+    }).finally(() => {
+      loading.value = false
+    })
   }
   if(merchantId){
     form.value.merchantId = merchantId

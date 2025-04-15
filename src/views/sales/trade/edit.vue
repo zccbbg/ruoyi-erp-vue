@@ -247,6 +247,7 @@ import { numSub, generateNo } from '@/utils/ruoyi'
 import {delTradeDetail} from "../../../api/sales/tradeDetail";
 import InventorySelect from "@/views/components/InventorySelect.vue";
 import {getWarehouseAndSkuKey} from "@/utils/wmsUtil";
+import {listByOrderId} from "@/api/sales/orderDetail";
 
 const {proxy} = getCurrentInstance();
 const mode = ref(false)
@@ -519,7 +520,13 @@ onMounted(() => {
     form.value.orderNo = orderNo
   }
   if(orderId){
+    loading.value = true
     form.value.orderId = orderId
+    listByOrderId(orderId).then((response) => {
+      form.value.details = response.data
+    }).finally(() => {
+      loading.value = false
+    })
   }
   if(merchantId){
     merchantSelectDisabled.value = true
