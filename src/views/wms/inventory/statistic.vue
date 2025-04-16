@@ -18,7 +18,7 @@
         <el-form-item class="col4" label="商品名称" prop="goodsName">
           <el-input v-model="queryParams.goodsName" clearable placeholder="商品名称"></el-input>
         </el-form-item>
-        <el-form-item class="col4" label="商品编号" prop="itemCode">
+        <el-form-item class="col4" label="商品编号" prop="goodsNo">
           <el-input v-model="queryParams.goodsNo" clearable placeholder="商品编号"></el-input>
         </el-form-item>
         <el-form-item class="col4" label="规格名称" prop="skuName">

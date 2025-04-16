@@ -148,6 +148,7 @@ const getPage = () => {
     tradeId: tradeId.value,
     orderId: orderId.value
   }
+  loading.value = true
   if(tradeId.value!=null){
     listSkuPageByTradeId(data).then((res) => {
       const content = [...res.rows];

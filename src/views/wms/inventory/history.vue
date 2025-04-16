@@ -2,14 +2,6 @@
   <div class="app-container">
     <el-card>
       <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="68px">
-        <el-form-item label="操作类型" prop="optType">
-          <el-select style="width: 100%" v-model="queryParams.optType" placeholder="请择操作类型" @change="handleQuery"
-                     filterable clearable>
-            <el-option v-for="item in  wms_inventory_history_type" :key="item.value" :label="item.label"
-                       :value="item.value"/>
-          </el-select>
-        </el-form-item>
-
         <el-form-item label="类型汇总" prop="summaryType">
           <el-radio-group v-model="queryParams.summaryType" @change="handleQuery">
             <el-radio-button
@@ -32,6 +24,14 @@
             </el-radio-button>
           </el-radio-group>
         </el-form-item>
+        <el-form-item label="操作类型" prop="optType">
+          <el-select style="width: 100%" v-model="queryParams.optType" placeholder="请择操作类型"
+                     filterable clearable>
+            <el-option v-for="item in  wms_inventory_history_type" :key="item.value" :label="item.label"
+                       :value="item.value"/>
+          </el-select>
+        </el-form-item>
+
         <el-form-item label="仓库" prop="warehouseId">
           <el-select style="width: 100%" v-model="queryParams.warehouseId" placeholder="请选择仓库"
                      filterable clearable>
@@ -67,7 +67,7 @@
             end-placeholder="结束时间"
           />
         </el-form-item>
-        <el-form-item>
+        <el-form-item  class="col4">
           <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
           <el-button icon="Refresh" @click="resetQuery">重置</el-button>
         </el-form-item>
