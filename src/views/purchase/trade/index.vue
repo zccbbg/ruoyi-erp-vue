@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-card>
       <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="68px">
-        <el-form-item label="单据编号" prop="docNo" @change="handleQuery">
+        <el-form-item label="单据编号" prop="docNo" >
           <el-input
             v-model="queryParams.docNo"
             placeholder="请输入单据编号"
@@ -17,6 +17,7 @@
             type="daterange"
             range-separator="-"
             start-placeholder="开始日期"
+            end-placeholder="结束日期"
             :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]"
           ></el-date-picker>
         </el-form-item>

@@ -19,7 +19,7 @@
         <el-input class="w200" v-model="query.skuName" clearable placeholder="规格名称"></el-input>
       </el-form-item>
       <el-form-item label="规格编号">
-        <el-input class="w200" v-model="query.barcode" clearable placeholder="规格编号"></el-input>
+        <el-input class="w200" v-model="query.skuNo" clearable placeholder="规格编号"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="loadAll">查询</el-button>
@@ -99,6 +99,7 @@ const query = reactive({
   skuName: '',
   skuCode: '',
   minQty: 1,
+  skuNo: '',
   warehouseId: null
 });
 const selectInventoryVoCheck = ref([])

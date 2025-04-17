@@ -17,6 +17,7 @@
             type="daterange"
             range-separator="-"
             start-placeholder="开始日期"
+            end-placeholder="结束日期"
             :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]"
           ></el-date-picker>
         </el-form-item>
@@ -277,7 +278,12 @@ const { queryParams, form, rules } = toRefs(data);
 
 /** 查询销售退货单列表 */
 function getList() {
+  queryParams.value.params = {};
   loading.value = true;
+  if (null != daterangeBillDate && '' != daterangeBillDate) {
+    queryParams.value.params["beginBillDate"] = daterangeBillDate.value[0];
+    queryParams.value.params["endBillDate"] = daterangeBillDate.value[1];
+  }
   listRefund(queryParams.value).then(response => {
     refundList.value = response.rows;
     total.value = response.total;
@@ -326,6 +332,7 @@ function handleQuery() {
 
 /** 重置按钮操作 */
 function resetQuery() {
+  daterangeBillDate.value = [];
   proxy.resetForm("queryRef");
   handleQuery();
 }
