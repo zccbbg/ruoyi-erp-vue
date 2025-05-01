@@ -81,7 +81,7 @@
             <el-table-column label="规格信息" prop="skuName" align="left">
               <template #default="{ row }">
                 <div>{{ row.sku.skuName }}</div>
-                <div v-if="row.sku.skuCode">编号：{{ row.sku.skuCode }}</div>
+                <div v-if="row.sku.skuNo">编号：{{ row.sku.skuNo }}</div>
                 <div v-if="row.sku.barcode">条码：{{ row.sku.barcode }}</div>
               </template>
             </el-table-column>
@@ -209,7 +209,7 @@
                 <template #default="scope">
                   <div class="flex-center">
                     <span class="mr5" style="width: 50px">编号</span>
-                    <el-input v-model="scope.row.skuCode" />
+                    <el-input v-model="scope.row.skuNo" />
                   </div>
                   <div class="flex-center mt5">
                     <span class="mr5" style="width: 50px">条码</span>
