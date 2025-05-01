@@ -61,7 +61,7 @@
               <div>{{ useBasicStore().bankAccountMap.get(row.bankAccountId)?.accountName }}</div>
             </template>
           </el-table-column>
-          <el-table-column label="交易帐户变动" prop="paidAmount" align="center" width="110" :formatter="formatNumber"/>
+          <el-table-column label="金额变动" prop="paidAmount" align="right" width="110" :formatter="formatNumber"/>
         </el-table-column>
         <el-table-column label="交易金额" align="center">
           <el-table-column label="总金额" prop="totalAmount" align="right" width="90"/>
@@ -257,28 +257,10 @@ function handleQuery() {
   getList();
 }
 
-    /** 重置按钮操作 */
-    function resetQuery() {
-    proxy.resetForm("queryRef");
-    handleQuery();
-  }
-
-  /** 新增按钮操作 */
-  function handleAdd() {
-    reset();
-    open.value = true;
-    title.value = "添加交易流水";
-}
-
-/** 修改按钮操作 */
-function handleUpdate(row) {
-  reset();
-  const _id = row.id || ids.value
-  getTransHistory(_id).then(response => {
-    form.value = response.data;
-  open.value = true;
-  title.value = "修改交易流水";
-  });
+/** 重置按钮操作 */
+function resetQuery() {
+  proxy.resetForm("queryRef");
+  handleQuery();
 }
 
 /** 提交按钮 */
