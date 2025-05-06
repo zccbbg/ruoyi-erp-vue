@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="receipt-order-edit-wrapper app-container" style="margin-bottom: 60px" v-loading="loading">
-      <el-card header="采购订单基本信息">
+      <el-card header="销售订单基本信息">
         <el-form label-width="108px" :model="form" ref="salesOrderForm" :rules="rules">
           <el-row :gutter="24">
             <el-col :span="6">

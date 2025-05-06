@@ -69,25 +69,31 @@
         <el-table-column label="交易账户详情" align="center">
           <el-table-column label="交易账户" prop="bankAccountId" align="center" width="110">
             <template #default="{ row }">
-              <div>{{ useBasicStore().bankAccountMap.get(row.bankAccountId)?.accountName }}</div>
+              <div>
+                {{ useBasicStore().bankAccountMap.get(row.bankAccountId)?.accountName || '--' }}
+              </div>
             </template>
           </el-table-column>
-          <el-table-column label="金额变动" prop="paidAmount" align="right" width="110" :formatter="formatNumber"/>
+          <el-table-column label="金额变动" prop="paidAmount" align="right" width="110" :formatter="formatNumber">
+            <template #default="scope">
+              {{ scope.row.paidAmount ?? '--' }}
+            </template>
+          </el-table-column>
         </el-table-column>
         <el-table-column label="交易金额" align="center">
           <el-table-column label="总金额" align="right" width="110">
             <template #default="scope">
-              {{ scope.row.totalAmount !== undefined && scope.row.totalAmount !== null ? scope.row.totalAmount : '--' }}
+              {{ scope.row.totalAmount ?? '--' }}
             </template>
           </el-table-column>
           <el-table-column label="优惠金额" align="right" width="90">
             <template #default="scope">
-              {{ scope.row.discountAmount !== undefined && scope.row.discountAmount !== null ? scope.row.discountAmount : '--' }}
+              {{ scope.row.discountAmount ?? '--' }}
             </template>
           </el-table-column>
           <el-table-column label="实际金额" align="right" width="110">
             <template #default="scope">
-              {{ scope.row.actualAmount !== undefined && scope.row.actualAmount !== null ? scope.row.actualAmount : '--' }}
+              {{ scope.row.actualAmount ?? '--' }}
             </template>
           </el-table-column>
         </el-table-column>
@@ -164,7 +170,7 @@
 <script setup name="TransHistory">
   import { listTransHistory, getTransHistory } from "@/api/financial/transHistory";
   import {useBasicStore} from "@/store/modules/basic";
-  import {getCurrentInstance, reactive, ref} from "vue";
+  import {getCurrentInstance, reactive, ref, toRefs} from "vue";
 
 const { proxy } = getCurrentInstance();
   const createTimeRange = ref([]);

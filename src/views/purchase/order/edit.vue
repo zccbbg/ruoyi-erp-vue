@@ -61,13 +61,13 @@
               </el-row>
               <el-row>
                 <el-col :span="8">
-                  <el-form-item label="商品金额" prop="goodsAmount">
-                    <el-input-number style="width:100%" v-model="form.goodsAmount" :controls="false" :precision="2" :disabled="true"></el-input-number>
+                  <el-form-item label="其他费用" prop="otherExpensesAmount">
+                    <el-input-number :controls="false" style="width:100%;" :precision="2" v-model="form.otherExpensesAmount" placeholder="请输入其他费用" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="其他费用" prop="otherExpensesAmount">
-                    <el-input-number :controls="false" style="width:100%;" :precision="2" v-model="form.otherExpensesAmount" placeholder="请输入其他费用" />
+                  <el-form-item label="总金额" >
+                    <el-input-number style="width:100%" v-model="form.totalSum" :controls="false" :precision="2" :disabled="true"></el-input-number>
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
@@ -96,16 +96,16 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="商品数量" prop="goodsQty">
-                    <el-input-number style="width:100%" v-model="form.goodsQty" :controls="false" :precision="0" :disabled="true"></el-input-number>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
                   <el-form-item label="本次预付" prop="bankAccountId">
                     <el-select v-model="form.bankAccountId" placeholder="请选择银行账户" clearable filterable style="width:50%">
                       <el-option v-for="item in useBasicStore().bankAccountList" :key="item.id" :label="item.accountName" :value="item.id"/>
                     </el-select>
                     <el-input-number :controls="false" style="width:50%;" :precision="2" v-model="form.prepayAmount" placeholder="请输入预付金额" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="剩余金额">
+                    <el-input-number style="width:100%" v-model="form.nextPayAmount" :controls="false" :precision="2" :disabled="true"></el-input-number>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -274,7 +274,8 @@ const initFormData = {
   prepayAmount: undefined,
   goodsQty: 0,
   details: [],
-  nextPayAmount : undefined
+  nextPayAmount : undefined,
+  totalSum: undefined
 }
 const validateBankAccount = (rule, value, callback) => {
   if (form.value.prepayAmount && !value) {
@@ -319,6 +320,10 @@ const actualAmount = computed(() =>
 const nextPayAmount = computed(() => {
   return form.value.actualAmount - form.value.prepayAmount;
 });
+//计算总金额 等于 商品金额加其他费用
+const totalSum = computed(() => {
+  return goodsAmount.value + (form.value?.otherExpensesAmount || 0);
+});
 
 // 监听 goodsAmount 变化，自动更新 form.goodsAmount
 watch(goodsAmount, (newVal) => {
@@ -338,6 +343,11 @@ watch(actualAmount, (newVal) => {
 //监听 actualAmount 变化，自动更新 form.actualAmount
 watch(nextPayAmount, (newVal) => {
   form.value.nextPayAmount = newVal;
+});
+
+// 监听 totalSum 变化，自动更新 form.totalSum
+watch(totalSum, (newVal) => {
+  form.value.totalSum = newVal;
 });
 
 const cancel = async () => {
@@ -427,7 +437,7 @@ const getSummaries = (param) => {
       const total = values.reduce((prev, curr) => prev + curr, 0);
       sums[index] = ` ${total.toFixed(2)}`; // 根据实际货币符号调整
     } else {
-      sums[index] = 'N/A';
+      sums[index] = '';
     }
   });
 
@@ -552,7 +562,7 @@ const doFinishEdit = async () => {
 const route = useRoute();
 onMounted(() => {
   //设置默认时间为当前时间
-  form.value.docDate = parseTime(new Date(), "{y}-{m}-{d} {h}:{i}:{s}")
+  form.value.docDate = parseTime(new Date(), "{y}-{m}-{d} ")
   const id = route.query && route.query.id;
   if (id) {
     loadDetail(id)
@@ -575,7 +585,6 @@ const loadDetail = (id) => {
       })
     }
     Promise.resolve();
-  }).then(() => {
   }).finally(() => {
     loading.value = false
   })

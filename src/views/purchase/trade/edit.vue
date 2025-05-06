@@ -14,7 +14,7 @@
               </el-row>
               <el-row>
                 <el-col :span="24">
-                  <el-form-item label="下次应支付金额" >
+                  <el-form-item label="剩余金额" >
                     <el-input-number style="width:100%" v-model="form.nextPayAmount" :controls="false" :precision="2" :disabled="true"></el-input-number>
                   </el-form-item>
                 </el-col>
