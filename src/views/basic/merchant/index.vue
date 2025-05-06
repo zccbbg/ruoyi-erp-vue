@@ -138,7 +138,8 @@
 <script setup name="Merchant">
 import { listMerchant, getMerchant, delMerchant, addMerchant, updateMerchant } from "@/api/basic/merchant";
 import {ElMessageBox} from "element-plus";
-
+import {useBasicStore} from "@/store/modules/basic";
+const userBasicStore = useBasicStore();
 const { proxy } = getCurrentInstance();
 const { merchant_type } = proxy.useDict('merchant_type');
 
@@ -265,6 +266,7 @@ function submitForm() {
           proxy.$modal.msgSuccess("修改成功");
           open.value = false;
           getList();
+          userBasicStore.getMerchantList()
         }).finally(() => {
           buttonLoading.value = false;
         });
@@ -273,6 +275,7 @@ function submitForm() {
           proxy.$modal.msgSuccess("新增成功");
           open.value = false;
           getList();
+          userBasicStore.getMerchantList()
         }).finally(() => {
           buttonLoading.value = false;
         });
@@ -290,6 +293,7 @@ function handleDelete(row) {
     loading.value = true;
     getList();
     proxy.$modal.msgSuccess("删除成功");
+    userBasicStore.getMerchantList()
   }).finally(() => {
     loading.value = false;
   });
