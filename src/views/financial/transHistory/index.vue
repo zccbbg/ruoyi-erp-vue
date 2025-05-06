@@ -32,7 +32,7 @@
         </el-form-item>
         <el-form-item label="操作时间" prop="createTimeRange">
           <el-date-picker
-            v-model="queryParams.createTimeRange"
+            v-model="createTimeRange"
             type="datetimerange"
             range-separator="至"
             value-format="YYYY-MM-DD HH:mm:ss"
@@ -164,8 +164,10 @@
 <script setup name="TransHistory">
   import { listTransHistory, getTransHistory } from "@/api/financial/transHistory";
   import {useBasicStore} from "@/store/modules/basic";
+  import {getCurrentInstance, reactive, ref} from "vue";
 
 const { proxy } = getCurrentInstance();
+  const createTimeRange = ref([]);
   const transHistoryList = ref([]);
   const open = ref(false);
   const buttonLoading = ref(false);
@@ -192,9 +194,7 @@ const { proxy } = getCurrentInstance();
       bankAccountId: undefined,
       transType: undefined,
       relatedNo: undefined,
-      createTimeRange: undefined,
-      startTime: undefined,
-      endTime: undefined
+      params: undefined
   },
   rules: {
     id: [
@@ -246,13 +246,13 @@ const formatNumber = (row, column, cellValue) => {
 
 /** 查询交易流水列表 */
 function getList() {
-  const query = {...queryParams.value}
-  if (query.createTimeRange) {
-    query.startTime = query.createTimeRange[0]
-    query.endTime = query.createTimeRange[1]
+  queryParams.value.params = {};
+  if (null != createTimeRange && '' != createTimeRange) {
+    queryParams.value.params["beginTransDate"] = createTimeRange.value[0];
+    queryParams.value.params["endTransDate"] = createTimeRange.value[1];
   }
   loading.value = true;
-  listTransHistory(query).then(response => {
+  listTransHistory(queryParams.value).then(response => {
   transHistoryList.value = response.rows;
     total.value = response.total;
     loading.value = false;
@@ -296,6 +296,7 @@ function handleQuery() {
 
 /** 重置按钮操作 */
 function resetQuery() {
+  createTimeRange.value = [];
   proxy.resetForm("queryRef");
   handleQuery();
 }
