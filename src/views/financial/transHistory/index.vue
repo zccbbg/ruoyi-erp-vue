@@ -30,6 +30,17 @@
             @keyup.enter="handleQuery"
           />
         </el-form-item>
+        <el-form-item label="操作时间" prop="createTimeRange">
+          <el-date-picker
+            v-model="queryParams.createTimeRange"
+            type="datetimerange"
+            range-separator="至"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            format="YYYY-MM-DD HH:mm:ss"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+          />
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
           <el-button icon="Refresh" @click="resetQuery">重置</el-button>
@@ -64,14 +75,31 @@
           <el-table-column label="金额变动" prop="paidAmount" align="right" width="110" :formatter="formatNumber"/>
         </el-table-column>
         <el-table-column label="交易金额" align="center">
-          <el-table-column label="总金额" prop="totalAmount" align="right" width="90"/>
-          <el-table-column label="优惠金额" prop="discountAmount" align="right" width="90"/>
-          <el-table-column label="实际金额" prop="actualAmount" align="right" width="90"/>
+          <el-table-column label="总金额" align="right" width="110">
+            <template #default="scope">
+              {{ scope.row.totalAmount !== undefined && scope.row.totalAmount !== null ? scope.row.totalAmount : '--' }}
+            </template>
+          </el-table-column>
+          <el-table-column label="优惠金额" align="right" width="90">
+            <template #default="scope">
+              {{ scope.row.discountAmount !== undefined && scope.row.discountAmount !== null ? scope.row.discountAmount : '--' }}
+            </template>
+          </el-table-column>
+          <el-table-column label="实际金额" align="right" width="110">
+            <template #default="scope">
+              {{ scope.row.actualAmount !== undefined && scope.row.actualAmount !== null ? scope.row.actualAmount : '--' }}
+            </template>
+          </el-table-column>
         </el-table-column>
         <el-table-column label="商户余额" align="center">
-          <el-table-column label="交易前余额" prop="beforeBalance" align="right" width="90"/>
+          <el-table-column label="交易前余额" prop="beforeBalance" align="right" width="110"/>
           <el-table-column label="余额变动" prop="balanceChange" align="right" width="110" :formatter="formatNumber"/>
-          <el-table-column label="交易后余额" prop="afterBalance" align="right" width="90"/>
+          <el-table-column label="交易后余额" prop="afterBalance" align="right" width="150">
+            <template #default="scope">
+              <div v-if="scope.row.afterBalance>0" :style="{ color: 'green' }">应付: {{ Math.abs(scope.row.afterBalance)}}</div>
+              <div v-if="scope.row.afterBalance<0" :style="{ color:'red' }">应收: {{ Math.abs(scope.row.afterBalance)}}</div>
+            </template>
+          </el-table-column>
         </el-table-column>
       </el-table>
 
@@ -160,10 +188,13 @@ const { proxy } = getCurrentInstance();
     queryParams: {
       pageNum: 1,
       pageSize: 50,
-    merchantId: undefined,
-    bankAccountId: undefined,
-    transType: undefined,
-    relatedNo: undefined,
+      merchantId: undefined,
+      bankAccountId: undefined,
+      transType: undefined,
+      relatedNo: undefined,
+      createTimeRange: undefined,
+      startTime: undefined,
+      endTime: undefined
   },
   rules: {
     id: [
@@ -215,8 +246,13 @@ const formatNumber = (row, column, cellValue) => {
 
 /** 查询交易流水列表 */
 function getList() {
+  const query = {...queryParams.value}
+  if (query.createTimeRange) {
+    query.startTime = query.createTimeRange[0]
+    query.endTime = query.createTimeRange[1]
+  }
   loading.value = true;
-  listTransHistory(queryParams.value).then(response => {
+  listTransHistory(query).then(response => {
   transHistoryList.value = response.rows;
     total.value = response.total;
     loading.value = false;
@@ -246,7 +282,8 @@ function reset() {
     beforeBalance: null,
     afterBalance: null,
     createBy: null,
-    createTime: null
+    createTime: null,
+    createTimeRange:null
   };
   proxy.resetForm("transHistoryRef");
 }

@@ -240,7 +240,7 @@ import {computed, getCurrentInstance, onMounted, reactive, ref, toRef, toRefs, w
 import {ElMessage, ElMessageBox} from "element-plus";
 import {useRoute} from "vue-router";
 import {useBasicStore} from '@/store/modules/basic'
-import { numSub, generateNo } from '@/utils/ruoyi'
+import {numSub, generateNo, parseTime} from '@/utils/ruoyi'
 import { delRefundDetail } from '@/api/sales/refundDetail'
 import {addRefund, updateRefund, getRefund, passSalesRefund} from "../../../api/sales/refund";
 const selectedSku = ref([])
@@ -502,6 +502,7 @@ const doFinishEdit = async () => {
 
 const route = useRoute();
 onMounted(() => {
+  form.value.docDate = parseTime(new Date(), "{y}-{m}-{d} {h}:{i}:{s}")
   const id = route.query && route.query.id;
   const tradeNo = route.query && route.query.tradeNo;
   const tradeId = route.query && route.query.tradeId;

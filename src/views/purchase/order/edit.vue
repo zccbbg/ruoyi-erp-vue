@@ -133,7 +133,7 @@
 
             <el-button type="primary" plain="plain" size="default" @click="showAddItem" icon="Plus">添加商品</el-button>
           </div>
-          <el-table :data="form.details" border empty-text="暂无商品明细">
+          <el-table :data="form.details" border empty-text="暂无商品明细" show-summary :summary-method="getSummaries">
             <el-table-column label="商品信息" prop="sku.goodsName">
               <template #default="{ row }">
                 <div>{{ row.goods.goodsName + (row.goods.itemCode ? ('(' + row.goods.itemCode + ')') : '') }}</div>
@@ -207,13 +207,15 @@
           </el-table>
         </div>
       </el-card>
-      <SkuSelect
-        ref="skuSelectRef"
-        :model-value="skuSelectShow"
-        :selected-sku="selectedSku"
+      <InventorySelect
+        ref="inventorySelectRef"
+        :model-value="inventorySelectShow"
         @handleOkClick="handleOkClick"
-        @handleCancelClick="skuSelectShow = false"
-        :size="'80%'"
+        @handleCancelClick="inventorySelectShow = false"
+        :size="'90%'"
+        :select-warehouse-disable="false"
+        :warehouse-id="form.warehouseId"
+        :selected-inventory="selectedInventory"
       />
     </div>
     <div class="footer-global">
@@ -245,20 +247,21 @@
 import {computed, getCurrentInstance, onMounted, reactive, ref, toRef, toRefs, watch} from "vue";
 import {addOrder, getOrder, updateOrder,passOrder} from "@/api/purchase/order";
 import {ElMessage, ElMessageBox} from "element-plus";
-import SkuSelect from "../../components/SkuSelect.vue";
 import {useRoute} from "vue-router";
 import {useBasicStore} from '@/store/modules/basic'
-import { numSub, generateNo } from '@/utils/ruoyi'
+import {numSub, generateNo, parseTime} from '@/utils/ruoyi'
 import { delOrderDetail } from '@/api/purchase/orderDetail'
 import {getWarehouseAndSkuKey} from "@/utils/wmsUtil";
-
+import InventorySelect from "@/views/components/InventorySelect.vue";
 const {proxy} = getCurrentInstance();
 const selectedSku = ref([])
 const mode = ref(false)
 const loading = ref(false)
 const batchSetWarehouseVisible = ref(false)
-const skuSelectRef = ref(null)
 const batchSetWarehouseId = ref(null)
+const inventorySelectShow = ref(false)
+const inventorySelectRef = ref(null)
+const selectedInventory = ref([])
 const initFormData = {
   id: undefined,
   docNo: undefined,
@@ -271,6 +274,7 @@ const initFormData = {
   prepayAmount: undefined,
   goodsQty: 0,
   details: [],
+  nextPayAmount : undefined
 }
 const validateBankAccount = (rule, value, callback) => {
   if (form.value.prepayAmount && !value) {
@@ -311,6 +315,11 @@ const actualAmount = computed(() =>
   (Number(form.value?.discountAmount) || 0)
 );
 
+//计算下次应支付金额
+const nextPayAmount = computed(() => {
+  return form.value.actualAmount - form.value.prepayAmount;
+});
+
 // 监听 goodsAmount 变化，自动更新 form.goodsAmount
 watch(goodsAmount, (newVal) => {
   form.value.goodsAmount = newVal;
@@ -326,6 +335,11 @@ watch(actualAmount, (newVal) => {
   form.value.actualAmount = newVal;
 });
 
+//监听 actualAmount 变化，自动更新 form.actualAmount
+watch(nextPayAmount, (newVal) => {
+  form.value.nextPayAmount = newVal;
+});
+
 const cancel = async () => {
   await proxy?.$modal.confirm('确认取消编辑采购订单吗？');
   close()
@@ -334,7 +348,6 @@ const close = () => {
   const obj = {path: "/purchase/order"};
   proxy?.$tab.closeOpenPage(obj);
 }
-const skuSelectShow = ref(false)
 
 const setWarehouseDialogVisible = () => {
   if(form.value.details?.length == 0){
@@ -360,18 +373,25 @@ const handleConfirmSetWarehouse = () => {
 
 // 选择商品 start
 const showAddItem = () => {
-  skuSelectRef.value.getList()
-  skuSelectShow.value = true
+  inventorySelectRef.value.getListByPurchaseTradeId(form.value.tradeId)
+  inventorySelectShow.value = true
 }
 // 选择成功
 const handleOkClick = (item) => {
-  skuSelectShow.value = false
-  selectedSku.value = [...item]
-  item.forEach((it) => {
-    if (!form.value.details.find(detail => detail.sku.id === it.id)) {
+  inventorySelectShow.value = false
+  selectedInventory.value = [...item]
+  item.forEach(it => {
+    if (!form.value.details.find(detail => getWarehouseAndSkuKey(detail) === getWarehouseAndSkuKey(it))) {
       form.value.details.push(
-        {...it}
-      )
+        {
+          sku: it.sku,
+          goods: it.goods,
+          skuId: it.skuId,
+          totalAmount: undefined,
+          qty: undefined,
+          warehouseId: it.warehouseId,
+          inventoryId: it.id,
+        })
     }
   })
 }
@@ -388,7 +408,31 @@ const save = async () => {
   })
 
 }
+const getSummaries = (param) => {
+  const { columns, data } = param;
+  const sums = [];
 
+  columns.forEach((column, index) => {
+    if (index === 0) {
+      sums[index] = '合计';
+      return;
+    }
+
+    const values = data.map(item => {
+      const value = Number(item[column.property]);
+      return isNaN(value) ? 0 : value;
+    });
+
+    if (values.some(value => value !== 0)) {
+      const total = values.reduce((prev, curr) => prev + curr, 0);
+      sums[index] = ` ${total.toFixed(2)}`; // 根据实际货币符号调整
+    } else {
+      sums[index] = 'N/A';
+    }
+  });
+
+  return sums;
+};
 const handleChangeTotalAmount = (row) => {
   if(row.qty>0 && row.priceWithTax){
     row.priceWithTax = parseFloat((row.totalAmount / row.qty).toFixed(2));
@@ -507,6 +551,8 @@ const doFinishEdit = async () => {
 
 const route = useRoute();
 onMounted(() => {
+  //设置默认时间为当前时间
+  form.value.docDate = parseTime(new Date(), "{y}-{m}-{d} {h}:{i}:{s}")
   const id = route.query && route.query.id;
   if (id) {
     loadDetail(id)

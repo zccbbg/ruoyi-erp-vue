@@ -116,16 +116,21 @@
             <dict-tag :options="finish_status" :value="scope.row.checkedStatus"/>
           </template>
         </el-table-column>
-        <el-table-column label="退货状态" prop="refundStatus" align="center">
+        <el-table-column label="退货状态/退货金额"  width="160" align="center">
           <template #default="scope">
-            <dict-tag :options="refund_status" :value="scope.row.refundStatus"/>
+            <div v-if="scope.row.refundStatus">
+              <dict-tag :options="refund_status" :value="scope.row.refundStatus"/>
+            </div>
+            <div v-if="scope.row.refundAmount">退货金额：{{scope.row.refundAmount}}</div>
           </template>
         </el-table-column>
         <el-table-column label="退货金额" prop="refundAmount" align="right"/>
         <el-table-column label="支付金额" prop="paidAmount" align="right"/>
-        <el-table-column label="商品数量" prop="goodsQty" align="right"/>
-        <el-table-column label="商品金额" prop="goodsAmount" align="right"/>
-        <el-table-column label="其他费用" prop="otherExpensesAmount" align="right"/>
+        <el-table-column label="总金额"  align="right">
+          <template #default="scope">
+            {{ getTotalAmount(scope.row.goodsAmount, scope.row.otherExpensesAmount) }}
+          </template>
+        </el-table-column>
         <el-table-column label="优惠金额" prop="discountAmount" align="right"/>
         <el-table-column label="实际金额" prop="actualAmount" align="right"/>
         <el-table-column label="备注" prop="remark" />
@@ -191,11 +196,11 @@
 </template>
 
 <script setup name="Trade">
-import { listTrade, getTrade, delTrade, addTrade, updateTrade } from "@/api/sales/trade";
+import { listTrade,  delTrade, addTrade, updateTrade } from "@/api/sales/trade";
 import {useBasicStore} from "@/store/modules/basic";
 import {listByTradeId} from "@/api/sales/tradeDetail";
 import {useRoute} from "vue-router";
-import {onMounted} from "vue";
+import {getCurrentInstance, onMounted, reactive, ref, toRefs} from "vue";
 const expandedRowKeys = ref([])
 const { proxy } = getCurrentInstance();
 const { finish_status } = proxy.useDict('finish_status');
@@ -209,7 +214,6 @@ const total = ref(0);
 const title = ref("");
 const daterangeBillDate = ref([]);
 const detailLoading = ref([])
-
 const data = reactive({
   form: {},
   queryParams: {
@@ -221,7 +225,13 @@ const data = reactive({
 });
 
 const { queryParams, form, rules } = toRefs(data);
-
+/** 计算总金额*/
+function getTotalAmount(goodsAmount, otherExpensesAmount) {
+  const validGoodsAmount = isNaN(parseFloat(goodsAmount))? 0 : parseFloat(goodsAmount);
+  const validOtherExpensesAmount = isNaN(parseFloat(otherExpensesAmount))? 0 : parseFloat(otherExpensesAmount);
+  const total = validGoodsAmount + validOtherExpensesAmount;
+  return total.toFixed(2);
+}
 /** 查询销售出库单列表 */
 function getList() {
   queryParams.value.params = {};

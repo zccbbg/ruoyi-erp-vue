@@ -14,6 +14,13 @@
               </el-row>
               <el-row>
                 <el-col :span="24">
+                  <el-form-item label="下次应支付金额" >
+                    <el-input-number style="width:100%" v-model="form.nextPayAmount" :controls="false" :precision="2" :disabled="true"></el-input-number>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="24">
                   <el-form-item label="备注" prop="remark">
                     <el-input
                       v-model="form.remark"
@@ -127,7 +134,7 @@
 
             <el-button type="primary" plain="plain" size="default" @click="showAddItem" icon="Plus">添加商品</el-button>
           </div>
-          <el-table :data="form.details" border empty-text="暂无商品明细">
+          <el-table :data="form.details" border empty-text="暂无商品明细" show-summary :summary-method="getSummaries">
             <el-table-column label="商品信息" prop="sku.goodsName">
               <template #default="{ row }">
                 <div>{{ row.goods.goodsName + (row.goods.itemCode ? ('(' + row.goods.itemCode + ')') : '') }}</div>
@@ -242,7 +249,7 @@ import {ElMessage, ElMessageBox} from "element-plus";
 import SkuSelect from "../../components/SkuSelect.vue";
 import {useRoute} from "vue-router";
 import {useBasicStore} from '@/store/modules/basic'
-import { numSub, generateNo } from '@/utils/ruoyi'
+import {numSub, generateNo, parseTime} from '@/utils/ruoyi'
 import {delTradeDetail} from "../../../api/purchase/tradeDetail";
 import {listByOrderId} from "@/api/purchase/orderDetail";
 
@@ -267,6 +274,7 @@ const initFormData = {
   prepayAmount: undefined,
   goodsQty: 0,
   details: [],
+  nextPayAmount : undefined
 }
 const validateBankAccount = (rule, value, callback) => {
   if (form.value.paidAmount && !value) {
@@ -306,6 +314,10 @@ const actualAmount = computed(() =>
   (Number(form.value?.otherExpensesAmount) || 0) -
   (Number(form.value?.discountAmount) || 0)
 );
+//计算下次应支付金额
+const nextPayAmount = computed(() => {
+  return form.value.actualAmount - form.value.paidAmount;
+});
 
 // 监听 goodsAmount 变化，自动更新 form.goodsAmount
 watch(goodsAmount, (newVal) => {
@@ -320,6 +332,10 @@ watch(goodsQty, (newVal) => {
 //监听 actualAmount 变化，自动更新 form.actualAmount
 watch(actualAmount, (newVal) => {
   form.value.actualAmount = newVal;
+});
+//监听 actualAmount 变化，自动更新 form.actualAmount
+watch(nextPayAmount, (newVal) => {
+  form.value.nextPayAmount = newVal;
 });
 
 const cancel = async () => {
@@ -375,7 +391,31 @@ const handleOkClick = (item) => {
 
 // 初始化receipt-order-form ref
 const purchaseTradeForm = ref()
+const getSummaries = (param) => {
+  const { columns, data } = param;
+  const sums = [];
 
+  columns.forEach((column, index) => {
+    if (index === 0) {
+      sums[index] = '合计';
+      return;
+    }
+
+    const values = data.map(item => {
+      const value = Number(item[column.property]);
+      return isNaN(value) ? 0 : value;
+    });
+
+    if (values.some(value => value !== 0)) {
+      const total = values.reduce((prev, curr) => prev + curr, 0);
+      sums[index] = ` ${total.toFixed(2)}`; // 根据实际货币符号调整
+    } else {
+      sums[index] = 'N/A';
+    }
+  });
+
+  return sums;
+};
 const save = async () => {
   proxy.$refs["purchaseTradeForm"].validate(valid => {
     if (valid) {
@@ -503,6 +543,7 @@ const doFinishEdit = async () => {
 
 const route = useRoute();
 onMounted(() => {
+  form.value.docDate = parseTime(new Date(), "{y}-{m}-{d} {h}:{i}:{s}")
   const id = route.query && route.query.id;
   const orderNo = route.query && route.query.orderNo;
   const orderId = route.query && route.query.orderId;

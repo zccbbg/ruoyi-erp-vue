@@ -240,7 +240,7 @@ import {ElMessage, ElMessageBox} from "element-plus";
 import InventorySelect from "../../components/InventorySelect.vue"
 import {useRoute} from "vue-router";
 import {useBasicStore} from '@/store/modules/basic'
-import { numSub, generateNo } from '@/utils/ruoyi'
+import {numSub, generateNo, parseTime} from '@/utils/ruoyi'
 import { delRefundDetail } from '@/api/purchase/refundDetail'
 import {addRefund, updateRefund, getRefund, passPurchaseRefund} from "../../../api/purchase/refund";
 import {getTradeDetail, listByTradeId, listTradeDetail} from "../../../api/purchase/tradeDetail";
@@ -513,6 +513,7 @@ const doFinishEdit = async () => {
 
 const route = useRoute();
 onMounted(() => {
+  form.value.docDate = parseTime(new Date(), "{y}-{m}-{d} {h}:{i}:{s}")
   const id = route.query && route.query.id;
   const tradeNo = route.query && route.query.tradeNo;
   const tradeId = route.query && route.query.tradeId;

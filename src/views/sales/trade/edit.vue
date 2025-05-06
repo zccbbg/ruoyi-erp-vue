@@ -243,7 +243,7 @@ import {addTrade, getTrade, updateTrade,passTrade} from "@/api/sales/trade";
 import {ElMessage, ElMessageBox} from "element-plus";
 import {useRoute} from "vue-router";
 import {useBasicStore} from '@/store/modules/basic'
-import { numSub, generateNo } from '@/utils/ruoyi'
+import {numSub, generateNo, parseTime} from '@/utils/ruoyi'
 import {delTradeDetail} from "../../../api/sales/tradeDetail";
 import InventorySelect from "@/views/components/InventorySelect.vue";
 import {getWarehouseAndSkuKey} from "@/utils/wmsUtil";
@@ -506,6 +506,7 @@ const doFinishEdit = async () => {
 
 const route = useRoute();
 onMounted(() => {
+  form.value.docDate = parseTime(new Date(), "{y}-{m}-{d} {h}:{i}:{s}")
   const id = route.query && route.query.id;
   const orderNo = route.query && route.query.orderNo;
   const orderId = route.query && route.query.orderId;

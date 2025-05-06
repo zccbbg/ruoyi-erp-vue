@@ -14,7 +14,13 @@
               </template>
             </el-table-column>
             <el-table-column label="初始余额" prop="initialBalance" />
-            <el-table-column label="当前余额" prop="balance" />
+        <el-table-column label="当前余额" prop="balance">
+          <template #default="scope">
+            <div v-if="scope.row.balance>0" :style="{ color: 'green' }">应付: {{ Math.abs(scope.row.balance)}}</div>
+            <div v-else-if="scope.row.balance<0" :style="{ color:'red' }">应收: {{ Math.abs(scope.row.balance)}}</div>
+            <div v-else > {{ Math.abs(scope.row.balance)}}</div>
+          </template>
+        </el-table-column>
       </el-table>
 
       <el-row>
