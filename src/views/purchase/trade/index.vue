@@ -69,7 +69,7 @@
           <template #default="props">
             <div style="padding: 0 50px 20px 50px">
               <h3>商品明细</h3>
-              <el-table :data="props.row.details" v-loading="detailLoading[props.$index]" empty-text="暂无商品明细">
+              <el-table :data="props.row.details" v-loading="detailLoading[props.$index]" empty-text="暂无商品明细" show-summary  :summary-method="getSummaries">
                 <el-table-column label="商品名称">
                   <template #default="{ row }">
                     <div>{{ row?.goods?.goodsName }}</div>
@@ -85,7 +85,7 @@
                     <div>{{ useBasicStore().warehouseMap.get(row.warehouseId)?.warehouseName }}</div>
                   </template>
                 </el-table-column>
-                <el-table-column label="单价(元)" align="right">
+                <el-table-column label="单价(元)" align="right" prop="priceWithTax">
                   <template #default="{ row }">
                     <el-statistic v-if="row.priceWithTax || row.priceWithTax === 0" :precision="2" :value="Number(row.priceWithTax)"/>
                     <div v-else>-</div>
@@ -96,7 +96,7 @@
                     <el-statistic :value="Number(row.qty)" :precision="0"/>
                   </template>
                 </el-table-column>
-                <el-table-column label="金额(元)" align="right">
+                <el-table-column label="金额(元)" align="right" prop="totalAmount">
                   <template #default="{ row }">
                     <el-statistic v-if="row.totalAmount || row.totalAmount === 0" :precision="2" :value="Number(row.totalAmount)"/>
                     <div v-else>-</div>
@@ -123,16 +123,20 @@
             <dict-tag :options="finish_status" :value="scope.row.checkedStatus"/>
           </template>
         </el-table-column>
-        <el-table-column label="退货状态" prop="refundStatus" align="center">
+        <el-table-column label="退货状态/退货金额"  width="160" align="center">
           <template #default="scope">
-            <dict-tag :options="refund_status" :value="scope.row.refundStatus"/>
+            <div v-if="scope.row.refundStatus">
+              <dict-tag :options="refund_status" :value="scope.row.refundStatus"/>
+            </div>
+            <div v-if="scope.row.refundAmount">退货金额：{{scope.row.refundAmount}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="退货金额" prop="refundAmount" align="right"/>
         <el-table-column label="支付金额" prop="paidAmount" align="right"/>
-        <el-table-column label="商品数量" prop="goodsQty" align="right"/>
-        <el-table-column label="商品金额" prop="goodsAmount" align="right"/>
-        <el-table-column label="其他费用" prop="otherExpensesAmount" align="right"/>
+        <el-table-column label="总金额"  align="right">
+          <template #default="scope">
+            {{ getTotalAmount(scope.row.goodsAmount, scope.row.otherExpensesAmount) }}
+          </template>
+        </el-table-column>
         <el-table-column label="优惠金额" prop="discountAmount" align="right"/>
         <el-table-column label="实际金额" prop="actualAmount" align="right"/>
         <el-table-column label="备注" prop="remark" align="right"/>
@@ -202,14 +206,14 @@ import { listTrade, getTrade, delTrade, addTrade, updateTrade } from "@/api/purc
 import {useBasicStore} from "@/store/modules/basic";
 import {listByTradeId} from "@/api/purchase/tradeDetail";
 import {useRoute} from "vue-router";
-import {onMounted} from "vue";
+import {getCurrentInstance, onMounted, reactive, ref, toRefs} from "vue";
 import {generateNo} from "@/utils/ruoyi";
 
 const expandedRowKeys = ref([])
 const { proxy } = getCurrentInstance();
 const { finish_status } = proxy.useDict('finish_status');
 const { refund_status } = proxy.useDict('refund_status');
-const tradeList = ref([]);
+let tradeList = reactive([]);
 const open = ref(false);
 const buttonLoading = ref(false);
 const loading = ref(true);
@@ -231,6 +235,14 @@ const data = reactive({
 
 const { queryParams, form, rules } = toRefs(data);
 
+/** 计算总金额*/
+function getTotalAmount(goodsAmount, otherExpensesAmount) {
+  const validGoodsAmount = isNaN(parseFloat(goodsAmount))? 0 : parseFloat(goodsAmount);
+  const validOtherExpensesAmount = isNaN(parseFloat(otherExpensesAmount))? 0 : parseFloat(otherExpensesAmount);
+  const total = validGoodsAmount + validOtherExpensesAmount;
+  return total.toFixed(2);
+}
+
 /** 查询采购入库单列表 */
 function getList() {
   queryParams.value.params = {};
@@ -241,7 +253,10 @@ function getList() {
   }
   listTrade(queryParams.value).then(response => {
     expandedRowKeys.value = []
-    tradeList.value = response.rows;
+    tradeList = response.rows.map(order => ({
+      ...order,
+      details: [] // 提前声明
+    }))
     total.value = response.total;
     loading.value = false;
   });
@@ -250,6 +265,32 @@ function getList() {
 function getRowKey(row) {
   return row.id
 }
+
+const getSummaries = (param) => {
+  const { columns, data } = param;
+  const sums = [];
+
+  columns.forEach((column, index) => {
+    if (index === 0) {
+      sums[index] = '合计';
+      return;
+    }
+
+    const values = data.map(item => {
+      const value = Number(item[column.property]);
+      return isNaN(value) ? 0 : value;
+    });
+
+    if (values.some(value => value !== 0)) {
+      const total = values.reduce((prev, curr) => prev + curr, 0);
+      sums[index] = ` ${total.toFixed(2)}`; // 根据实际货币符号调整
+    } else {
+      sums[index] = '';
+    }
+  });
+
+  return sums;
+};
 
 function ifExpand(expandedRows) {
   if (expandedRows.length < expandedRowKeys.value.length) {
@@ -260,7 +301,7 @@ function ifExpand(expandedRows) {
 }
 
 function loadTradeDetail(row) {
-  const index = tradeList.value.findIndex(it => it.id === row.id)
+  const index = tradeList.findIndex(it => it.id === row.id)
   detailLoading.value[index] = true
   listByTradeId(row.id).then(res => {
     if (res.data?.length) {
@@ -270,7 +311,7 @@ function loadTradeDetail(row) {
           warehouseName: useBasicStore().warehouseMap.get(it.warehouseId)?.warehouseName,
         }
       })
-      tradeList.value[index].details = details
+      tradeList[index].details = details
     }
   }).finally(() => {
     detailLoading.value[index] = false

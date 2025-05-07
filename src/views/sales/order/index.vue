@@ -80,7 +80,7 @@
             <template #default="props">
               <div style="padding: 0 50px 20px 50px">
                 <h3>商品明细</h3>
-                <el-table :data="props.row.details" v-loading="detailLoading[props.$index]" empty-text="暂无商品明细">
+                <el-table :data="props.row.details" v-loading="detailLoading[props.$index]" empty-text="暂无商品明细" show-summary  :summary-method="getSummaries">
                   <el-table-column label="商品名称">
                     <template #default="{ row }">
                       <div>{{ row?.goods?.goodsName }}</div>
@@ -96,7 +96,7 @@
                       <div>{{ useBasicStore().warehouseMap.get(row.warehouseId)?.warehouseName }}</div>
                     </template>
                   </el-table-column>
-                  <el-table-column label="单价(元)" align="right">
+                  <el-table-column label="单价(元)" align="right" prop="priceWithTax">
                     <template #default="{ row }">
                       <el-statistic v-if="row.priceWithTax || row.priceWithTax === 0" :precision="2" :value="Number(row.priceWithTax)"/>
                       <div v-else>-</div>
@@ -107,7 +107,7 @@
                       <el-statistic :value="Number(row.qty)" :precision="0"/>
                     </template>
                   </el-table-column>
-                  <el-table-column label="金额(元)" align="right">
+                  <el-table-column label="金额(元)" align="right" prop="totalAmount">
                     <template #default="{ row }">
                       <el-statistic v-if="row.totalAmount || row.totalAmount === 0" :precision="2" :value="Number(row.totalAmount)"/>
                       <div v-else>-</div>
@@ -198,13 +198,13 @@
   import {useBasicStore} from "../../../store/modules/basic";
   import {listByOrderId} from "@/api/sales/orderDetail";
   import {useRoute} from "vue-router";
-  import {onMounted} from "vue";
+  import {getCurrentInstance, onMounted, reactive, ref, toRefs} from "vue";
 
 const { proxy } = getCurrentInstance();
     const { finish_status } = proxy.useDict('finish_status');
   // 当前展开集合
   const expandedRowKeys = ref([])
-  const orderList = ref([]);
+  let orderList = reactive([]);
   const open = ref(false);
   const buttonLoading = ref(false);
   const loading = ref(true);
@@ -236,6 +236,31 @@ const { proxy } = getCurrentInstance();
 
 const { queryParams, form, rules } = toRefs(data);
 
+const getSummaries = (param) => {
+  const { columns, data } = param;
+  const sums = [];
+
+  columns.forEach((column, index) => {
+    if (index === 0) {
+      sums[index] = '合计';
+      return;
+    }
+
+    const values = data.map(item => {
+      const value = Number(item[column.property]);
+      return isNaN(value) ? 0 : value;
+    });
+
+    if (values.some(value => value !== 0)) {
+      const total = values.reduce((prev, curr) => prev + curr, 0);
+      sums[index] = ` ${total.toFixed(2)}`; // 根据实际货币符号调整
+    } else {
+      sums[index] = '';
+    }
+  });
+
+  return sums;
+};
 /** 查询销售订单列表 */
 function getList() {
   loading.value = true;
@@ -250,7 +275,10 @@ function getList() {
   }
   listOrder(queryParams.value).then(response => {
     expandedRowKeys.value = []
-    orderList.value = response.rows;
+    orderList = response.rows.map(order => ({
+      ...order,
+      details: [] // 提前声明
+    }))
     total.value = response.total;
     loading.value = false;
   });
@@ -269,7 +297,7 @@ function getList() {
   }
 
   function loadOrderDetail(row) {
-    const index = orderList.value.findIndex(it => it.id === row.id)
+    const index = orderList.findIndex(it => it.id === row.id)
     detailLoading.value[index] = true
     listByOrderId(row.id).then(res => {
       if (res.data?.length) {
@@ -279,7 +307,7 @@ function getList() {
             warehouseName: useBasicStore().warehouseMap.get(it.warehouseId)?.warehouseName,
           }
         })
-        orderList.value[index].details = details
+        orderList[index].details = details
       }
     }).finally(() => {
       detailLoading.value[index] = false

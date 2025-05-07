@@ -105,7 +105,7 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="剩余金额">
-                    <el-input-number style="width:100%" v-model="form.nextPayAmount" :controls="false" :precision="2" :disabled="true"></el-input-number>
+                    <el-input-number style="width:100%" v-model="form.remainingAmount" :controls="false" :precision="2" :disabled="true"></el-input-number>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -207,15 +207,13 @@
           </el-table>
         </div>
       </el-card>
-      <InventorySelect
-        ref="inventorySelectRef"
-        :model-value="inventorySelectShow"
+      <SkuSelect
+        ref="skuSelectRef"
+        :model-value="skuSelectShow"
+        :selected-sku="selectedSku"
         @handleOkClick="handleOkClick"
-        @handleCancelClick="inventorySelectShow = false"
-        :size="'90%'"
-        :select-warehouse-disable="false"
-        :warehouse-id="form.warehouseId"
-        :selected-inventory="selectedInventory"
+        @handleCancelClick="skuSelectShow = false"
+        :size="'80%'"
       />
     </div>
     <div class="footer-global">
@@ -251,17 +249,15 @@ import {useRoute} from "vue-router";
 import {useBasicStore} from '@/store/modules/basic'
 import {numSub, generateNo, parseTime} from '@/utils/ruoyi'
 import { delOrderDetail } from '@/api/purchase/orderDetail'
-import {getWarehouseAndSkuKey} from "@/utils/wmsUtil";
-import InventorySelect from "@/views/components/InventorySelect.vue";
+import SkuSelect from "../../components/SkuSelect.vue";
 const {proxy} = getCurrentInstance();
 const selectedSku = ref([])
+const skuSelectRef = ref(null)
 const mode = ref(false)
 const loading = ref(false)
 const batchSetWarehouseVisible = ref(false)
 const batchSetWarehouseId = ref(null)
-const inventorySelectShow = ref(false)
-const inventorySelectRef = ref(null)
-const selectedInventory = ref([])
+const skuSelectShow = ref(false)
 const initFormData = {
   id: undefined,
   docNo: undefined,
@@ -274,7 +270,7 @@ const initFormData = {
   prepayAmount: undefined,
   goodsQty: 0,
   details: [],
-  nextPayAmount : undefined,
+  remainingAmount : undefined,
   totalSum: undefined
 }
 const validateBankAccount = (rule, value, callback) => {
@@ -317,7 +313,7 @@ const actualAmount = computed(() =>
 );
 
 //计算下次应支付金额
-const nextPayAmount = computed(() => {
+const remainingAmount = computed(() => {
   return form.value.actualAmount - form.value.prepayAmount;
 });
 //计算总金额 等于 商品金额加其他费用
@@ -341,8 +337,8 @@ watch(actualAmount, (newVal) => {
 });
 
 //监听 actualAmount 变化，自动更新 form.actualAmount
-watch(nextPayAmount, (newVal) => {
-  form.value.nextPayAmount = newVal;
+watch(remainingAmount, (newVal) => {
+  form.value.remainingAmount = newVal;
 });
 
 // 监听 totalSum 变化，自动更新 form.totalSum
@@ -383,25 +379,18 @@ const handleConfirmSetWarehouse = () => {
 
 // 选择商品 start
 const showAddItem = () => {
-  inventorySelectRef.value.getListByPurchaseTradeId(form.value.tradeId)
-  inventorySelectShow.value = true
+  skuSelectRef.value.getList()
+  skuSelectShow.value = true
 }
 // 选择成功
 const handleOkClick = (item) => {
-  inventorySelectShow.value = false
-  selectedInventory.value = [...item]
-  item.forEach(it => {
-    if (!form.value.details.find(detail => getWarehouseAndSkuKey(detail) === getWarehouseAndSkuKey(it))) {
+  skuSelectShow.value = false
+  selectedSku.value = [...item]
+  item.forEach((it) => {
+    if (!form.value.details.find(detail => detail.sku.id === it.id)) {
       form.value.details.push(
-        {
-          sku: it.sku,
-          goods: it.goods,
-          skuId: it.skuId,
-          totalAmount: undefined,
-          qty: undefined,
-          warehouseId: it.warehouseId,
-          inventoryId: it.id,
-        })
+        {...it}
+      )
     }
   })
 }

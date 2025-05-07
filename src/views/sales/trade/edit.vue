@@ -55,13 +55,13 @@
               </el-row>
               <el-row>
                 <el-col :span="8">
-                  <el-form-item label="商品金额" prop="goodsAmount">
-                    <el-input-number style="width:100%" v-model="form.goodsAmount" :controls="false" :precision="2" :disabled="true"></el-input-number>
+                  <el-form-item label="其他费用" prop="otherExpensesAmount">
+                    <el-input-number :controls="false" style="width:100%;" :precision="2" v-model="form.otherExpensesAmount" placeholder="请输入其他费用" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="其他费用" prop="otherExpensesAmount">
-                    <el-input-number :controls="false" style="width:100%;" :precision="2" v-model="form.otherExpensesAmount" placeholder="请输入其他费用" />
+                  <el-form-item label="总金额" >
+                    <el-input-number style="width:100%" v-model="form.totalSum" :controls="false" :precision="2" :disabled="true"></el-input-number>
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
@@ -90,16 +90,16 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="商品数量" prop="goodsQty">
-                    <el-input-number style="width:100%" v-model="form.goodsQty" :controls="false" :precision="0" :disabled="true"></el-input-number>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
                   <el-form-item label="本次支付" prop="bankAccountId">
                     <el-select v-model="form.bankAccountId" placeholder="请选择银行账户" clearable filterable style="width:50%">
                       <el-option v-for="item in useBasicStore().bankAccountList" :key="item.id" :label="item.accountName" :value="item.id"/>
                     </el-select>
                     <el-input-number :controls="false" style="width:50%;" :precision="2" v-model="form.paidAmount" placeholder="本次支付金额" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="剩余金额" >
+                    <el-input-number style="width:100%" v-model="form.remainingAmount" :controls="false" :precision="2" :disabled="true"></el-input-number>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -127,7 +127,7 @@
 
             <el-button type="primary" plain="plain" size="default" @click="showAddItem" icon="Plus">添加商品</el-button>
           </div>
-          <el-table :data="form.details" border empty-text="暂无商品明细">
+          <el-table :data="form.details" border empty-text="暂无商品明细" show-summary :summary-method="getSummaries">
             <el-table-column label="商品信息" prop="sku.goodsName">
               <template #default="{ row }">
                 <div>{{ row.goods.goodsName + (row.goods.itemCode ? ('(' + row.goods.itemCode + ')') : '') }}</div>
@@ -271,6 +271,8 @@ const initFormData = {
   prepayAmount: undefined,
   goodsQty: 0,
   details: [],
+  remainingAmount : undefined,
+  totalSum: undefined
 }
 const validateBankAccount = (rule, value, callback) => {
   if (form.value.paidAmount && !value) {
@@ -293,7 +295,31 @@ const data = reactive({
 });
 const { form, rules} = toRefs(data);
 
+const getSummaries = (param) => {
+  const { columns, data } = param;
+  const sums = [];
 
+  columns.forEach((column, index) => {
+    if (index === 0) {
+      sums[index] = '合计';
+      return;
+    }
+
+    const values = data.map(item => {
+      const value = Number(item[column.property]);
+      return isNaN(value) ? 0 : value;
+    });
+
+    if (values.some(value => value !== 0)) {
+      const total = values.reduce((prev, curr) => prev + curr, 0);
+      sums[index] = ` ${total.toFixed(2)}`; // 根据实际货币符号调整
+    } else {
+      sums[index] = '';
+    }
+  });
+
+  return sums;
+};
 // 计算商品总数量
 const goodsQty = computed(() => {
   return form.value.details.reduce((sum, row) => sum + (row.qty || 0), 0);
@@ -311,6 +337,16 @@ const actualAmount = computed(() =>
   (Number(form.value?.discountAmount) || 0)
 );
 
+//计算下次应支付金额
+const remainingAmount = computed(() => {
+  return form.value.actualAmount - form.value.paidAmount;
+});
+
+//计算总金额 等于 商品金额加其他费用
+const totalSum = computed(() => {
+  return goodsAmount.value + (form.value?.otherExpensesAmount || 0);
+});
+
 // 监听 goodsAmount 变化，自动更新 form.goodsAmount
 watch(goodsAmount, (newVal) => {
   form.value.goodsAmount = newVal;
@@ -324,6 +360,16 @@ watch(goodsQty, (newVal) => {
 //监听 actualAmount 变化，自动更新 form.actualAmount
 watch(actualAmount, (newVal) => {
   form.value.actualAmount = newVal;
+});
+
+//监听 remainingAmount 变化，自动更新 form.remainingAmount
+watch(remainingAmount, (newVal) => {
+  form.value.remainingAmount = newVal;
+});
+
+// 监听 totalSum 变化，自动更新 form.totalSum
+watch(totalSum, (newVal) => {
+  form.value.totalSum = newVal;
 });
 
 const cancel = async () => {
