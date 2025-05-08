@@ -320,7 +320,8 @@ const remainingAmount = computed(() => {
 });
 //计算总金额 等于 商品金额加其他费用
 const totalSum = computed(() => {
-  return goodsAmount.value + (form.value?.otherExpensesAmount || 0);
+  return (Number(goodsAmount.value) || 0) +
+    (Number(form.value?.otherExpensesAmount) || 0);
 });
 // 计算退单总数量
 const goodsQty = computed(() => {
