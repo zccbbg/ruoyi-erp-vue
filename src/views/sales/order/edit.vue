@@ -67,7 +67,7 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="总金额" >
-                    <el-input-number style="width:100%" v-model="form.totalSum" :controls="false" :precision="2" :disabled="true"></el-input-number>
+                    <el-input-number style="width:100%" v-model="form.totalFormAmount" :controls="false" :precision="2" :disabled="true"></el-input-number>
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
@@ -276,7 +276,7 @@ const initFormData = {
   goodsQty: 0,
   details: [],
   remainingAmount : undefined,
-  totalSum: undefined
+  totalFormAmount: undefined
 }
 const validateBankAccount = (rule, value, callback) => {
   if (form.value.prepayAmount && !value) {
@@ -323,7 +323,7 @@ const remainingAmount = computed(() => {
 });
 
 //计算总金额 等于 商品金额加其他费用
-const totalSum = computed(() => {
+const totalFormAmount = computed(() => {
   return (Number(goodsAmount.value) || 0) +
     (Number(form.value?.otherExpensesAmount) || 0);
 });
@@ -347,9 +347,9 @@ watch(remainingAmount, (newVal) => {
   form.value.remainingAmount = newVal;
 });
 
-// 监听 totalSum 变化，自动更新 form.totalSum
-watch(totalSum, (newVal) => {
-  form.value.totalSum = newVal;
+// 监听 totalFormAmount 变化，自动更新 form.totalFormAmount
+watch(totalFormAmount, (newVal) => {
+  form.value.totalFormAmount = newVal;
 });
 
 const cancel = async () => {
