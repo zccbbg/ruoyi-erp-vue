@@ -250,6 +250,7 @@ import {useBasicStore} from '@/store/modules/basic'
 import {numSub, generateNo, parseTime} from '@/utils/ruoyi'
 import { delOrderDetail } from '@/api/purchase/orderDetail'
 import SkuSelect from "../../components/SkuSelect.vue";
+import {getSummaries} from "@/utils/wmsUtil";
 const {proxy} = getCurrentInstance();
 const selectedSku = ref([])
 const skuSelectRef = ref(null)
@@ -408,31 +409,6 @@ const save = async () => {
   })
 
 }
-const getSummaries = (param) => {
-  const { columns, data } = param;
-  const sums = [];
-
-  columns.forEach((column, index) => {
-    if (index === 0) {
-      sums[index] = '合计';
-      return;
-    }
-
-    const values = data.map(item => {
-      const value = Number(item[column.property]);
-      return isNaN(value) ? 0 : value;
-    });
-
-    if (values.some(value => value !== 0)) {
-      const total = values.reduce((prev, curr) => prev + curr, 0);
-      sums[index] = ` ${total.toFixed(2)}`; // 根据实际货币符号调整
-    } else {
-      sums[index] = '';
-    }
-  });
-
-  return sums;
-};
 const handleChangeTotalAmount = (row) => {
   if(row.qty>0 && row.priceWithTax){
     row.priceWithTax = parseFloat((row.totalAmount / row.qty).toFixed(2));

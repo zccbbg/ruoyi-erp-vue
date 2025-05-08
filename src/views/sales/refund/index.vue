@@ -182,13 +182,14 @@
 </template>
 
 <script setup name="Refund">
-import { listRefund, getRefund, delRefund, addRefund, updateRefund } from "@/api/sales/refund";
+import { listRefund,  delRefund, addRefund, updateRefund } from "@/api/sales/refund";
 import {ElMessage, ElMessageBox} from "element-plus";
 import {getCurrentInstance, onMounted, reactive, ref, toRefs} from "vue";
-import {useBasicStore} from "../../../store/modules/basic";
-import {parseTime} from "../../../utils/ruoyi";
+import {useBasicStore} from "@/store/modules/basic";
+import {parseTime} from "@/utils/ruoyi";
 import {listRefundDetailById} from "@/api/sales/refundDetail";
 import {useRoute} from "vue-router";
+import {getSummaries} from "@/utils/wmsUtil";
 
 const { proxy } = getCurrentInstance();
 const detailLoading = ref([]);
@@ -276,31 +277,7 @@ const data = reactive({
 
 const { queryParams, form, rules } = toRefs(data);
 
-const getSummaries = (param) => {
-  const { columns, data } = param;
-  const sums = [];
 
-  columns.forEach((column, index) => {
-    if (index === 0) {
-      sums[index] = '合计';
-      return;
-    }
-
-    const values = data.map(item => {
-      const value = Number(item[column.property]);
-      return isNaN(value) ? 0 : value;
-    });
-
-    if (values.some(value => value !== 0)) {
-      const total = values.reduce((prev, curr) => prev + curr, 0);
-      sums[index] = ` ${total.toFixed(2)}`; // 根据实际货币符号调整
-    } else {
-      sums[index] = '';
-    }
-  });
-
-  return sums;
-};
 
 /** 查询销售退货单列表 */
 function getList() {

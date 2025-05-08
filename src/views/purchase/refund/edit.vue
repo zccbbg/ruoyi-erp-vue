@@ -235,16 +235,16 @@
 </template>
 
 <script setup>
-import {computed, getCurrentInstance, onMounted, reactive, ref, toRef, toRefs, watch} from "vue";
+import {computed, getCurrentInstance, onMounted, reactive, ref,toRefs, watch} from "vue";
 import {ElMessage, ElMessageBox} from "element-plus";
 import InventorySelect from "../../components/InventorySelect.vue"
 import {useRoute} from "vue-router";
 import {useBasicStore} from '@/store/modules/basic'
 import {numSub, generateNo, parseTime} from '@/utils/ruoyi'
 import { delRefundDetail } from '@/api/purchase/refundDetail'
-import {addRefund, updateRefund, getRefund, passPurchaseRefund} from "../../../api/purchase/refund";
-import {getTradeDetail, listByTradeId, listTradeDetail} from "../../../api/purchase/tradeDetail";
-import {getWarehouseAndSkuKey} from "@/utils/wmsUtil";
+import {addRefund, updateRefund, getRefund, passPurchaseRefund} from "@/api/purchase/refund";
+import {listByTradeId} from "@/api/purchase/tradeDetail";
+import {getSummaries, getWarehouseAndSkuKey} from "@/utils/wmsUtil";
 
 const {proxy} = getCurrentInstance();
 const selectedSku = ref([])
@@ -291,31 +291,6 @@ const data = reactive({
 });
 const { form, rules} = toRefs(data);
 
-const getSummaries = (param) => {
-  const { columns, data } = param;
-  const sums = [];
-
-  columns.forEach((column, index) => {
-    if (index === 0) {
-      sums[index] = '合计';
-      return;
-    }
-
-    const values = data.map(item => {
-      const value = Number(item[column.property]);
-      return isNaN(value) ? 0 : value;
-    });
-
-    if (values.some(value => value !== 0)) {
-      const total = values.reduce((prev, curr) => prev + curr, 0);
-      sums[index] = ` ${total.toFixed(2)}`; // 根据实际货币符号调整
-    } else {
-      sums[index] = '';
-    }
-  });
-
-  return sums;
-};
 
 // 计算退单总数量
 const goodsQty = computed(() => {

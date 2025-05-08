@@ -200,7 +200,8 @@ import {useBasicStore} from "@/store/modules/basic";
 import {listByTradeId} from "@/api/sales/tradeDetail";
 import {useRoute} from "vue-router";
 import {getCurrentInstance, onMounted, reactive, ref, toRefs} from "vue";
-import {parseTime} from "../../../utils/ruoyi";
+import {parseTime} from "@/utils/ruoyi";
+import {getSummaries} from "@/utils/wmsUtil";
 const expandedRowKeys = ref([])
 const { proxy } = getCurrentInstance();
 const { finish_status } = proxy.useDict('finish_status');
@@ -226,31 +227,7 @@ const data = reactive({
 
 const { queryParams, form, rules } = toRefs(data);
 
-const getSummaries = (param) => {
-  const { columns, data } = param;
-  const sums = [];
 
-  columns.forEach((column, index) => {
-    if (index === 0) {
-      sums[index] = '合计';
-      return;
-    }
-
-    const values = data.map(item => {
-      const value = Number(item[column.property]);
-      return isNaN(value) ? 0 : value;
-    });
-
-    if (values.some(value => value !== 0)) {
-      const total = values.reduce((prev, curr) => prev + curr, 0);
-      sums[index] = ` ${total.toFixed(2)}`; // 根据实际货币符号调整
-    } else {
-      sums[index] = '';
-    }
-  });
-
-  return sums;
-};
 
 /** 计算总金额*/
 function getTotalAmount(goodsAmount, otherExpensesAmount) {

@@ -238,15 +238,15 @@
 </template>
 
 <script setup>
-import {computed, getCurrentInstance, onMounted, reactive, ref, toRef, toRefs, watch} from "vue";
+import {computed, getCurrentInstance, onMounted, reactive, ref, toRefs, watch} from "vue";
 import {addTrade, getTrade, updateTrade,passTrade} from "@/api/sales/trade";
 import {ElMessage, ElMessageBox} from "element-plus";
 import {useRoute} from "vue-router";
 import {useBasicStore} from '@/store/modules/basic'
 import {numSub, generateNo, parseTime} from '@/utils/ruoyi'
-import {delTradeDetail} from "../../../api/sales/tradeDetail";
+import {delTradeDetail} from "@/api/sales/tradeDetail";
 import InventorySelect from "@/views/components/InventorySelect.vue";
-import {getWarehouseAndSkuKey} from "@/utils/wmsUtil";
+import {getSummaries, getWarehouseAndSkuKey} from "@/utils/wmsUtil";
 import {listByOrderId} from "@/api/sales/orderDetail";
 
 const {proxy} = getCurrentInstance();
@@ -295,31 +295,7 @@ const data = reactive({
 });
 const { form, rules} = toRefs(data);
 
-const getSummaries = (param) => {
-  const { columns, data } = param;
-  const sums = [];
 
-  columns.forEach((column, index) => {
-    if (index === 0) {
-      sums[index] = '合计';
-      return;
-    }
-
-    const values = data.map(item => {
-      const value = Number(item[column.property]);
-      return isNaN(value) ? 0 : value;
-    });
-
-    if (values.some(value => value !== 0)) {
-      const total = values.reduce((prev, curr) => prev + curr, 0);
-      sums[index] = ` ${total.toFixed(2)}`; // 根据实际货币符号调整
-    } else {
-      sums[index] = '';
-    }
-  });
-
-  return sums;
-};
 // 计算商品总数量
 const goodsQty = computed(() => {
   return form.value.details.reduce((sum, row) => sum + (row.qty || 0), 0);
