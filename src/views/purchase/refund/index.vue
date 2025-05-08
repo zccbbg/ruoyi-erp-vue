@@ -57,6 +57,13 @@
         <el-table-column type="expand">
           <template #default="props">
             <div style="padding: 0 50px 20px 50px">
+              <el-descriptions>
+                <el-descriptions-item label="入库单编号:">{{props.row.tradeNo}}</el-descriptions-item>
+                <el-descriptions-item label="商品金额:">{{props.row.goodsAmount}}</el-descriptions-item>
+                <el-descriptions-item label="其他费用:">{{props.row.otherExpensesAmount}}</el-descriptions-item>
+                <el-descriptions-item label="本次收款:">{{props.row.paidAmount}}</el-descriptions-item>
+                <el-descriptions-item label="剩余收款:">{{props.row.actualAmount - props.row.paidAmount}}</el-descriptions-item>
+              </el-descriptions>
               <h3>商品明细</h3>
               <el-table :data="props.row.details" v-loading="detailLoading[props.$index]" empty-text="暂无商品明细" show-summary  :summary-method="getSummaries">
                 <el-table-column label="商品名称">
@@ -112,13 +119,11 @@
           </template>
         </el-table-column>
         <el-table-column label="退货金额" prop="goodsAmount" align="right"/>
-        <el-table-column label="商品数量" align="right">
-          <template #default="{ row }">
-            <span>{{ Math.floor(Number(row.goodsQty)) }}</span>
+        <el-table-column label="总金额"  align="right">
+          <template #default="scope">
+            {{ getTotalAmount(scope.row.goodsAmount, scope.row.otherExpensesAmount) }}
           </template>
         </el-table-column>
-        <el-table-column label="商品金额" prop="goodsAmount" align="right"/>
-        <el-table-column label="其他费用" prop="otherExpensesAmount" align="right"/>
         <el-table-column label="优惠金额" prop="discountAmount" align="right"/>
         <el-table-column label="实际金额" prop="actualAmount" align="right"/>
         <el-table-column label="备注" prop="remark" align="center"/>
@@ -181,7 +186,7 @@ import { getCurrentInstance } from "vue";
 import {  listByRefundId } from "@/api/purchase/refundDetail";
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {useRoute} from "vue-router";
-import {getSummaries} from "@/utils/wmsUtil";
+import {getSummaries, getTotalAmount} from "@/utils/wmsUtil";
 
 const { proxy } = getCurrentInstance();
 

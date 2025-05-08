@@ -31,3 +31,12 @@ export function  getSummaries (param) {
 
   return sums;
 }
+
+
+/** 计算总金额*/
+export function getTotalAmount(goodsAmount, otherExpensesAmount) {
+  const validGoodsAmount = isNaN(parseFloat(goodsAmount))? 0 : parseFloat(goodsAmount);
+  const validOtherExpensesAmount = isNaN(parseFloat(otherExpensesAmount))? 0 : parseFloat(otherExpensesAmount);
+  const total = validGoodsAmount + validOtherExpensesAmount;
+  return total.toFixed(2);
+}

@@ -79,6 +79,12 @@
           <el-table-column type="expand">
             <template #default="props">
               <div style="padding: 0 50px 20px 50px">
+                <el-descriptions>
+                  <el-descriptions-item label="商品金额:">{{props.row.goodsAmount}}</el-descriptions-item>
+                  <el-descriptions-item label="其他费用:">{{props.row.otherExpensesAmount}}</el-descriptions-item>
+                  <el-descriptions-item label="本次预收:">{{props.row.prepayAmount}}</el-descriptions-item>
+                  <el-descriptions-item label="剩余金额:">{{props.row.actualAmount - props.row.prepayAmount}}</el-descriptions-item>
+                </el-descriptions>
                 <h3>商品明细</h3>
                 <el-table :data="props.row.details" v-loading="detailLoading[props.$index]" empty-text="暂无商品明细" show-summary  :summary-method="getSummaries">
                   <el-table-column label="商品名称">
@@ -130,18 +136,19 @@
                 <div>{{ useBasicStore().merchantMap.get(row.merchantId)?.merchantName }}</div>
               </template>
             </el-table-column>
-            <el-table-column label="编辑状态" prop="checkedStatus">
+            <el-table-column label="编辑状态" prop="checkedStatus" align="center">
               <template #default="scope">
                   <dict-tag :options="finish_status" :value="scope.row.checkedStatus"/>
               </template>
             </el-table-column>
             <el-table-column label="入库情况" prop="stockStatus" />
-            <el-table-column label="商品数量" prop="goodsQty" align="right"/>
-            <el-table-column label="商品金额" prop="goodsAmount" align="right"/>
-            <el-table-column label="其他费用" prop="otherExpensesAmount" align="right"/>
+        <el-table-column label="总金额"  align="right">
+          <template #default="scope">
+            {{ getTotalAmount(scope.row.goodsAmount, scope.row.otherExpensesAmount) }}
+          </template>
+        </el-table-column>
             <el-table-column label="优惠金额" prop="discountAmount" align="right"/>
             <el-table-column label="实际金额" prop="actualAmount" align="right"/>
-            <el-table-column label="预付金额" prop="prepayAmount" align="right"/>
         <el-table-column label="操作" align="right" class-name="small-padding fixed-width" width="120">
           <template #default="scope">
             <div>
@@ -199,7 +206,7 @@
   import {listByOrderId} from "@/api/sales/orderDetail";
   import {useRoute} from "vue-router";
   import {getCurrentInstance, onMounted, reactive, ref, toRefs} from "vue";
-  import {getSummaries} from "@/utils/wmsUtil";
+  import {getSummaries, getTotalAmount} from "@/utils/wmsUtil";
 
 const { proxy } = getCurrentInstance();
     const { finish_status } = proxy.useDict('finish_status');

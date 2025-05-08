@@ -126,11 +126,6 @@
           </template>
         </el-table-column>
         <el-table-column label="退货金额" prop="goodsAmount" align="right"/>
-        <el-table-column label="商品数量" align="right">
-          <template #default="{ row }">
-            <span>{{ Math.floor(Number(row.goodsQty)) }}</span>
-          </template>
-        </el-table-column>
         <el-table-column label="总金额" align="right">
           <template #default="scope">
             {{ getTotalAmount(scope.row.goodsAmount, scope.row.otherExpensesAmount) }}
@@ -199,16 +194,11 @@ import {useBasicStore} from "@/store/modules/basic";
 import {parseTime} from "@/utils/ruoyi";
 import {listRefundDetailById} from "@/api/sales/refundDetail";
 import {useRoute} from "vue-router";
-import {getSummaries} from "@/utils/wmsUtil";
+import {getSummaries, getTotalAmount} from "@/utils/wmsUtil";
 
 const { proxy } = getCurrentInstance();
 const detailLoading = ref([]);
 let refundList = reactive([]);
-/*const tradeNo = ref([])
-const goodsAmount = ref([])
-const otherExpensesAmount = ref([])
-const paidAmount = ref([])
-const remainingAmount = ref([])*/
 const open = ref(false);
 const buttonLoading = ref(false);
 const loading = ref(true);
@@ -291,13 +281,7 @@ const data = reactive({
 });
 
 const { queryParams, form, rules } = toRefs(data);
-/** 计算总金额*/
-function getTotalAmount(goodsAmount, otherExpensesAmount) {
-  const validGoodsAmount = isNaN(parseFloat(goodsAmount))? 0 : parseFloat(goodsAmount);
-  const validOtherExpensesAmount = isNaN(parseFloat(otherExpensesAmount))? 0 : parseFloat(otherExpensesAmount);
-  const total = validGoodsAmount + validOtherExpensesAmount;
-  return total.toFixed(2);
-}
+
 
 /** 查询销售退货单列表 */
 function getList() {

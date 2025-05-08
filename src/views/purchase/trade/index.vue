@@ -68,6 +68,13 @@
         <el-table-column type="expand">
           <template #default="props">
             <div style="padding: 0 50px 20px 50px">
+              <el-descriptions>
+                <el-descriptions-item label="订单编号:">{{props.row.orderNo}}</el-descriptions-item>
+                <el-descriptions-item label="商品金额:">{{props.row.goodsAmount}}</el-descriptions-item>
+                <el-descriptions-item label="其他费用:">{{props.row.otherExpensesAmount}}</el-descriptions-item>
+                <el-descriptions-item label="本次支付:">{{props.row.paidAmount}}</el-descriptions-item>
+                <el-descriptions-item label="剩余金额:">{{props.row.actualAmount - props.row.paidAmount}}</el-descriptions-item>
+              </el-descriptions>
               <h3>商品明细</h3>
               <el-table :data="props.row.details" v-loading="detailLoading[props.$index]" empty-text="暂无商品明细" show-summary  :summary-method="getSummaries">
                 <el-table-column label="商品名称">
@@ -123,7 +130,7 @@
             <dict-tag :options="finish_status" :value="scope.row.checkedStatus"/>
           </template>
         </el-table-column>
-        <el-table-column label="退货状态/退货金额"  width="160" align="center">
+        <el-table-column label="退货状态"  width="160" align="center">
           <template #default="scope">
             <div v-if="scope.row.refundStatus">
               <dict-tag :options="refund_status" :value="scope.row.refundStatus"/>
@@ -131,7 +138,6 @@
             <div v-if="scope.row.refundAmount">退货金额：{{scope.row.refundAmount}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="支付金额" prop="paidAmount" align="right"/>
         <el-table-column label="总金额"  align="right">
           <template #default="scope">
             {{ getTotalAmount(scope.row.goodsAmount, scope.row.otherExpensesAmount) }}
@@ -207,7 +213,7 @@ import {useBasicStore} from "@/store/modules/basic";
 import {listByTradeId} from "@/api/purchase/tradeDetail";
 import {useRoute} from "vue-router";
 import {getCurrentInstance, onMounted, reactive, ref, toRefs} from "vue";
-import {getSummaries} from "@/utils/wmsUtil";
+import {getSummaries, getTotalAmount} from "@/utils/wmsUtil";
 
 const expandedRowKeys = ref([])
 const { proxy } = getCurrentInstance();
@@ -235,13 +241,7 @@ const data = reactive({
 
 const { queryParams, form, rules } = toRefs(data);
 
-/** 计算总金额*/
-function getTotalAmount(goodsAmount, otherExpensesAmount) {
-  const validGoodsAmount = isNaN(parseFloat(goodsAmount))? 0 : parseFloat(goodsAmount);
-  const validOtherExpensesAmount = isNaN(parseFloat(otherExpensesAmount))? 0 : parseFloat(otherExpensesAmount);
-  const total = validGoodsAmount + validOtherExpensesAmount;
-  return total.toFixed(2);
-}
+
 
 /** 查询采购入库单列表 */
 function getList() {
