@@ -534,7 +534,7 @@ const doFinishEdit = async () => {
 
 const route = useRoute();
 onMounted(() => {
-  form.value.docDate = parseTime(new Date(), "{y}-{m}-{d} {h}:{i}:{s}")
+  form.value.docDate = parseTime(new Date(), "{y}-{m}-{d}")
   const id = route.query && route.query.id;
   const orderNo = route.query && route.query.orderNo;
   const orderId = route.query && route.query.orderId;

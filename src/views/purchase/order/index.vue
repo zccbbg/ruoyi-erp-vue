@@ -145,7 +145,7 @@
               <template #default="scope">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                   <dict-tag :options="wms_receipt_status" :value="scope.row.stockStatus"/>
-                  <el-button :icon="Finished" @click="handleTradeSuccess(scope.row)" link v-if="scope.row.stockStatus != 2 && scope.row.checkedStatus!=0"></el-button>
+                  <el-button :icon="Finished" @click="handleFinishStock(scope.row)" link v-if="scope.row.stockStatus != 2 && scope.row.checkedStatus!=0"></el-button>
                 </div>
               </template>
             </el-table-column>
@@ -230,7 +230,7 @@ import {
   delOrder,
   addOrder,
   updateOrder,
-  updateStockStatusById
+  finishPurchaseStock
 } from "@/api/purchase/order";
   import {useBasicStore} from "@/store/modules/basic";
   import {listByOrderId} from "@/api/purchase/orderDetail";
@@ -383,10 +383,10 @@ function reset() {
   proxy.resetForm("orderRef");
 }
 /** 修改入库状态为入库完成*/
-function handleTradeSuccess(row){
+function handleFinishStock(row){
   proxy.$modal.confirm('将 "' + row.docNo + '" 标记为入库完成？').then(function() {
     loading.value = true;
-    return updateStockStatusById(row.id);
+    return finishPurchaseStock(row.id);
   }).then(() => {
     loading.value = true;
     getList();

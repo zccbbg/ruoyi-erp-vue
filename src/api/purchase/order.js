@@ -52,7 +52,7 @@ export function delOrder(id) {
 }
 
 // 修改订单状态
-export function updateStockStatusById(id) {
+export function finishPurchaseStock(id) {
   return request({
     url: '/purchase/order/finishStock',
     method: 'post',

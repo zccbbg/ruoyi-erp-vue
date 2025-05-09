@@ -138,6 +138,13 @@
             <div v-if="scope.row.refundAmount">退货金额：{{scope.row.refundAmount}}</div>
           </template>
         </el-table-column>
+        <el-table-column label="采购退货单" prop="refundNoList" align="center">
+          <template #default="scope">
+            <div v-for="(item, index) in scope.row.refundNoList" :key="index">
+              {{ item }}
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column label="总金额"  align="right">
           <template #default="scope">
             {{ getTotalAmount(scope.row.goodsAmount, scope.row.otherExpensesAmount) }}

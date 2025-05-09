@@ -50,3 +50,10 @@ export function delOrder(id) {
     method: 'delete'
   })
 }
+export function finishSalesStock(id) {
+  return request({
+    url: '/sales/order/finishStock',
+    method: 'post',
+    params: { id }
+  })
+}

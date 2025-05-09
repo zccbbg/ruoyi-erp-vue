@@ -141,7 +141,21 @@
                   <dict-tag :options="finish_status" :value="scope.row.checkedStatus"/>
               </template>
             </el-table-column>
-            <el-table-column label="出库状态" prop="stockStatus" />
+        <el-table-column label="出库状态" prop="stockStatus" >
+          <template #default="scope">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <dict-tag :options="wms_shipment_status" :value="scope.row.stockStatus"/>
+              <el-button :icon="Finished" @click="handleFinishStock(scope.row)" link v-if="scope.row.stockStatus != 2 && scope.row.checkedStatus!=0"></el-button>
+            </div>
+          </template>
+        </el-table-column>>
+        <el-table-column label="采购入库单编号" prop="tradeNoList" align="center">
+          <template #default="scope">
+            <div v-for="(item, index) in scope.row.tradeNoList" :key="index">
+              {{ item }}
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column label="总金额"  align="right">
           <template #default="scope">
             {{ getTotalAmount(scope.row.goodsAmount, scope.row.otherExpensesAmount) }}
@@ -201,15 +215,16 @@
 </template>
 
 <script setup name="Order">
-  import { listOrder, delOrder, addOrder, updateOrder } from "@/api/sales/order";
+import {listOrder, delOrder, addOrder, updateOrder, finishSalesStock} from "@/api/sales/order";
   import {useBasicStore} from "@/store/modules/basic";
   import {listByOrderId} from "@/api/sales/orderDetail";
   import {useRoute} from "vue-router";
   import {getCurrentInstance, onMounted, reactive, ref, toRefs} from "vue";
   import {getSummaries, getTotalAmount} from "@/utils/wmsUtil";
-
-const { proxy } = getCurrentInstance();
-    const { finish_status } = proxy.useDict('finish_status');
+  import {Finished} from "@element-plus/icons-vue";
+  const { proxy } = getCurrentInstance();
+  const { wms_shipment_status } = proxy.useDict('wms_shipment_status');
+  const { finish_status } = proxy.useDict('finish_status');
   // 当前展开集合
   const expandedRowKeys = ref([])
   let orderList = reactive([]);
@@ -243,7 +258,20 @@ const { proxy } = getCurrentInstance();
 });
 
 const { queryParams, form, rules } = toRefs(data);
-
+  /** 修改入库状态为出库完成*/
+  function handleFinishStock(row){
+    proxy.$modal.confirm('将 "' + row.docNo + '" 标记为出库完成？').then(function() {
+      loading.value = true;
+      return finishSalesStock(row.id);
+    }).then(() => {
+      loading.value = true;
+      getList();
+      proxy.$modal.msgSuccess("标记成功");
+    }).catch(() => {
+    }).finally(() => {
+      loading.value = false;
+    });
+  }
 /** 查询销售订单列表 */
 function getList() {
   loading.value = true;
