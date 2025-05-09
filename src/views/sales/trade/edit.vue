@@ -393,7 +393,12 @@ const handleOkClick = (item) => {
   item.forEach(it => {
     if (!form.value.details.find(detail => getWarehouseAndSkuKey(detail) === getWarehouseAndSkuKey(it))) {
       form.value.details.push(
-        {...it, id: null})
+        {
+          ...it,
+          id: null,
+          priceWithTax:it.sku?.sellingPrice
+        }
+      )
     }
   })
 }

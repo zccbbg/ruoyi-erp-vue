@@ -404,6 +404,7 @@ const handleOkClick = (item) => {
           qty: undefined,
           warehouseId: it.warehouseId,
           inventoryId: it.id,
+          priceWithTax:it.sku?.sellingPrice
         })
     }
   })
