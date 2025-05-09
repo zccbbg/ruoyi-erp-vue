@@ -141,7 +141,7 @@
                   <dict-tag :options="finish_status" :value="scope.row.checkedStatus"/>
               </template>
             </el-table-column>
-            <el-table-column label="入库情况" prop="stockStatus" />
+            <el-table-column label="出库状态" prop="stockStatus" />
         <el-table-column label="总金额"  align="right">
           <template #default="scope">
             {{ getTotalAmount(scope.row.goodsAmount, scope.row.otherExpensesAmount) }}

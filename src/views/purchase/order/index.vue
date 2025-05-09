@@ -141,11 +141,21 @@
                   <dict-tag :options="finish_status" :value="scope.row.checkedStatus"/>
               </template>
             </el-table-column>
-        <el-table-column label="入库情况" prop="stockStatus" >
-          <template #default="scope">
-            <dict-tag :options="wms_receipt_status" :value="scope.row.stockStatus"/>
-          </template>
-        </el-table-column>
+            <el-table-column label="入库状态" prop="stockStatus" align="center">
+              <template #default="scope">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <dict-tag :options="wms_receipt_status" :value="scope.row.stockStatus"/>
+                  <el-button :icon="Finished" @click="handleTradeSuccess(scope.row)" link v-if="scope.row.stockStatus != 2 && scope.row.checkedStatus!=0"></el-button>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column label="采购入库单编号" prop="tradeNoList" align="center">
+              <template #default="scope">
+                <div v-for="(item, index) in scope.row.tradeNoList" :key="index">
+                  {{ item }}
+                </div>
+              </template>
+            </el-table-column>
             <el-table-column label="总金额"  align="right">
               <template #default="scope">
                 {{ getTotalAmount(scope.row.goodsAmount, scope.row.otherExpensesAmount) }}
@@ -196,7 +206,6 @@
                 </template>
               </el-popover>
             </div>
-
           </template>
         </el-table-column>
       </el-table>
@@ -216,14 +225,20 @@
 </template>
 
 <script setup name="Order">
-  import { listOrder, getOrder, delOrder, addOrder, updateOrder } from "@/api/purchase/order";
+import {
+  listOrder,
+  delOrder,
+  addOrder,
+  updateOrder,
+  updateStockStatusById
+} from "@/api/purchase/order";
   import {useBasicStore} from "@/store/modules/basic";
   import {listByOrderId} from "@/api/purchase/orderDetail";
   import {useRoute} from "vue-router";
   import {getCurrentInstance, onMounted, reactive, ref, toRefs} from "vue";
   import {parseTime} from "@/utils/ruoyi";
   import {getSummaries, getTotalAmount} from "@/utils/wmsUtil";
-
+import {Edit, Finished} from "@element-plus/icons-vue";
 const { proxy } = getCurrentInstance();
     const { finish_status } = proxy.useDict('finish_status');
     const { wms_receipt_status } = proxy.useDict('wms_receipt_status');
@@ -240,7 +255,6 @@ const { proxy } = getCurrentInstance();
     const daterangeDeliveryDate = ref([]);
   // 商品明细table的loading状态集合
   const detailLoading = ref([])
-
   const data = reactive({
     form: {},
     queryParams: {
@@ -324,7 +338,7 @@ function getList() {
     return true
   }
 
-  function handleGoDetail(row) {
+ function handleGoDetail(row) {
     const index = expandedRowKeys.value.indexOf(row.id)
     if (index !== -1) {
       // 收起
@@ -332,7 +346,7 @@ function getList() {
     } else {
       // 展开
       expandedRowKeys.value.push(row.id)
-      loadOrderDetail(row)
+       loadOrderDetail(row)
     }
   }
 
@@ -368,7 +382,20 @@ function reset() {
   };
   proxy.resetForm("orderRef");
 }
-
+/** 修改入库状态为入库完成*/
+function handleTradeSuccess(row){
+  proxy.$modal.confirm('将 "' + row.docNo + '" 标记为入库完成？').then(function() {
+    loading.value = true;
+    return updateStockStatusById(row.id);
+  }).then(() => {
+    loading.value = true;
+    getList();
+    proxy.$modal.msgSuccess("标记成功");
+  }).catch(() => {
+  }).finally(() => {
+    loading.value = false;
+  });
+}
 /** 搜索按钮操作 */
 function handleQuery() {
   queryParams.value.pageNum = 1;

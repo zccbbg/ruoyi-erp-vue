@@ -123,7 +123,7 @@
             <dict-tag :options="finish_status" :value="scope.row.checkedStatus"/>
           </template>
         </el-table-column>
-        <el-table-column label="退货状态/退货金额"  width="160" align="center">
+        <el-table-column label="退货状态"  width="160" align="center">
           <template #default="scope">
             <div v-if="scope.row.refundStatus">
               <dict-tag :options="refund_status" :value="scope.row.refundStatus"/>

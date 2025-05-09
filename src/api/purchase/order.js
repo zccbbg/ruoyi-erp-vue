@@ -50,3 +50,12 @@ export function delOrder(id) {
     method: 'delete'
   })
 }
+
+// 修改订单状态
+export function updateStockStatusById(id) {
+  return request({
+    url: '/purchase/order/finishStock',
+    method: 'post',
+    params: { id }
+  })
+}
