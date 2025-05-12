@@ -98,8 +98,18 @@
           </el-table-column>
         </el-table-column>
         <el-table-column label="商户余额" align="center">
-          <el-table-column label="交易前余额" prop="beforeBalance" align="right" width="110"/>
-          <el-table-column label="余额变动" prop="balanceChange" align="right" width="110" :formatter="formatNumber"/>
+          <el-table-column label="交易前余额" prop="beforeBalance" align="right" width="150">
+            <template #default="scope">
+              <div v-if="scope.row.beforeBalance>0" :style="{ color: 'green' }">应付: {{ Math.abs(scope.row.beforeBalance)}}</div>
+              <div v-if="scope.row.beforeBalance<0" :style="{ color:'red' }">应收: {{ Math.abs(scope.row.beforeBalance)}}</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="余额变动" prop="balanceChange" align="right" width="150">
+            <template #default="scope">
+              <div v-if="scope.row.balanceChange>0" :style="{ color: 'green' }">应付: {{ Math.abs(scope.row.balanceChange)}}</div>
+              <div v-if="scope.row.balanceChange<0" :style="{ color:'red' }">应收: {{ Math.abs(scope.row.balanceChange)}}</div>
+            </template>
+          </el-table-column>
           <el-table-column label="交易后余额" prop="afterBalance" align="right" width="150">
             <template #default="scope">
               <div v-if="scope.row.afterBalance>0" :style="{ color: 'green' }">应付: {{ Math.abs(scope.row.afterBalance)}}</div>
@@ -245,10 +255,6 @@ const { proxy } = getCurrentInstance();
   }
 });
 const { queryParams, form, rules } = toRefs(data);
-
-const formatNumber = (row, column, cellValue) => {
-    return cellValue > 0 ? `+${cellValue}` : cellValue;
-  };
 
 /** 查询交易流水列表 */
 function getList() {
