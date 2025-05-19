@@ -208,11 +208,11 @@
                 title="提示"
                 :width="300"
                 trigger="hover"
-                :disabled="scope.row.checkedStatus === 1 || scope.row.stockStatus  === 2"
-                :content="'订单【' + scope.row.docNo + '】未完成，无法入库！'|| '订单【' + scope.row.docNo + '】入库完成，无法再次库！' "
+                :disabled="scope.row.checkedStatus === 1 && scope.row.stockStatus  !== 2"
+                :content="'订单【' + scope.row.docNo + '】未完成或已全部入库！'"
               >
                 <template #reference>
-                  <el-button type="primary" @click="handleTrade(scope.row)" link v-hasPermi="['wms:check:all']" :disabled="[0].includes(scope.row.checkedStatus)">入库</el-button>
+                  <el-button type="primary" @click="handleTrade(scope.row)" link v-hasPermi="['wms:check:all']" :disabled="scope.row.checkedStatus===0 || scope.row.stockStatus===2">入库</el-button>
                 </template>
               </el-popover>
             </div>

@@ -277,9 +277,11 @@ const initFormData = {
 const validateBankAccount = (rule, value, callback) => {
   if (form.value.prepayAmount && !value) {
     callback(new Error("请选择银行账户"));
-  } else {
-    callback();
   }
+  if (!form.value.prepayAmount && value) {
+    callback(new Error("请在右侧输入框输入预付金额"));
+  }
+  callback();
 };
 const data = reactive({
   form: {...initFormData},
@@ -290,7 +292,9 @@ const data = reactive({
     merchantId: [
       {required: true, message: "供应商不能为空", trigger: "blur"}
     ],
-    bankAccountId: [{ validator: validateBankAccount, trigger: ['blur', 'change'] }]
+    bankAccountId: [
+      { validator: validateBankAccount, trigger: ['blur', 'change'] }
+    ],
   }
 });
 const { form, rules} = toRefs(data);
