@@ -47,6 +47,18 @@
           <div v-if="row.sku.barcode">条码：{{ row.sku.barcode }}</div>
         </template>
       </el-table-column>
+      <el-table-column label="价格(元)" width="160" align="left">
+        <template #default="{ row }">
+          <div v-if="row.sku.costPrice" class="flex-space-between">
+            <span>成本价：</span>
+            <div>{{ (row.sku.costPrice || row.sku.costPrice === 0) ? row.sku.costPrice : '' }}</div>
+          </div>
+          <div v-if="row.sku.sellingPrice" class="flex-space-between">
+            <span>销售价：</span>
+            <div>{{ (row.sku.sellingPrice || row.sku.sellingPrice === 0) ? row.sku.sellingPrice : '' }}</div>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column label="剩余库存" prop="quantity" align="right">
         <template #default="{ row }">
           <el-statistic :value="Number(row.qty)" :precision="0"/>
