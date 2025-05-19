@@ -131,7 +131,7 @@
                 <div v-if="scope.row.deliveryDate">交货：{{ parseTime(scope.row.deliveryDate, '{y}-{m}-{d}') }}</div>
               </template>
             </el-table-column>
-            <el-table-column label="供应商" prop="merchantId" min-width="120">
+            <el-table-column label="客户" prop="merchantId" min-width="120">
               <template #default="{ row }">
                 <div>{{ useBasicStore().merchantMap.get(row.merchantId)?.merchantName }}</div>
               </template>
@@ -149,7 +149,7 @@
             </div>
           </template>
         </el-table-column>>
-        <el-table-column label="采购入库单编号" prop="tradeNoList" align="center">
+        <el-table-column label="销售出库单编号" prop="tradeNoList" align="center">
           <template #default="scope">
             <div v-for="(item, index) in scope.row.tradeNoList" :key="index">
               {{ item }}

@@ -30,8 +30,8 @@
             <el-col :span="18">
               <el-row>
                 <el-col :span="8">
-                  <el-form-item label="供应商" prop="merchantId">
-                    <el-select v-model="form.merchantId" placeholder="请选择供应商" clearable filterable style="width:100%">
+                  <el-form-item label="客户" prop="merchantId">
+                    <el-select v-model="form.merchantId" placeholder="请选择客户" clearable filterable style="width:100%">
                       <el-option v-for="item in useBasicStore().supplierList" :key="item.id" :label="item.merchantName" :value="item.id"/>
                     </el-select>
                   </el-form-item>
@@ -292,7 +292,7 @@ const data = reactive({
       {required: true, message: "订单编号不能为空", trigger: "blur"}
     ],
     merchantId: [
-      {required: true, message: "供应商不能为空", trigger: "blur"}
+      {required: true, message: "客户不能为空", trigger: "blur"}
     ],
     bankAccountId: [{ validator: validateBankAccount, trigger: ['blur', 'change'] }]
   }

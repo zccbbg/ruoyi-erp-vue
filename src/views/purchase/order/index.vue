@@ -42,6 +42,16 @@
                   />
                 </el-select>
               </el-form-item>
+              <el-form-item label="入库状态" prop="stockStatus">
+                <el-select v-model="queryParams.stockStatus" placeholder="请选择入库状态" clearable>
+                  <el-option
+                    v-for="dict in wms_receipt_status"
+                    :key="dict.value"
+                    :label="dict.label"
+                    :value="dict.value"
+                  />
+                </el-select>
+              </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
             <el-button icon="Refresh" @click="resetQuery">重置</el-button>
@@ -198,8 +208,8 @@
                 title="提示"
                 :width="300"
                 trigger="hover"
-                :disabled="scope.row.checkedStatus === 1"
-                :content="'订单【' + scope.row.docNo + '】未完成，无法入库！' "
+                :disabled="scope.row.checkedStatus === 1 || scope.row.stockStatus  === 2"
+                :content="'订单【' + scope.row.docNo + '】未完成，无法入库！'|| '订单【' + scope.row.docNo + '】入库完成，无法再次库！' "
               >
                 <template #reference>
                   <el-button type="primary" @click="handleTrade(scope.row)" link v-hasPermi="['wms:check:all']" :disabled="[0].includes(scope.row.checkedStatus)">入库</el-button>
