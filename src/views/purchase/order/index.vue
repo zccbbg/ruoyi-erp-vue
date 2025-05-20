@@ -212,7 +212,7 @@
                 :content="'订单【' + scope.row.docNo + '】未完成或已全部入库！'"
               >
                 <template #reference>
-                  <el-button type="primary" @click="handleTrade(scope.row)" link v-hasPermi="['wms:check:all']" :disabled="scope.row.checkedStatus===0 || scope.row.stockStatus===2">入库</el-button>
+                  <el-button type="primary" @click="handleTrade(scope.row)" link v-hasPermi="['purchase:order:all']" :disabled="scope.row.checkedStatus===0 || scope.row.stockStatus===2">入库</el-button>
                 </template>
               </el-popover>
             </div>
@@ -309,7 +309,7 @@ function getList() {
 }
 
   async function handleTrade(row) {
-    proxy.$router.push({ path: "/purchase/tradeEdit",  query: {orderNo: row.docNo ,orderId: row.id ,merchantId: row.merchantId} });
+    proxy.$router.push({ path: "/purchase/tradeEdit",  query: {orderNo: row.docNo ,orderId: row.id ,merchantId: row.merchantId ,prepayAmount:row.prepayAmount} });
   }
 
   function handleExpandExchange(value, expandedRows) {

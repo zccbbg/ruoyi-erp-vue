@@ -48,8 +48,9 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="订单编号" prop="orderNo">
-                    <el-input v-model="form.orderNo" placeholder="请输入订单编号" :disabled="orderNoSelectDisabled"/>
+                  <el-form-item label="订单信息" prop="orderNo">
+                    <el-input v-model="form.orderNo" placeholder="请输入订单编号" :disabled="orderNoSelectDisabled" style="width:50%"/>
+                    <el-input-number :controls="false" :precision="2" v-model="form.prepayAmount" placeholder="请输入预付金额" :disabled="orderNoSelectDisabled" style="width:50%"/>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -300,7 +301,7 @@ const goodsQty = computed(() => {
   return form.value.details.reduce((sum, row) => sum + (row.qty || 0), 0);
 });
 
-// 计算商品总数量
+// 计算商品总金额
 const goodsAmount = computed(() => {
   return form.value.details.reduce((sum, row) => sum + (row.totalAmount || 0), 0);
 });
@@ -311,9 +312,9 @@ const actualAmount = computed(() =>
   (Number(form.value?.otherExpensesAmount) || 0) -
   (Number(form.value?.discountAmount) || 0)
 );
-//计算下次应支付金额
+//计算剩余金额
 const remainingAmount = computed(() => {
-  return form.value.actualAmount - form.value.paidAmount;
+  return form.value.actualAmount - form.value.paidAmount - form.value.prepayAmount;
 });
 //计算总金额 等于 商品金额加其他费用
 const totalFormAmount = computed(() => {
@@ -531,6 +532,7 @@ onMounted(() => {
   const orderNo = route.query && route.query.orderNo;
   const orderId = route.query && route.query.orderId;
   const merchantId = route.query && route.query.merchantId;
+  const prepayAmount = route.query && route.query.prepayAmount;
   if (id) {
     loadDetail(id)
   } else {
@@ -553,6 +555,9 @@ onMounted(() => {
   if(merchantId){
     merchantSelectDisabled.value = true
     form.value.merchantId = merchantId
+  }
+  if(prepayAmount){
+    form.value.prepayAmount = prepayAmount
   }
 })
 
