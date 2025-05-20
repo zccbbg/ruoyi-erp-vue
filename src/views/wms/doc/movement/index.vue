@@ -3,21 +3,14 @@
     <el-card>
       <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="98px">
         <el-form-item label="审核状态" prop="checkedStatus">
-          <el-radio-group v-model="queryParams.checkedStatus" @change="handleQuery">
-            <el-radio-button
-              :key="-2"
-              :label="-2"
-            >
-              全部
-            </el-radio-button>
-            <el-radio-button
-              v-for="item in wms_movement_status"
-              :key="item.value"
-              :label="item.value"
-            >
-              {{ item.label }}
-            </el-radio-button>
-          </el-radio-group>
+            <el-select v-model="queryParams.checkedStatus" placeholder="请选择审核状态" clearable>
+              <el-option
+                v-for="dict in finish_status"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+              />
+            </el-select>
         </el-form-item>
         <el-form-item label="调拨单号" prop="docNo">
           <el-input
@@ -109,7 +102,7 @@
         </el-table-column>
         <el-table-column label="审核状态" align="center" prop="checkedStatus" width="80">
           <template #default="{ row }">
-            <dict-tag :options="wms_movement_status" :value="row.checkedStatus" />
+            <dict-tag :options="finish_status" :value="row.checkedStatus" />
           </template>
         </el-table-column>
         <el-table-column label="总数量/总金额(元)" align="left">
@@ -195,7 +188,7 @@ import {ElMessageBox} from "element-plus";
 import movementPanel from "@/components/PrintTemplate/movement-panel";
 
 const { proxy } = getCurrentInstance();
-const { wms_movement_status } = proxy.useDict("wms_movement_status");
+const { finish_status } = proxy.useDict('finish_status');
 const movementList = ref([]);
 const open = ref(false);
 const buttonLoading = ref(false);
@@ -212,7 +205,7 @@ const data = reactive({
     pageNum: 1,
     pageSize: 10,
     docNo: undefined,
-    checkedStatus: -2,
+    checkedStatus: undefined,
   },
 });
 
@@ -305,7 +298,6 @@ async function handlePrint(row) {
   }
   const printData = {
     docNo: movement.docNo,
-    checkedStatus: proxy.selectDictLabel(wms_movement_status.value, movement.checkedStatus),
     warehouseName: useBasicStore().warehouseMap.get(movement.warehouseId)?.warehouseName,
     targetWarehouseName: useBasicStore().warehouseMap.get(movement.targetWarehouseId)?.warehouseName,
     goodsQty: Number(movement.goodsQty).toFixed(0),

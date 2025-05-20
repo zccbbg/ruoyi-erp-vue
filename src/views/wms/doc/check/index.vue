@@ -3,21 +3,14 @@
     <el-card>
       <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="68px">
         <el-form-item label="审核状态" prop="checkedStatus">
-          <el-radio-group v-model="queryParams.checkedStatus" @change="handleQuery">
-            <el-radio-button
-              :key="-2"
-              :label="-2"
-            >
-              全部
-            </el-radio-button>
-            <el-radio-button
-              v-for="item in wms_check_status"
-              :key="item.value"
-              :label="item.value"
-            >
-              {{ item.label }}
-            </el-radio-button>
-          </el-radio-group>
+          <el-select v-model="queryParams.checkedStatus" placeholder="请选择审核状态" clearable>
+              <el-option
+                v-for="dict in finish_status"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+              />
+            </el-select>
         </el-form-item>
         <el-form-item label="盘库单号" prop="docNo">
           <el-input
@@ -62,7 +55,7 @@
         </el-table-column>
         <el-table-column label="审核状态" align="center" prop="checkedStatus" width="120">
           <template #default="{ row }">
-            <dict-tag :options="wms_check_status" :value="row.checkedStatus" />
+            <dict-tag :options="finish_status" :value="row.checkedStatus" />
           </template>
         </el-table-column>
         <el-table-column label="盈亏数" align="right">
@@ -148,7 +141,7 @@ import {ElMessageBox} from "element-plus";
 import checkPanel from "@/components/PrintTemplate/check-panel";
 import CheckDocDetail from "@/views/wms/doc/check/CheckDocDetail.vue";
 const { proxy } = getCurrentInstance();
-const {wms_check_status} = proxy.useDict("wms_check_status");
+const { finish_status } = proxy.useDict('finish_status');
 const checkDocList = ref([]);
 const open = ref(false);
 const buttonLoading = ref(false);
@@ -161,7 +154,7 @@ const data = reactive({
     pageNum: 1,
     pageSize: 10,
     docNo: undefined,
-    checkedStatus: -2,
+    checkedStatus: undefined,
   },
 });
 const watchDetailObj = ref({
@@ -245,7 +238,6 @@ async function handlePrint(row) {
   }
   const printData = {
     docNo: checkDoc.docNo,
-    checkedStatus: proxy.selectDictLabel(wms_check_status.value, checkDoc.checkedStatus),
     warehouseName: useBasicStore().warehouseMap.get(checkDoc.warehouseId)?.warehouseName,
     goodsQty: Number(checkDoc.goodsQty).toFixed(0),
     createBy: checkDoc.createBy,

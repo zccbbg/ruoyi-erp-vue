@@ -10,6 +10,16 @@
             @keyup.enter="handleQuery"
           />
         </el-form-item>
+        <el-form-item label="审核状态" prop="checkedStatus">
+          <el-select v-model="queryParams.checkedStatus" placeholder="请选择审核状态" clearable>
+            <el-option
+              v-for="dict in finish_status"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="单据日期" style="width: 308px">
           <el-date-picker
             v-model="daterangeBillDate"
@@ -20,16 +30,6 @@
             end-placeholder="结束日期"
             :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]"
           ></el-date-picker>
-        </el-form-item>
-        <el-form-item label="编辑状态" prop="checkedStatus">
-          <el-select v-model="queryParams.checkedStatus" placeholder="请选择编辑状态" clearable>
-            <el-option
-              v-for="dict in finish_status"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            />
-          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
@@ -120,7 +120,7 @@
             <div>{{ useBasicStore().merchantMap.get(row.merchantId)?.merchantName }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="编辑状态" align="center">
+        <el-table-column label="审核状态" align="center">
           <template #default="scope">
             <dict-tag :options="finish_status" :value="scope.row.checkedStatus"/>
           </template>

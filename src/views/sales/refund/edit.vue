@@ -614,7 +614,7 @@ const goSaasTip = () => {
 @import "@/assets/styles/variables.module";
 
 :deep(.el-input-number .el-input__inner){
-  text-align: left;
+  text-align: right;
   line-height: 1;
   -webkit-appearance: none;
   -moz-appearance: textfield;
