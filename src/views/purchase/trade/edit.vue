@@ -275,8 +275,8 @@ const validateBankAccount = (rule, value, callback) => {
   if (form.value.paidAmount && !value) {
     callback(new Error("请选择银行账户"));
   }
-  if (!form.value.prepayAmount && value) {
-    callback(new Error("请在右侧输入框输入预付金额"));
+  if (!form.value.paidAmount && value) {
+    callback(new Error("请在右侧输入框输入支付金额"));
   }
   callback();
 };
