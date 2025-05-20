@@ -49,8 +49,8 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="订单信息" prop="orderNo">
-                    <el-input v-model="form.orderNo" placeholder="请输入订单编号" :disabled="orderNoSelectDisabled" style="width:50%"/>
-                    <el-input-number :controls="false" :precision="2" v-model="form.prepayAmount" placeholder="请输入预付金额" :disabled="orderNoSelectDisabled" style="width:50%"/>
+                    <el-input v-model="form.orderNo" placeholder="请从采购订单处创建" :disabled="true" style="width:50%"/>
+                    <el-input-number :controls="false" :precision="2" v-model="form.prepayAmount" placeholder="预付金额" :disabled="true" style="width:50%"/>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -256,7 +256,6 @@ const batchSetWarehouseVisible = ref(false)
 const skuSelectRef = ref(null)
 const batchSetWarehouseId = ref(null)
 const merchantSelectDisabled = ref(false)
-const orderNoSelectDisabled = ref(false)
 const initFormData = {
   id: undefined,
   docNo: undefined,
@@ -539,7 +538,6 @@ onMounted(() => {
     form.value.docNo = 'TO' + generateNo()
   }
   if(orderNo){
-    orderNoSelectDisabled.value = true
     form.value.orderNo = orderNo
   }
   if(orderId){
