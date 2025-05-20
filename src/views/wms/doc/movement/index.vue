@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-card>
       <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="98px">
-        <el-form-item label="调拨状态" prop="checkedStatus">
+        <el-form-item label="审核状态" prop="checkedStatus">
           <el-radio-group v-model="queryParams.checkedStatus" @change="handleQuery">
             <el-radio-button
               :key="-2"
@@ -107,7 +107,7 @@
             <div>{{ useBasicStore().warehouseMap.get(row.targetWarehouseId)?.warehouseName }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="调拨状态" align="center" prop="checkedStatus" width="80">
+        <el-table-column label="审核状态" align="center" prop="checkedStatus" width="80">
           <template #default="{ row }">
             <dict-tag :options="wms_movement_status" :value="row.checkedStatus" />
           </template>

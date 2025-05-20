@@ -2,22 +2,15 @@
   <div class="app-container">
     <el-card>
       <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="68px">
-        <el-form-item label="出库状态" prop="checkedStatus">
-          <el-radio-group v-model="queryParams.checkedStatus" @change="handleQuery">
-            <el-radio-button
-              :key="-2"
-              :label="-2"
-            >
-              全部
-            </el-radio-button>
-            <el-radio-button
-              v-for="item in wms_shipment_status"
-              :key="item.value"
-              :label="item.value"
-            >
-              {{ item.label }}
-            </el-radio-button>
-          </el-radio-group>
+        <el-form-item label="审核状态" prop="checkedStatus">
+          <el-select v-model="queryParams.checkedStatus" placeholder="请选择审核状态" clearable>
+            <el-option
+              v-for="dict in finish_status"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="出库单号" prop="docNo">
           <el-input
@@ -109,9 +102,9 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="出库状态" align="center" prop="checkedStatus" width="80">
+        <el-table-column label="审核状态" align="center" prop="checkedStatus" width="80">
           <template #default="{ row }">
-            <dict-tag :options="wms_shipment_status" :value="row.checkedStatus" />
+            <dict-tag :options="finish_status" :value="row.checkedStatus" />
           </template>
         </el-table-column>
         <el-table-column label="操作时间" align="left" width="150">
@@ -182,9 +175,9 @@ import {listByShipmentOrderId} from "@/api/wms/shipmentDocDetail";
 import {getCurrentInstance, reactive, ref, toRefs} from "vue";
 import {useBasicStore} from "../../../../store/modules/basic";
 import shipmentPanel from "@/components/PrintTemplate/shipment-panel";
-
 const { proxy } = getCurrentInstance();
-const { wms_shipment_status, wms_shipment_type} = proxy.useDict("wms_shipment_status", "wms_shipment_type");
+const { wms_shipment_status} = proxy.useDict("wms_shipment_status");
+const { finish_status } = proxy.useDict('finish_status');
 const shipmentList = ref([]);
 const open = ref(false);
 const buttonLoading = ref(false);
@@ -203,7 +196,7 @@ const data = reactive({
     docNo: undefined,
     merchantId: undefined,
     goodsAmount: undefined,
-    checkedStatus: -2,
+    checkedStatus: undefined,
   },
 });
 

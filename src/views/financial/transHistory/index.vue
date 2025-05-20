@@ -22,14 +22,6 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="业务编号" prop="relatedNo">
-          <el-input
-            v-model="queryParams.relatedNo"
-            placeholder="请输入关联业务编号"
-            clearable
-            @keyup.enter="handleQuery"
-          />
-        </el-form-item>
         <el-form-item label="操作时间" prop="createTimeRange">
           <el-date-picker
             v-model="createTimeRange"
@@ -39,6 +31,14 @@
             format="YYYY-MM-DD HH:mm:ss"
             start-placeholder="开始时间"
             end-placeholder="结束时间"
+          />
+        </el-form-item>
+        <el-form-item label="业务编号" prop="relatedNo">
+          <el-input
+            v-model="queryParams.relatedNo"
+            placeholder="请输入关联业务编号"
+            clearable
+            @keyup.enter="handleQuery"
           />
         </el-form-item>
         <el-form-item>

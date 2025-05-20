@@ -221,7 +221,7 @@
     <div class="footer-global">
       <div class="btn-box">
         <div>
-          <el-button @click="doFinishEdit" type="primary" class="ml10">完成编辑</el-button>
+          <el-button @click="doFinishEdit" type="primary" class="ml10">完成审核</el-button>
         </div>
         <div>
           <el-button @click="save" type="primary">暂存</el-button>

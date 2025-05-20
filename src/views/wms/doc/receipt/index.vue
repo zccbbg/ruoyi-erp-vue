@@ -2,22 +2,15 @@
   <div class="app-container">
     <el-card>
       <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="68px">
-        <el-form-item label="入库状态" prop="checkedStatus">
-          <el-radio-group v-model="queryParams.checkedStatus" @change="handleQuery">
-            <el-radio-button
-              :key="-2"
-              :label="-2"
-            >
-              全部
-            </el-radio-button>
-            <el-radio-button
-              v-for="item in wms_receipt_status"
-              :key="item.value"
-              :label="item.value"
-            >
-              {{ item.label }}
-            </el-radio-button>
-          </el-radio-group>
+        <el-form-item label="审核状态" prop="checkedStatus">
+          <el-select v-model="queryParams.checkedStatus" placeholder="请选择审核状态" clearable>
+            <el-option
+              v-for="dict in finish_status"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="入库单号" prop="docNo">
           <el-input
@@ -110,9 +103,9 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="入库状态" align="center" prop="checkedStatus" width="80">
+        <el-table-column label="审核状态" align="center" prop="checkedStatus" width="80">
           <template #default="{ row }">
-            <dict-tag :options="wms_receipt_status" :value="row.checkedStatus" />
+            <dict-tag :options="finish_status" :value="row.checkedStatus" />
           </template>
         </el-table-column>
         <el-table-column label="操作时间" align="left" width="150">
@@ -205,10 +198,10 @@ const data = reactive({
     docNo: undefined,
     merchantId: undefined,
     goodsAmount: undefined,
-    checkedStatus: -2,
+    checkedStatus: undefined,
   },
 });
-
+const { finish_status } = proxy.useDict('finish_status');
 const { queryParams } = toRefs(data);
 
 /** 查询入库单列表 */

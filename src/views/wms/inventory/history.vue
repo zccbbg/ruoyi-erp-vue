@@ -169,7 +169,7 @@ const queryParams = ref({
   skuName: undefined,
   skuNo: undefined,
   warehouseId: undefined,
-  summaryType: undefined,
+  summaryType: 0,
   createTimeRange: undefined
 })
 

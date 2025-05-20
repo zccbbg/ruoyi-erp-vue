@@ -90,7 +90,7 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="本次支付" prop="bankAccountId">
+                  <el-form-item label="本次收款" prop="bankAccountId">
                     <el-select v-model="form.bankAccountId" placeholder="请选择银行账户" clearable filterable style="width:50%">
                       <el-option v-for="item in useBasicStore().bankAccountList" :key="item.id" :label="item.accountName" :value="item.id"/>
                     </el-select>
@@ -215,7 +215,7 @@
     <div class="footer-global">
       <div class="btn-box">
         <div>
-          <el-button @click="doFinishEdit" type="primary" class="ml10">完成编辑</el-button>
+          <el-button @click="doFinishEdit" type="primary" class="ml10">完成审核</el-button>
         </div>
         <div>
           <el-button @click="save" type="primary">暂存</el-button>
