@@ -306,7 +306,7 @@ function getList() {
 }
 
   async function handleOutBand(row) {
-    proxy.$router.push({ path: "/sales/tradeEdit",  query: {orderNo: row.docNo ,orderId: row.id ,merchantId: row.merchantId} });
+    proxy.$router.push({ path: "/sales/tradeEdit",  query: {orderNo: row.docNo ,orderId: row.id ,merchantId: row.merchantId, prepayAmount:row.prepayAmount} });
   }
 
   function handleExpandExchange(value, expandedRows) {

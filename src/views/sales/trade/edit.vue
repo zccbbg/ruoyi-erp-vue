@@ -49,7 +49,8 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="订单编号" prop="orderNo">
-                    <el-input v-model="form.orderNo" placeholder="请输入订单编号" :disabled="orderNoSelectDisabled"/>
+                    <el-input v-model="form.orderNo" placeholder="请从销售订单处创建" :disabled="true" style="width:50%"/>
+                    <el-input-number :controls="false" :precision="2" v-model="form.prepayAmount" placeholder="预付金额" :disabled="true" style="width:50%"/>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -317,7 +318,7 @@ const actualAmount = computed(() =>
 
 //计算下次应支付金额
 const remainingAmount = computed(() => {
-  return form.value.actualAmount - form.value.paidAmount;
+  return form.value.actualAmount - form.value.paidAmount -form.value.prepayAmount;
 });
 
 //计算总金额 等于 商品金额加其他费用
@@ -541,6 +542,7 @@ onMounted(() => {
   const orderNo = route.query && route.query.orderNo;
   const orderId = route.query && route.query.orderId;
   const merchantId = route.query && route.query.merchantId;
+  const prepayAmount = route.query && route.query.prepayAmount;
   if (id) {
     loadDetail(id)
   } else {
@@ -562,6 +564,9 @@ onMounted(() => {
   if(merchantId){
     merchantSelectDisabled.value = true
     form.value.merchantId = merchantId
+  }
+  if(prepayAmount){
+    form.value.prepayAmount = prepayAmount
   }
 })
 
