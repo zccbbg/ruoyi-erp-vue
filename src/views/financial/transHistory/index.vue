@@ -76,7 +76,7 @@
           </el-table-column>
           <el-table-column label="金额变动" prop="paidAmount" align="right" width="110" :formatter="formatNumber">
             <template #default="scope">
-              {{ scope.row.paidAmount ?? '--' }}
+              {{useBasicStore().bankAccountMap.get(scope.row.bankAccountId) == null ? '--' : scope.row.paidAmount}}
             </template>
           </el-table-column>
         </el-table-column>
