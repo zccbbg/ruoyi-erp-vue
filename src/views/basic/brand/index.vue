@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-card>
       <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="68px">
-        <el-form-item label="品牌名称" prop="brandName">
+        <el-form-item label="品牌名称" prop="brandName" class="col4">
           <el-input
             v-model="queryParams.brandName"
             placeholder="请输入品牌名称"
@@ -10,7 +10,7 @@
             @keyup.enter="handleQuery"
           />
         </el-form-item>
-        <el-form-item>
+        <el-form-item class="col4" style="margin-left: 32px">
           <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
           <el-button icon="Refresh" @click="resetQuery">重置</el-button>
         </el-form-item>

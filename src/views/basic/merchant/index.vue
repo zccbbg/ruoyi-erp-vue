@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <el-card>
-      <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="68px">
-        <el-form-item label="编号" prop="merchantNo">
+      <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="90px">
+        <el-form-item label="编号" prop="merchantNo" class="col4">
           <el-input
             v-model="queryParams.merchantNo"
             placeholder="请输入编号"
@@ -10,7 +10,7 @@
             @keyup.enter="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="名称" prop="merchantName">
+        <el-form-item label="名称" prop="merchantName" class="col4">
           <el-input
             v-model="queryParams.merchantName"
             placeholder="请输入名称"
@@ -18,7 +18,7 @@
             @keyup.enter="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="企业类型" prop="merchantType">
+        <el-form-item label="企业类型" prop="merchantType" class="col4">
           <el-checkbox v-model="queryParams.merchantTypeCustomer"
                        :true-label="1"
                        :false-label=undefined>客户</el-checkbox>
@@ -26,7 +26,7 @@
                        :true-label="1"
                        :false-label=undefined>供应商</el-checkbox>
         </el-form-item>
-        <el-form-item>
+        <el-form-item class="col4" style="margin-left: 32px">
           <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
           <el-button icon="Refresh" @click="resetQuery">重置</el-button>
         </el-form-item>

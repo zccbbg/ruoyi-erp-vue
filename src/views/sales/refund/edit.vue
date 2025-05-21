@@ -155,7 +155,7 @@
                 </el-select>
               </template>
             </el-table-column>
-            <el-table-column label="数量" prop="qty" width="180">
+            <el-table-column label="数量" prop="qty" width="180" align="right">
               <template #default="scope">
                 <el-input-number
                   v-model="scope.row.qty"
@@ -167,7 +167,7 @@
                 ></el-input-number>
               </template>
             </el-table-column>
-            <el-table-column label="单价" prop="priceWithTax" width="180">
+            <el-table-column label="单价" prop="priceWithTax" width="180" align="right">
               <template #default="scope">
                 <el-input-number
                   v-model="scope.row.priceWithTax"
@@ -180,7 +180,7 @@
                 ></el-input-number>
               </template>
             </el-table-column>
-            <el-table-column label="合计金额" prop="totalAmount" width="180">
+            <el-table-column label="合计金额" prop="totalAmount" width="180" align="right">
               <template #default="scope">
                 <el-input-number
                   v-model="scope.row.totalAmount"

@@ -1,15 +1,15 @@
 <template>
   <div class="app-container">
     <el-card>
-      <el-form :model="queryParams" ref="queryFormRef" :inline="true" label-width="68px">
-        <el-form-item label="商品编号" prop="goodsNo">
+      <el-form :model="queryParams" ref="queryFormRef" :inline="true" label-width="90px">
+        <el-form-item label="商品编号" prop="goodsNo" class="col4">
           <el-input v-model="queryParams.goodsNo" placeholder="请输入商品编号" clearable @keyup.enter="handleQuery"/>
         </el-form-item>
-        <el-form-item label="商品名称" prop="goodsName">
+        <el-form-item label="商品名称" prop="goodsName" class="col4">
           <el-input v-model="queryParams.goodsName" placeholder="请输入商品名称" clearable @keyup.enter="handleQuery"/>
         </el-form-item>
-        <el-form-item label="商品品牌" prop="brandId">
-          <el-select v-model="queryParams.brandId" clearable filterable>
+        <el-form-item label="商品品牌" prop="brandId" class="col4">
+          <el-select v-model="queryParams.brandId" clearable filterable style="width: 100%" placeholder="请选择商品品牌">
             <el-option
               v-for="item in useBasicStore().brandList"
               :key="item.id"
@@ -18,7 +18,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item>
+        <el-form-item class="col4" style="margin-left: 32px">
           <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
           <el-button icon="Refresh" @click="resetQuery">重置</el-button>
         </el-form-item>

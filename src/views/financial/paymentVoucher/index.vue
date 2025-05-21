@@ -233,8 +233,8 @@ onMounted(() => {
 <template>
   <div class="app-container">
     <el-card>
-      <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="68px">
-        <el-form-item label="编号" prop="voucherNo">
+      <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="90px">
+        <el-form-item label="编号" prop="voucherNo" class="col4">
           <el-input
             v-model="queryParams.voucherNo"
             placeholder="请输入编号"
@@ -242,7 +242,7 @@ onMounted(() => {
             @keyup.enter="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="付款日期" style="width: 308px">
+        <el-form-item label="付款日期" class="col4">
           <el-date-picker
             v-model="daterangeTransDate"
             value-format="YYYY-MM-DD HH:mm:ss"
@@ -253,17 +253,17 @@ onMounted(() => {
             :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item label="往来单位" prop="merchantId">
-          <el-select v-model="queryParams.merchantId" placeholder="请选择供应商" clearable filterable style="width:100%">
+        <el-form-item label="往来单位" prop="merchantId" class="col4">
+          <el-select v-model="queryParams.merchantId" placeholder="请选择往来单位" clearable filterable style="width:100%">
             <el-option v-for="item in useBasicStore().merchantList" :key="item.id" :label="item.merchantName" :value="item.id"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="银行账户" prop="bankAccountId">
+        <el-form-item label="银行账户" prop="bankAccountId" class="col4">
           <el-select v-model="queryParams.bankAccountId" placeholder="请选择银行账户" clearable filterable style="width:100%">
             <el-option v-for="item in useBasicStore().bankAccountList" :key="item.id" :label="item.accountName" :value="item.id"/>
           </el-select>
         </el-form-item>
-        <el-form-item>
+        <el-form-item class="col4" style="margin-left: 32px">
           <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
           <el-button icon="Refresh" @click="resetQuery">重置</el-button>
         </el-form-item>

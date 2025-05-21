@@ -1,18 +1,18 @@
 <template>
   <div class="app-container">
     <el-card>
-      <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="68px">
-        <el-form-item label="往来单位" prop="merchantId">
+      <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="90px">
+        <el-form-item label="往来单位" prop="merchantId" class="col4">
           <el-select v-model="queryParams.merchantId" placeholder="请选择供应商" clearable filterable style="width:100%">
             <el-option v-for="item in useBasicStore().merchantList" :key="item.id" :label="item.merchantName" :value="item.id"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="交易账户" prop="bankAccountId">
+        <el-form-item label="交易账户" prop="bankAccountId" class="col4">
           <el-select v-model="queryParams.bankAccountId" placeholder="请选择交易账户" clearable filterable style="width:100%">
             <el-option v-for="item in useBasicStore().bankAccountList" :key="item.id" :label="item.accountName" :value="item.id"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="交易类型" prop="transType">
+        <el-form-item label="交易类型" prop="transType" class="col4">
           <el-select v-model="queryParams.transType" placeholder="请选择交易类型" clearable filterable style="width:100%">
             <el-option
               v-for="item in transTypeOptions"
@@ -22,7 +22,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="操作时间" prop="createTimeRange">
+        <el-form-item label="操作时间" prop="createTimeRange" class="col4">
           <el-date-picker
             v-model="createTimeRange"
             type="datetimerange"
@@ -33,7 +33,7 @@
             end-placeholder="结束时间"
           />
         </el-form-item>
-        <el-form-item label="业务编号" prop="relatedNo">
+        <el-form-item label="业务编号" prop="relatedNo" class="col4">
           <el-input
             v-model="queryParams.relatedNo"
             placeholder="请输入关联业务编号"
@@ -41,7 +41,7 @@
             @keyup.enter="handleQuery"
           />
         </el-form-item>
-        <el-form-item>
+        <el-form-item class="col4" style="margin-left: 32px">
           <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
           <el-button icon="Refresh" @click="resetQuery">重置</el-button>
         </el-form-item>
