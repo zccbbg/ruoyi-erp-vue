@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <el-card>
-      <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="68px">
-        <el-form-item label="单据编号" prop="docNo">
+      <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="90px" >
+        <el-form-item label="单据编号" prop="docNo" class="col4">
           <el-input
             v-model="queryParams.docNo"
             placeholder="请输入单据编号"
@@ -10,8 +10,8 @@
             @keyup.enter="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="审核状态" prop="checkedStatus">
-          <el-select v-model="queryParams.checkedStatus" placeholder="请选择审核状态" clearable>
+        <el-form-item label="审核状态" prop="checkedStatus" class="col4">
+          <el-select v-model="queryParams.checkedStatus" placeholder="请选择审核状态" clearable style="width: 100%">
             <el-option
               v-for="dict in finish_status"
               :key="dict.value"
@@ -20,7 +20,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="单据日期" style="width: 308px">
+        <el-form-item label="单据日期" class="col4">
           <el-date-picker
             v-model="daterangeBillDate"
             value-format="YYYY-MM-DD HH:mm:ss"
@@ -31,7 +31,7 @@
             :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item>
+        <el-form-item class="col4" style="margin-left: 32px">
           <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
           <el-button icon="Refresh" @click="resetQuery">重置</el-button>
         </el-form-item>
@@ -115,7 +115,7 @@
             <span>{{ parseTime(scope.row.docDate, '{y}-{m}-{d}') }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="供应商" prop="merchantId" min-width="120" align="center">
+        <el-table-column label="客户" prop="merchantId" min-width="120" align="center">
           <template #default="{ row }">
             <div>{{ useBasicStore().merchantMap.get(row.merchantId)?.merchantName }}</div>
           </template>
@@ -248,7 +248,7 @@ const data = reactive({
       { required: true, message: "审核人不能为空", trigger: "blur" }
     ],
     merchantId: [
-      { required: true, message: "供应商id不能为空", trigger: "blur" }
+      { required: true, message: "客户id不能为空", trigger: "blur" }
     ],
     goodsQty: [
       { required: true, message: "商品数量不能为空", trigger: "blur" }

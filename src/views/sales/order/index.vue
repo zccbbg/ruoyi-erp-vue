@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <el-card>
-      <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="68px">
-              <el-form-item label="单据编号" prop="docNo">
+      <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="90px">
+              <el-form-item label="单据编号" prop="docNo"  class="col4">
                 <el-input
                   v-model="queryParams.docNo"
                   placeholder="请输入单据编号"
@@ -10,8 +10,8 @@
                   @keyup.enter="handleQuery"
                 />
               </el-form-item>
-              <el-form-item label="审核状态" prop="checkedStatus">
-                <el-select v-model="queryParams.checkedStatus" placeholder="请选择审核状态" clearable>
+              <el-form-item label="审核状态" prop="checkedStatus"  class="col4">
+                <el-select v-model="queryParams.checkedStatus" placeholder="请选择审核状态" clearable style="width: 100%">
                   <el-option
                     v-for="dict in finish_status"
                     :key="dict.value"
@@ -20,8 +20,8 @@
                   />
                 </el-select>
               </el-form-item>
-              <el-form-item label="出库状态" prop="stockStatus">
-                <el-select v-model="queryParams.stockStatus" placeholder="请选择入库状态" clearable>
+              <el-form-item label="出库状态" prop="stockStatus"  class="col4">
+                <el-select v-model="queryParams.stockStatus" placeholder="请选择出库状态" clearable style="width: 100%">
                   <el-option
                     v-for="dict in wms_shipment_status"
                     :key="dict.value"
@@ -30,7 +30,7 @@
                   />
                 </el-select>
               </el-form-item>
-              <el-form-item label="单据日期" style="width: 308px">
+              <el-form-item label="单据日期" class="col4">
                 <el-date-picker
                   v-model="daterangeBillDate"
                   value-format="YYYY-MM-DD HH:mm:ss"
@@ -41,7 +41,7 @@
                   :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]"
                 ></el-date-picker>
               </el-form-item>
-              <el-form-item label="交货日期" style="width: 308px">
+              <el-form-item label="交货日期"  class="col4">
                 <el-date-picker
                   v-model="daterangeDeliveryDate"
                   value-format="YYYY-MM-DD HH:mm:ss"
@@ -52,7 +52,7 @@
                   :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]"
                 ></el-date-picker>
               </el-form-item>
-        <el-form-item>
+        <el-form-item  class="col4" style="margin-left: 32px">
           <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
             <el-button icon="Refresh" @click="resetQuery">重置</el-button>
         </el-form-item>
@@ -182,7 +182,7 @@
                 :width="300"
                 trigger="hover"
                 :disabled="scope.row.checkedStatus === 0"
-                :content="'订单【' + scope.row.docNo + '】已完成，无法修改！' "
+                :content="'订单【' + scope.row.docNo + '】已审核，无法修改！' "
               >
                 <template #reference>
                   <el-button link type="primary" @click="handleUpdate(scope.row)" v-hasPermi="['sales:order:all']" :disabled="[1].includes(scope.row.checkedStatus)">修改</el-button>
@@ -197,13 +197,24 @@
                 :width="300"
                 trigger="hover"
                 :disabled="scope.row.checkedStatus === 0"
-                :content="'订单【' + scope.row.docNo + '】已完成，无法删除！' "
+                :content="'订单【' + scope.row.docNo + '】已审核，无法删除！' "
               >
                 <template #reference>
                   <el-button type="danger" @click="handleDelete(scope.row)" link v-hasPermi="['sales:order:all']" :disabled="[1].includes(scope.row.checkedStatus)">删除</el-button>
                 </template>
               </el-popover>
-              <el-button link type="primary" @click="handleOutBand(scope.row)" v-hasPermi="['wms:check:all']">出库</el-button>
+              <el-popover
+                placement="left"
+                title="提示"
+                :width="300"
+                trigger="hover"
+                :disabled="scope.row.checkedStatus === 1 && scope.row.stockStatus !== 2"
+                :content="'订单【' + scope.row.docNo + '】未审核或已全部出库！'"
+              >
+                <template #reference>
+                  <el-button link type="primary" @click="handleOutBand(scope.row)" v-hasPermi="['wms:check:all']" :disabled="scope.row.checkedStatus===0 || scope.row.stockStatus===2">出库</el-button>
+                </template>
+              </el-popover>
             </div>
 
           </template>

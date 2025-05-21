@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
     <el-card>
-      <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="68px">
-        <el-form-item label="审核状态" prop="checkedStatus">
-          <el-select v-model="queryParams.checkedStatus" placeholder="请选择审核状态" clearable>
+      <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="90px">
+        <el-form-item label="审核状态" prop="checkedStatus" class="col4">
+          <el-select v-model="queryParams.checkedStatus" placeholder="请选择审核状态" clearable style="width: 100%">
             <el-option
               v-for="dict in finish_status"
               :key="dict.value"
@@ -12,7 +12,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="入库单号" prop="docNo">
+        <el-form-item label="入库单号" prop="docNo" class="col4">
           <el-input
             v-model="queryParams.docNo"
             placeholder="请输入入库单号"
@@ -20,7 +20,7 @@
             @keyup.enter="handleQuery"
           />
         </el-form-item>
-        <el-form-item>
+        <el-form-item class="col4" style="margin-left: 32px">
           <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
           <el-button icon="Refresh" @click="resetQuery">重置</el-button>
         </el-form-item>

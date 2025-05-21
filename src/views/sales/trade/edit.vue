@@ -48,9 +48,38 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="订单编号" prop="orderNo">
-                    <el-input v-model="form.orderNo" placeholder="请从销售订单处创建" :disabled="true" style="width:50%"/>
-                    <el-input-number :controls="false" :precision="2" v-model="form.prepayAmount" placeholder="预付金额" :disabled="true" style="width:50%"/>
+                  <el-form-item label="订单信息" prop="orderNo">
+                    <el-popover
+                      placement="left"
+                      title="提示"
+                      :width="300"
+                      trigger="hover"
+                      :disabled ="form.orderNo!==undefined"
+                      content="请从采购订单处创建"
+                    >
+                      <template #reference>
+                        <el-row>
+                          <el-col :span="12">
+                            <el-input
+                              v-model="form.orderNo"
+                              placeholder="请从采购订单处创建"
+                              :disabled="true"
+                              style="width:100%"
+                            />
+                          </el-col>
+                          <el-col :span="12">
+                            <el-input-number
+                              :controls="false"
+                              :precision="2"
+                              v-model="form.prepayAmount"
+                              placeholder="预付金额"
+                              :disabled="true"
+                              style="width:100%"
+                            />
+                          </el-col>
+                        </el-row>
+                      </template>
+                    </el-popover>
                   </el-form-item>
                 </el-col>
               </el-row>
