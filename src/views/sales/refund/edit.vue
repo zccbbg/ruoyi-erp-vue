@@ -566,7 +566,6 @@ const loadDetail = (id) => {
       })
     }
     Promise.resolve();
-  }).then(() => {
   }).finally(() => {
     loading.value = false
   })
@@ -599,8 +598,8 @@ const handleDeleteDetail = (row, index) => {
   } else {
     form.value.details.splice(index, 1)
   }
-  const indexOfSelected = selectedInventory.value.findIndex(it => row.sku.id=== it.id)
-  selectedInventory.value.splice(indexOfSelected, 1)
+  const indexOfSelected = selectedSku.value.findIndex(it => row.sku.id=== it.id)
+  selectedSku.value.splice(indexOfSelected, 1)
 }
 const goSaasTip = () => {
   ElMessageBox.alert('审批模式请去Saas版本体验！', '系统提示', {
