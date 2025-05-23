@@ -280,15 +280,7 @@ onMounted(() => {
             plain
             icon="Plus"
             @click="handleAdd"
-            v-hasPermi="['financial:paymentVoucher:add']"
           >新增</el-button>
-                    <el-button
-                      type="warning"
-                      plain
-                      icon="Download"
-                      @click="handleExport"
-                      v-hasPermi="['financial:paymentVoucher:export']"
-                    >导出</el-button>
         </el-col>
       </el-row>
 

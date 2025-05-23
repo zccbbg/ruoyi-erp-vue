@@ -48,14 +48,12 @@
             plain
             icon="Plus"
             @click="handleAdd"
-            v-hasPermi="['financial:receiptVoucher:add']"
           >新增</el-button>
 <!--          <el-button-->
 <!--            type="warning"-->
 <!--            plain-->
 <!--            icon="Download"-->
 <!--            @click="handleExport"-->
-<!--            v-hasPermi="['financial:receiptVoucher:export']"-->
 <!--          >导出</el-button>-->
         </el-col>
       </el-row>
@@ -97,7 +95,7 @@
               :content="'收款单【' + scope.row.voucherNo + '】已完成，无法修改！' "
             >
               <template #reference>
-                <el-button link type="primary" @click="handleUpdate(scope.row)" v-hasPermi="['financial:receiptVoucher:all']" :disabled="[1].includes(scope.row.checkedStatus)">修改</el-button>
+                <el-button link type="primary" @click="handleUpdate(scope.row)" :disabled="[1].includes(scope.row.checkedStatus)">修改</el-button>
               </template>
             </el-popover>
             <el-popover
@@ -109,10 +107,10 @@
               :content="'收款单【' + scope.row.voucherNo + '】已完成，无法删除！' "
             >
               <template #reference>
-                <el-button link type="danger" @click="handleDelete(scope.row)" v-hasPermi="['financial:receiptVoucher:all']" :disabled="[1].includes(scope.row.checkedStatus)">删除</el-button>
+                <el-button link type="danger" @click="handleDelete(scope.row)" :disabled="[1].includes(scope.row.checkedStatus)">删除</el-button>
               </template>
             </el-popover>
-              <el-button link type="primary" @click="handlePrint(scope.row)" v-hasPermi="['financial:receiptVoucher:all']">打印</el-button>
+              <el-button link type="primary" @click="handlePrint(scope.row)">打印</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -169,7 +167,7 @@
         <div class="dialog-footer">
           <div class="btn-box">
             <div>
-              <el-button :loading="finishBtnLoading" type="primary" @click="finishForm" class="ml10">完成收款</el-button>
+              <el-button :loading="finishBtnLoading" type="primary" @click="finishForm" class="ml10">完成审核</el-button>
             </div>
             <div>
               <el-button :loading="saveBtnLoading" type="primary" @click="submitForm">暂 存</el-button>
