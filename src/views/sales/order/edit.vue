@@ -255,7 +255,6 @@ import {getSummaries, getWarehouseAndSkuKey} from "@/utils/wmsUtil";
 import InventorySelect from "@/views/components/InventorySelect.vue";
 
 const {proxy} = getCurrentInstance();
-const selectedSku = ref([])
 const mode = ref(false)
 const loading = ref(false)
 const batchSetWarehouseVisible = ref(false)
@@ -398,13 +397,8 @@ const handleOkClick = (item) => {
     if (!form.value.details.find(detail => getWarehouseAndSkuKey(detail) === getWarehouseAndSkuKey(it))) {
       form.value.details.push(
         {
-          sku: it.sku,
-          goods: it.goods,
-          skuId: it.skuId,
-          totalAmount: undefined,
-          qty: undefined,
-          warehouseId: it.warehouseId,
-          inventoryId: it.id,
+          ...it,
+          id: null,
           priceWithTax:it.sku?.sellingPrice
         })
     }
@@ -558,9 +552,11 @@ const loadDetail = (id) => {
   getOrder(id).then((response) => {
     form.value = {...response.data}
     if (response.data.details?.length) {
-      selectedSku.value = response.data.details.map(it => {
+      selectedInventory.value = response.data.details.map(it => {
         return {
-          id: it.skuId
+          id: it.id,
+          skuId: it.skuId,
+          warehouseId: it.warehouseId
         }
       })
     }
@@ -598,8 +594,8 @@ const handleDeleteDetail = (row, index) => {
   } else {
     form.value.details.splice(index, 1)
   }
-  const indexOfSelected = selectedSku.value.findIndex(it => row.sku.id=== it.id)
-  selectedSku.value.splice(indexOfSelected, 1)
+  const indexOfSelected = selectedInventory.value.findIndex(it => row.sku.id=== it.id)
+  selectedInventory.value.splice(indexOfSelected, 1)
 }
 const goSaasTip = () => {
   ElMessageBox.alert('审批模式请去Saas版本体验！', '系统提示', {
