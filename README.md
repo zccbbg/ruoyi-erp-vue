@@ -8,10 +8,10 @@
 
 ## 后端项目地址
 #### gitee地址
-https://gitee.com/zccbbg/ruoyi-erp
+https://gitee.com/zccbbg/ruoyi-erp-service
 
 #### github地址
-https://github.com/zccbbg/ruoyi-erp
+https://github.com/zccbbg/ruoyi-erp-service
 
 ## 前端运行
 
