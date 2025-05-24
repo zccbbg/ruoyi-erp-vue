@@ -409,7 +409,7 @@ const handleDeleteDetail = (row, index) => {
   selectedInventory.value.splice(indexOfSelected, 1)
 }
 const goSaasTip = () => {
-  ElMessageBox.alert('审批模式请去Saas版本体验！', '系统提示', {
+  ElMessageBox.alert('审批模式正在开发中！', '系统提示', {
     confirmButtonText: '确定'
   })
   return false
