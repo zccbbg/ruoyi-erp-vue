@@ -48,7 +48,6 @@
             plain
             icon="Plus"
             @click="handleAdd"
-            v-hasPermi="['sales:refund:add']"
           >新增</el-button>
 <!--          <el-button
             type="warning"

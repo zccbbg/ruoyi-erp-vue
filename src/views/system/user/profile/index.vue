@@ -10,7 +10,7 @@
                </template>
                <div>
                   <div class="text-center">
-                     <userAvatar v-if="state.user.userName!=='wms2'"/>
+                     <userAvatar v-if="state.user.userName!=='erp'"/>
                   </div>
                   <ul class="list-group list-group-striped">
                      <li class="list-group-item">
@@ -41,7 +41,7 @@
                </div>
             </el-card>
          </el-col>
-         <el-col :span="18" :xs="24" v-if="state.user.userName!=='wms2'">
+         <el-col :span="18" :xs="24" v-if="state.user.userName!=='erp'">
             <el-card>
                <template v-slot:header>
                  <div class="clearfix">

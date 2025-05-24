@@ -58,7 +58,6 @@
             plain
             icon="Plus"
             @click="handleAdd"
-            v-hasPermi="['purchase:trade:add']"
           >新增</el-button>
 <!--          <el-button-->
 <!--            type="warning"-->

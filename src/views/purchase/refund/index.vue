@@ -48,7 +48,6 @@
             plain
             icon="Plus"
             @click="handleAdd"
-            v-hasPermi="['purchase:refund:add']"
           >新增</el-button>
         </el-col>
       </el-row>
