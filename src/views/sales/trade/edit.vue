@@ -426,8 +426,13 @@ const handleOkClick = (item) => {
     if (!form.value.details.find(detail => getWarehouseAndSkuKey(detail) === getWarehouseAndSkuKey(it))) {
       form.value.details.push(
         {
-          ...it,
-          id: null,
+          sku: it.sku,
+          goods: it.goods,
+          skuId: it.skuId,
+          totalAmount: undefined,
+          qty: undefined,
+          warehouseId: it.warehouseId,
+          inventoryId: it.id,
           priceWithTax:it.sku?.sellingPrice
         }
       )
