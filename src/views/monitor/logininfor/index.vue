@@ -46,6 +46,9 @@
             ></el-date-picker>
          </el-form-item>
          <el-form-item>
+            <el-checkbox v-model="queryParams.excludeDemoAccount" @change="handleQuery">隐藏演示账号</el-checkbox>
+         </el-form-item>
+         <el-form-item>
             <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
             <el-button icon="Refresh" @click="resetQuery">重置</el-button>
          </el-form-item>
@@ -148,6 +151,7 @@ const queryParams = ref({
   ipaddr: undefined,
   userName: undefined,
   status: undefined,
+  excludeDemoAccount: false,
   orderByColumn: undefined,
   isAsc: undefined
 });
