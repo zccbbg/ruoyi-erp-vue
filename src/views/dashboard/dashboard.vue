@@ -166,7 +166,6 @@ import moment from 'moment'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-const map = ref()
 const showWhich = computed(()=>{
   return router.currentRoute.value.path === '/system/dashboard'
 })
@@ -614,75 +613,6 @@ function getDailyPData() {
   dailyP.value = result
 }
 
-function initMap() {
-  map.value = new BMapGL.Map('boardMap')
-
-  let myIcon = new BMapGL.Icon(
-    'https://szcloudpulse.com:9000/cp-portal/2023/04/27/d85f358bb44a4cf69e843acecf7b0c2c.png',
-    new BMapGL.Size(23, 25),
-    {
-      // 指定定位位置。
-      // 当标注显示在地图上时，其所指向的地理位置距离图标左上
-      // 角各偏移10像素和25像素。您可以看到在本例中该位置即是
-      // 图标中央下端的尖角位置。
-      // anchor: new BMapGL.Size(15, 25),
-      // 设置图片偏移。
-      // 当您需要从一幅较大的图片中截取某部分作为标注图标时，您
-      // 需要指定大图的偏移位置，此做法与css sprites技术类似。
-      // imageOffset: new BMapGL.Size(0, 0 - 25)   // 设置图片偏移
-    }
-  )
-
-  // 设置中心点坐标和放大倍数
-  // 以 经纬度 定位
-  let point = new BMapGL.Point(120.654617, 31.268181)
-  // let point2 = new BMapGL.Point(120.679607, 31.529649)
-  map.value.centerAndZoom(point, 10)
-
-  //设置地图样式
-  map.value.setMapStyleV2({ styleId: 'd9955f6e8bd01669bfd15a998f109283' })
-  // 以 地名 定位
-  // map.value.centerAndZoom('苏州市', 12);
-
-  map.value.enableScrollWheelZoom() //启用滚轮放大缩小，默认禁用
-  map.value.enableContinuousZoom() //启用地图惯性拖拽，默认禁用
-
-  // 标注
-  let marker = new BMapGL.Marker(point, { icon: myIcon })
-  map.value.addOverlay(marker)
-  // 信息窗口
-  let opts = {
-    width: 250,
-    height: 100,
-    title: '武珞科技园'
-  }
-  // let infoWindow = new BMapGL.InfoWindow("云脉软件", opts);
-  // marker.addEventListener("mouseover", function () {
-  //   openInfoWindow(infoWindow);
-  // });
-  // // 鼠标移开标注点要发生的事
-  // marker.addEventListener("mouseout", function () {
-  //   closeInfoWindow(infoWindow);
-  // });
-
-  let point2 = new BMapGL.Point(120.679607, 31.529649)
-  let marker2 = new BMapGL.Marker(point2, { icon: myIcon })
-  map.value.addOverlay(marker2)
-  let opts2 = {
-    width: 250,
-    height: 100,
-    title: '优胜美地生产基地'
-  }
-  // let infoWindow2 = new BMapGL.InfoWindow("优胜美地", opts2);
-  // marker2.addEventListener("mouseover", function () {
-  //   openInfoWindow(infoWindow2);
-  // });
-  // // 鼠标移开标注点要发生的事
-  // marker2.addEventListener("mouseout", function () {
-  //   closeInfoWindow(infoWindow2);
-  // });
-}
-
 function handleClick(tab, event) {
   if (tab.index == '0') {
     getEnergy()
@@ -709,7 +639,6 @@ onMounted((() => {
   getAlarmList()
   getAreaList()
   nextTick((() => {
-    initMap()
     getConsumption()
     getEnergy()
     getDailyPData()
@@ -718,7 +647,6 @@ onMounted((() => {
 
 onBeforeUnmount(() => {
   clearInterval(timer.value)
-  map.value = null
 })
 
 </script>
@@ -940,18 +868,4 @@ onBeforeUnmount(() => {
   height: calc(100% - 55px);
 }
 
-/* 地图信息窗口样式修改 */
-#boardMap .BMap_bubble_pop {
-  background-color: rgba(28, 37, 80, 0.8) !important;
-  border: 1px solid #186dbf !important;
-}
-
-#boardMap .BMap_bubble_pop img {
-  display: none;
-}
-
-#boardMap .BMap_bubble_pop .BMap_bubble_top .BMap_bubble_title,
-#boardMap .BMap_bubble_pop .BMap_bubble_center .BMap_bubble_content {
-  color: #fff !important;
-}
 </style>
