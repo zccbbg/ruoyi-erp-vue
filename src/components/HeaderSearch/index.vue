@@ -49,7 +49,7 @@ function change(val) {
   if (isHttp(path)) {
     // http(s):// 路径新窗口打开
     const pindex = path.indexOf("http");
-    window.open(path.substr(pindex, path.length), "_blank");
+    window.open(path.substr(pindex, path.length), "_blank", "noopener,noreferrer");
   } else {
     if (query) {
       router.push({ path: path, query: JSON.parse(query) });

@@ -88,7 +88,7 @@
 const version = ref('5.2.0')
 
 function goTarget(url) {
-  window.open(url, '__blank')
+  window.open(url, '_blank', 'noopener,noreferrer')
 }
 </script>
 
